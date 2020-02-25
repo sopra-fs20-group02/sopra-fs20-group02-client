@@ -75,8 +75,8 @@ class Login extends React.Component {
   constructor() {
     super();
     this.state = {
-      name: null,
-      username: null
+      username: null,
+      password: null
     };
   }
   /**
@@ -86,20 +86,31 @@ class Login extends React.Component {
    */
   async login() {
     try {
-      const requestBody = JSON.stringify({
+      /*const requestBody = JSON.stringify({
         username: this.state.username,
-        name: this.state.name
-      });
-      const response = await api.post('/users', requestBody);
+        name: this.state.password
+      });*/
+      const response = await api.get(('/users/'+this.state.username));
 
       // Get the returned user and update a new object.
       const user = new User(response.data);
+      alert(this.state.username);
+      alert(user.password);
 
-      // Store the token into the local storage.
-      localStorage.setItem('token', user.token);
 
-      // Login successfully worked --> navigate to the route /game in the GameRouter
-      this.props.history.push(`/game`);
+      if(user.username===this.state.username && user.password===this.state.password){
+        // Store the token into the local storage.
+        localStorage.setItem('token', user.token);
+
+        // Login successfully worked --> navigate to the route /game in the GameRouter
+        this.props.history.push(`/game`);
+      }
+      else {
+        alert('Username or password incorrect.');
+      }
+
+
+
     } catch (error) {
       alert(`Something went wrong during the login: \n${handleError(error)}`);
     }
@@ -137,22 +148,33 @@ class Login extends React.Component {
                 this.handleInputChange('username', e.target.value);
               }}
             />
-            <Label>Name</Label>
+            <Label>Password</Label>
             <InputField
               placeholder="Enter here.."
+              type="Password"
               onChange={e => {
-                this.handleInputChange('name', e.target.value);
+                this.handleInputChange('password', e.target.value);
               }}
             />
             <ButtonContainer>
               <Button
-                disabled={!this.state.username || !this.state.name}
+                disabled={!this.state.username || !this.state.password}
                 width="50%"
                 onClick={() => {
                   this.login();
                 }}
               >
                 Login
+              </Button>
+            </ButtonContainer>
+            <ButtonContainer>
+              <Button
+                  width="50%"
+                  onClick={() => {
+                    this.props.history.push('/registration');;
+                  }}
+              >
+                Register
               </Button>
             </ButtonContainer>
           </Form>
