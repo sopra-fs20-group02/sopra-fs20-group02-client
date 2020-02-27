@@ -32,6 +32,10 @@ class Game extends React.Component {
     };
   }
 
+  openProfile(id){
+    this.props.history.push(`/game/profile/${id}`)
+  }
+
   logout() {
     localStorage.removeItem('token');
     this.props.history.push('/login');
@@ -43,7 +47,7 @@ class Game extends React.Component {
       // delays continuous execution of an async operation for 1 second.
       // This is just a fake async call, so that the spinner can be displayed
       // feel free to remove it :)
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 200));
 
       // Get the returned users and update the state.
       this.setState({ users: response.data });
@@ -74,14 +78,17 @@ class Game extends React.Component {
             <Users>
               {this.state.users.map(user => {
                 return (
-                  <PlayerContainer key={user.id}>
-                    <Player user={user} />
-                  </PlayerContainer>
+                  <div
+                    onClick={() => {this.openProfile(user.id);}}>
+                    <PlayerContainer key={user.id}>
+                      <Player user={user} />
+                    </PlayerContainer>
+                  </div>
                 );
               })}
             </Users>
             <Button
-              width="100%"
+              width="50%"
               onClick={() => {
                 this.logout();
               }}
