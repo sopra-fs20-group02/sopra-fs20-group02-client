@@ -6,7 +6,11 @@ import User from '../shared/models/User';
 import { withRouter } from 'react-router-dom';
 import { Button } from '../../views/design/Button';
 import { Spinner } from '../../views/design/Spinner';
+import {EditProfile} from '../profile/EditProfile';
 
+const Info = styled.p`
+  color: #8B0000;
+`;
 const Container = styled(BaseContainer)`
   color: white;
   text-align: center;
@@ -66,6 +70,7 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 20px;
+  margin-bottom: 20px;
 `;
 
 /**
@@ -87,12 +92,9 @@ class Profile extends React.Component {
   constructor() {
     super();
     this.state = {
-      id: null,
+      user: null,
       name: null,
-      username: null,
-      status: null,
-      creationDate: null,
-      birthDate: null,
+      edit: false
     };
   }
 
@@ -120,8 +122,10 @@ class Profile extends React.Component {
 
     const response = await api.get(`/users/${id}`);
 
+    this.setState({user: response.data});
+
     if(response.status === 200) {
-      this.setState(response.data);
+
     }
     else {
       this.props.history.push('/game');
@@ -129,30 +133,58 @@ class Profile extends React.Component {
 
   }
 
+  editUser() {
+    this.setState({edit: !this.state.edit});
+  }
+
   render (){
     return (
       <Container>
-        <Right>
-          <Button
-            width="60px"
-            onClick={() => {
-              this.props.history.push('/game');
-            }}
-          >
-            Edit
-          </Button>
-        </Right>
-        <Left>
-          <h2>Profile: {this.state.name}</h2>
-        </Left>
-        <p>Username: {this.state.username}</p>
-        <p>Status: {this.state.status}</p>
-        <p>Creationdate: {this.state.creationDate}</p>
-        <p>Birthdate: {this.state.birthDate}</p>
+        {this.state.user ? (
+          <div>
+            <Right>
 
+            </Right>
+            <Left>
+              <h2>Profile: {this.state.user.name}</h2>
+            </Left>
+            <p>Username: {this.state.user.username}</p>
+            <p>Status: {this.state.user.status}</p>
+            <p>Creationdate: {this.state.user.creationDate}</p>
+            <p>Birthdate: {this.state.user.birthDate}</p>
+
+            {(this.state.user.token === localStorage.getItem("token")) ? (
+              <div>
+                <ButtonContainer>
+                  <Button
+                    width="150px"
+                    onClick={() => {
+                      this.editUser()
+                    }}
+                  >
+                    {!this.state.edit ? "Edit" : "Close"}
+                  </Button>
+                </ButtonContainer>
+                {this.state.edit ? (
+                    <div><EditProfile id={this.state.user.id}/></div>
+                  ):(
+                    <div></div>
+                  )}
+              </div>
+            ):(
+              <div>
+                <Info>- not editable -</Info>
+              </div>
+            )}
+          </div>
+          ): (
+            <div>
+              <h2>user not found</h2>
+            </div>
+        )}
         <ButtonContainer>
           <Button
-            width="50%"
+            width="150px"
             onClick={() => {
               this.props.history.push('/game');
             }}

@@ -88,7 +88,7 @@ class Game extends React.Component {
               })}
             </Users>
             <Button
-              width="50%"
+              width="150px"
               onClick={() => {
                 this.logout();
               }}
