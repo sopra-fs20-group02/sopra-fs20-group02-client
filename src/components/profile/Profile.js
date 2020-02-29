@@ -8,20 +8,21 @@ import { Button } from '../../views/design/Button';
 import { Spinner } from '../../views/design/Spinner';
 import {EditProfile} from '../profile/EditProfile';
 
+const Bold = styled.span`
+  font-weight: 900;
+  color: #06c4ff;
+`;
+
 const Info = styled.p`
   color: #8B0000;
+  font-weight: 900;
 `;
 const Container = styled(BaseContainer)`
   color: white;
   text-align: center;
   width: 500px;
 `;
-const Left = styled.div`
-  clear: both;
-`;
-const Right = styled.div`
-  float: right;
-`;
+
 const FormContainer = styled.div`
   margin-top: 2em;
   display: flex;
@@ -142,16 +143,11 @@ class Profile extends React.Component {
       <Container>
         {this.state.user ? (
           <div>
-            <Right>
-
-            </Right>
-            <Left>
-              <h2>Profile: {this.state.user.name}</h2>
-            </Left>
-            <p>Username: {this.state.user.username}</p>
-            <p>Status: {this.state.user.status}</p>
-            <p>Creationdate: {this.state.user.creationDate}</p>
-            <p>Birthdate: {this.state.user.birthDate}</p>
+            <h2>Profile: {this.state.user.name}</h2>
+            <p>Username: <Bold>{this.state.user.username}</Bold></p>
+            <p>Status: <Bold>{this.state.user.status}</Bold></p>
+            <p>Creationdate: <Bold>{this.state.user.creationDate}</Bold></p>
+            <p>Birthdate: <Bold>{this.state.user.birthDate}</Bold></p>
 
             {(this.state.user.token === localStorage.getItem("token")) ? (
               <div>

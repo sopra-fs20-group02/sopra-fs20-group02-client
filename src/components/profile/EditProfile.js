@@ -4,12 +4,13 @@ import {BaseContainer} from "../../helpers/layout";
 import styled from "styled-components";
 import {Button} from "../../views/design/Button";
 import {api, handleError} from "../../helpers/api";
+import  { Redirect } from 'react-router-dom'
 
 const Container = styled.div`
   text-align: center;
-  border-top: 1px dashed white;
-  border-bottom: 1px dashed white;
-  padding-bottom: 20px;
+  border-radius: 6px;
+  border: 1px solid #ffffff26;
+  padding-bottom: 10px;
   padding-top: 10px;
   width: 100%;
 `;
@@ -26,7 +27,7 @@ const InputField = styled.input`
     color: rgba(255, 255, 255, 1.0);
   }
   height: 35px;
-  width: 350px;
+  width: 90%;
   padding-left: 15px;
   border: none;
   border-radius: 20px;
@@ -57,14 +58,14 @@ const UpdateButton = styled.button`
   border-radius: 20px;
   cursor: ${props => (props.disabled ? "default" : "pointer")};
   opacity: ${props => (props.disabled ? 0.4 : 1)};
-  background: #8B0000;
+  background: #66baff;
   transition: all 0.3s ease;
 `;
 
 export class EditProfile extends React.Component {
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       newUsername: null,
       newBirthDate: null
@@ -84,20 +85,25 @@ export class EditProfile extends React.Component {
       });
       const response = await api.put(`/users/${this.props.id}`,requestBody);
 
+      window.location.reload();
 
     } catch (error) {
       alert(`Something went wrong during updating the username: \n${handleError(error)}`);
     }
     //this.props.history.push(`/game/profile/${this.props.id}`);
 
+
   }
 
   async updateBirthDate(){
     try {
       const requestBody = JSON.stringify({
+        username: this.state.newUsername,
         birthDate: this.state.newBirthDate
       });
       const response = await api.put(`/users/${this.props.id}`,requestBody);
+
+      window.location.reload();
 
     } catch (error) {
       alert(`Something went wrong during updating the birthdate: \n${handleError(error)}`);
@@ -115,31 +121,23 @@ export class EditProfile extends React.Component {
               this.handleInputChange('newUsername', e.target.value);
             }}
           />
-          <UpdateButton
-            disabled={!this.state.newUsername}
-            onClick={() => {
-              this.updateUsername();
-            }}
-          >
-            Update
-          </UpdateButton>
         </p>
         <p>
           <InputField
-            placeholder="New Birthdate (yyyy-MM-dd)"
+            placeholder="New Birthdate (dd/MM/yyyy)"
             onChange={e => {
               this.handleInputChange('newBirthDate', e.target.value);
             }}
           />
-          <UpdateButton
-            disabled={!this.state.newBirthDate}
-            onClick={() => {
-              this.updateBirthDate();
-            }}
-          >
-            Update
-          </UpdateButton>
         </p>
+        <UpdateButton
+          disabled={!this.state.newBirthDate && !this.state.newUsername}
+          onClick={() => {
+            this.updateBirthDate();
+          }}
+        >
+          Update
+        </UpdateButton>
       </Container>
     )
   }
