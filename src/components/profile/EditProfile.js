@@ -78,24 +78,7 @@ export class EditProfile extends React.Component {
     this.setState({ [key]: value });
   }
 
-  async updateUsername(){
-    try {
-      const requestBody = JSON.stringify({
-        username: this.state.newUsername
-      });
-      const response = await api.put(`/users/${this.props.id}`,requestBody);
-
-      window.location.reload();
-
-    } catch (error) {
-      alert(`Something went wrong during updating the username: \n${handleError(error)}`);
-    }
-    //this.props.history.push(`/game/profile/${this.props.id}`);
-
-
-  }
-
-  async updateBirthDate(){
+  async updateUser(){
     try {
       const requestBody = JSON.stringify({
         username: this.state.newUsername,
@@ -133,7 +116,7 @@ export class EditProfile extends React.Component {
         <UpdateButton
           disabled={!this.state.newBirthDate && !this.state.newUsername}
           onClick={() => {
-            this.updateBirthDate();
+            this.updateUser();
           }}
         >
           Update

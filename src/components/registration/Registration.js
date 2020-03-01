@@ -104,7 +104,12 @@ class Registration extends React.Component {
             // Login successfully worked --> navigate to the route /game in the GameRouter
             this.props.history.push(`/login`);
         } catch (error) {
-            alert(`Something went wrong during the registration: \n${handleError(error)}`);
+            if(error.response.status === 409){
+                alert(error.response.data);
+            }
+            else {
+                alert(`Something went wrong during the registration: \n${handleError(error)}`);
+            }
         }
     }
 

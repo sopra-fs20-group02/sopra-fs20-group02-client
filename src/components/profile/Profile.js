@@ -118,18 +118,22 @@ class Profile extends React.Component {
    * It will trigger an extra rendering, but it will happen before the browser updates the screen.
    */
   async componentDidMount() {
-    const {id} = this.props.match.params;
-    //this.setState({id:id});
+    try {
+      const {id} = this.props.match.params;
+      //this.setState({id:id});
 
-    const response = await api.get(`/users/${id}`);
+      const response = await api.get(`/users/${id}`);
 
-    this.setState({user: response.data});
+      this.setState({user: response.data});
+    } catch(error){
+      if(error.response.status === 404){
+        alert(error.response.data);
+        //this.props.history.push('/game');
+      }
+      else {
+        alert(`Something went wrong: \n${handleError(error)}`);
+      }
 
-    if(response.status === 200) {
-
-    }
-    else {
-      this.props.history.push('/game');
     }
 
   }

@@ -93,15 +93,20 @@ class Login extends React.Component {
       const response = await api.put('/login',requestBody);
 
       // Get the returned user and update a new object.
-      const user = new User(response.data);
+      const token = new String(response.data);
 
       // Store the token into the local storage.
-      localStorage.setItem('token', user.token);
+      localStorage.setItem('token', token);
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
       this.props.history.push(`/game`);
     } catch (error) {
-      alert(`Something went wrong during the login: \n${handleError(error)}`);
+      if (error.response.status === 401){
+        alert(error.response.data);
+      }
+      else {
+        alert(`Something went wrong during the login: \n${handleError(error)}`);
+      }
     }
   }
 
