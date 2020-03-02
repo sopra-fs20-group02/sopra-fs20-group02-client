@@ -33,7 +33,7 @@ class Game extends React.Component {
   }
 
   openProfile(id){
-    this.props.history.push(`/game/profile/${id}`)
+    this.props.history.push(`/game/profile/${id}`);
   }
 
   logout() {
