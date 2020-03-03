@@ -36,9 +36,18 @@ class Game extends React.Component {
     this.props.history.push(`/game/profile/${id}`);
   }
 
-  logout() {
-    localStorage.removeItem('token');
-    this.props.history.push('/login');
+  async logout() {
+    try {
+      const requestBody = JSON.stringify({
+        token: localStorage.getItem("token")
+      });
+      const response = await api.put('/logout', requestBody);
+
+      localStorage.removeItem('token');
+      this.props.history.push('/login');
+    } catch(error) {
+      alert(`Something went wrong during the logout: \n${handleError(error)}`);
+    }
   }
 
   async componentDidMount() {
