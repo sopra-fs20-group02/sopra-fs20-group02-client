@@ -32,10 +32,18 @@ class Game extends React.Component {
     };
   }
 
+  /**
+   * The user is redirected to the profile page of the user with the given id
+   */
   openProfile(id){
     this.props.history.push(`/game/profile/${id}`);
   }
 
+  /**
+   * HTTP PUT request is sent to the backend.
+   * If the request is successful, status code 204 is returned to the front-end,
+   * the token is removed from the localStorage and the user is redirected to login page.
+   */
   async logout() {
     try {
       const requestBody = JSON.stringify({
@@ -50,6 +58,10 @@ class Game extends React.Component {
     }
   }
 
+  /**
+   * HTTP GET request is sent to the backend.
+   * If the request is successful, all users are returned to the front-end
+   */
   async componentDidMount() {
     try {
       const response = await api.get('/users');

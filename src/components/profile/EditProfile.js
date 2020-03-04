@@ -15,13 +15,6 @@ const Container = styled.div`
   width: 100%;
 `;
 
-const Form = styled.div`
-  padding: 10px 0px 20px 0px;
-  border-radius: 5px;
-  background: linear-gradient(rgb(27, 124, 186), rgb(2, 46, 101));
-  transition: opacity 0.5s ease, transform 0.5s ease;
-`;
-
 const InputField = styled.input`
   &::placeholder {
     color: rgba(255, 255, 255, 1.0);
@@ -78,6 +71,11 @@ export class EditProfile extends React.Component {
     this.setState({ [key]: value });
   }
 
+  /**
+   * HTTP PUT request is sent to the backend.
+   * If the request is successful, status code 204 is returned to the front-end
+   * and the windows is reloaded
+   */
   async updateUser(){
     try {
       const requestBody = JSON.stringify({
@@ -89,7 +87,12 @@ export class EditProfile extends React.Component {
       window.location.reload();
 
     } catch (error) {
-      alert(`Something went wrong during updating the birthdate: \n${handleError(error)}`);
+      if(error.response.status === 404){
+        alert(error.response.data);
+      }
+      else {
+        alert(`Something went wrong during updating the user: \n${handleError(error)}`);
+      }
     }
 
   }

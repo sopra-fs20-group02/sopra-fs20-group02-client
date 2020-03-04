@@ -80,9 +80,9 @@ class Login extends React.Component {
     };
   }
   /**
-   * HTTP POST request is sent to the backend.
-   * If the request is successful, a new user is returned to the front-end
-   * and its token is stored in the localStorage.
+   * HTTP PUT request is sent to the backend.
+   * If the request is successful, the token of the user is returned to the front-end
+   * and is stored in the localStorage.
    */
   async login() {
     try {

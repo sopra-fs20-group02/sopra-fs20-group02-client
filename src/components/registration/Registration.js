@@ -81,10 +81,10 @@ class Registration extends React.Component {
             password: null
         };
     }
+
     /**
      * HTTP POST request is sent to the backend.
-     * If the request is successful, a new user is returned to the front-end
-     * and its token is stored in the localStorage.
+     * If the request is successful, the location URL of the new user is returned to the front-end
      */
     async registration() {
         try {
