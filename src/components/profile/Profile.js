@@ -147,7 +147,7 @@ class Profile extends React.Component {
       <Container>
         {this.state.user ? (
           <div>
-            <h2>Profile: {this.state.user.name}</h2>
+            <h2>Profile</h2>
             <p>Username: <Bold>{this.state.user.username}</Bold></p>
             <p>Status: <Bold>{this.state.user.status}</Bold></p>
             <p>Creationdate: <Bold>{this.state.user.creationDate}</Bold></p>
