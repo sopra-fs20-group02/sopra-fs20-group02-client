@@ -51,11 +51,16 @@ class Game extends React.Component {
       });
       const response = await api.put('/logout', requestBody);
 
-      localStorage.removeItem('token');
-      this.props.history.push('/login');
     } catch(error) {
-      alert(`Something went wrong during the logout: \n${handleError(error)}`);
+      if(error.response.status === 404) {
+        alert(error.response.data);
+      }
+      else {
+        alert(`Something went wrong during the logout: \n${handleError(error)}`);
+      }
     }
+    localStorage.removeItem('token');
+    this.props.history.push('/login');
   }
 
   /**

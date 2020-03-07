@@ -101,7 +101,7 @@ class Login extends React.Component {
       // Login successfully worked --> navigate to the route /game in the GameRouter
       this.props.history.push(`/game`);
     } catch (error) {
-      if (error.response.status === 401 || error.response.status === 204){
+      if (error.response.status === 401){
         alert(error.response.data);
       }
       else {

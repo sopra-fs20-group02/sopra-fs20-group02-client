@@ -39,7 +39,6 @@ class Profile extends React.Component {
     super();
     this.state = {
       user: null,
-      name: null,
       edit: false
     };
   }
@@ -69,6 +68,7 @@ class Profile extends React.Component {
       const response = await api.get(`/users/${id}`);
 
       this.setState({user: response.data});
+
     } catch(error){
       if(error.response.status === 404){
         alert(error.response.data);
