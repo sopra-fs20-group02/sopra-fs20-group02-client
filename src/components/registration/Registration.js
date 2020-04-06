@@ -5,6 +5,8 @@ import { api, handleError } from '../../helpers/api';
 import User from '../shared/models/User';
 import { withRouter } from 'react-router-dom';
 import { Button } from '../../views/design/Button';
+import { Grid, Header } from 'semantic-ui-react';
+
 
 const FormContainer = styled.div`
   margin-top: 2em;
@@ -133,6 +135,15 @@ class Registration extends React.Component {
     render() {
         return (
             <BaseContainer>
+                <Grid padded>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Header>
+                                Test
+                            </Header>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
                 <FormContainer>
                     <Form>
                         <Label>Name *</Label>
