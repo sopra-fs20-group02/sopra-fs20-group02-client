@@ -6,7 +6,7 @@ import { Grid, Header, Form, Button } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 import {
   headerStyle, inputFieldStyle, gridStyle,
-  formStyle, loginButtonStyle
+  formStyle, loginButtonStyle, registerButtonStyle
 } from "../../data/styles";
 
 class Login extends React.Component {
@@ -32,6 +32,7 @@ class Login extends React.Component {
 
       // Store the token into the local storage.
       localStorage.setItem('token', user.token);
+      localStorage.setItem('user', this.state.username);
 
       // Login successfully worked --> navigate to the route /lobby in the GameRouter
       this.props.history.push(`/lobby`);
@@ -78,15 +79,16 @@ class Login extends React.Component {
               )
           )}
           <Grid.Row>
-            <Button
-                disabled={!this.state.username || !this.state.password}
-                onClick={() => {
-                  this.login();
-                }}
-                style={loginButtonStyle}
-            >
-              Login
-            </Button>
+            {(this.state.username && this.state.password) && (
+                <Button
+                    onClick={() => {
+                      this.login();
+                    }}
+                    style={loginButtonStyle}
+                >
+                  Login
+                </Button>
+            )}
           </Grid.Row>
           <Grid.Row>
             <FormattedMessage id="switchToRegister" />

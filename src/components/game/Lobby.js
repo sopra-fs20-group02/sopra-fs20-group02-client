@@ -6,7 +6,7 @@ import {
   lobbyStyle, playerButtonStyle,
   lobbyHeaderStyle, lobbySloganStyle
 } from "../../data/styles";
-import {FormattedMessage} from "react-intl";
+import { FormattedMessage } from "react-intl";
 
 class Lobby extends React.Component {
   constructor() {
@@ -36,32 +36,26 @@ class Lobby extends React.Component {
       }
     }
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     this.props.history.push('/login');
   }
 
-  async createGame() {
-    window.alert('this function should create the game')
+  // this
+  async createGame(opponent) {
+    localStorage.setItem('currentOpponent', opponent);
+    // TODO: this function should create a game by sending a request with the two following players:
+    const players = [localStorage.getItem('user'), opponent];
+    window.alert(players);
+    this.props.history.push('/game');
   }
 
   async componentDidMount() {
     try {
       const response = await api.get('/users');
-      // delays continuous execution of an async operation for 1 second.
-      // This is just a fake async call, so that the spinner can be displayed
-      // feel free to remove it :)
-      await new Promise(resolve => setTimeout(resolve, 200));
 
       // Get the returned users and update the state.
       this.setState({ users: response.data });
 
-      // This is just some data for you to see what is available.
-      // Feel free to remove it.
-      console.log('request to:', response.request.responseURL);
-      console.log('status code:', response.status);
-      console.log('status text:', response.statusText);
-      console.log('requested data:', response.data);
-
-      // See here to get more data.
       console.log(response);
     } catch (error) {
       alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
@@ -84,24 +78,27 @@ class Lobby extends React.Component {
         <Grid.Row>
           <List style={{width: '100%'}}>
             {this.state.users && this.state.users.map(user => {
-              return (
-                  <List.Item style={{ color: "black" }}>
-                    <Button
-                        onClick={() => {
-                          this.createGame();
-                        }}
-                        style={playerButtonStyle}
-                    >
-                      {user.username}
-                    </Button>
-                  </List.Item>
-              );
+              if (localStorage.getItem('user') != user.username) {
+                return (
+                    <List.Item style={{ color: "black" }}>
+                      <Button
+                          onClick={() => {
+                            this.createGame(user.username);
+                          }}
+                          style={playerButtonStyle}
+                      >
+                        {user.username}
+                      </Button>
+                    </List.Item>
+                );
+              }
             })}
           </List>
         </Grid.Row>
-        <Grid.Row columns={2} style={{background: 'white', height: '100%'}}>
-          <Grid.Column>
+        <Grid.Row style={{alignContent: 'center', align: 'center', background: 'white', height: '100%'}}>
+          <Grid.Column style={{alignContent: 'center'}}>
             <Icon
+                style={{align: 'center', margin: '20px'}}
                 name='log out'
                 size='large'
                 color='#FF3377'
@@ -111,16 +108,17 @@ class Lobby extends React.Component {
                 }}
             />
           </Grid.Column>
-          <Grid.Column>
+          {/* <Grid.Column style={{alignContent: 'left'}}>
             <Icon
+                style={{align: 'left', margin: '20px'}}
                 name='user circle outline'
                 size='large'
                 color='#FF3377'
                 onClick={() => {
-                  window.alert('this should redirect to profile page');
+                  this.openProfile();
                 }}
             />
-          </Grid.Column>
+          </Grid.Column> */}
         </Grid.Row>
       </Grid>
     );

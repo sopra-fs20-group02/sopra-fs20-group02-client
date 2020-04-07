@@ -3,8 +3,8 @@ export const gridStyle = {
 }
 
 export const lobbyStyle = {
-    background: '#FF3377',
-    height: '100%'
+    height: '100%',
+    background: 'linear-gradient(#FF6464, #FF5A86)'
 }
 
 export const headerStyle = {
@@ -34,7 +34,7 @@ export const inputFieldStyle = {
 }
 
 export const registerButtonStyle = {
-    background: 'FF3377',
+    background: 'linear-gradient(#FF6464, #FF5A86)',
     width: '60%',
     borderRadius: '20px',
     marginBottom: '20px',
@@ -43,21 +43,12 @@ export const registerButtonStyle = {
 }
 
 export const loginButtonStyle = {
-    background: '#FF3377',
+    background: 'linear-gradient(#FF6464, #FF5A86)',
     width: '60%',
     borderRadius: '20px',
     marginBottom: '20px',
     marginTop: '20px',
     color: 'white',
-}
-
-export const logoutButtonStyle = {
-    background: 'white',
-    width: '60%',
-    borderRadius: '20px',
-    marginBottom: '20px',
-    marginTop: '20px',
-    color: '#FF3377',
 }
 
 export const playerButtonStyle = {
@@ -69,5 +60,14 @@ export const playerButtonStyle = {
     marginTop: '5px',
     paddingBottom: '0px',
     paddingTop: '0px',
+    color: '#FF3377',
+}
+
+export const gameButtonStyle = {
+    background: 'white',
+    width: '80%',
+    borderRadius: '20px',
+    marginBottom: '20px',
+    marginTop: '20px',
     color: '#FF3377',
 }

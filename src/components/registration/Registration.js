@@ -78,15 +78,16 @@ class Registration extends React.Component {
                     )
                 )}
                 <Grid.Row>
-                    <Button
-                        disabled={!this.state.username || !this.state.name || !this.state.password}
-                        onClick={() => {
-                            this.registration();
-                        }}
-                        style={registerButtonStyle}
-                    >
-                        Register
-                    </Button>
+                    {(this.state.username && this.state.name && this.state.password) && (
+                        <Button
+                            onClick={() => {
+                                this.registration();
+                            }}
+                            style={registerButtonStyle}
+                        >
+                            Register
+                        </Button>
+                    )}
                 </Grid.Row>
                 <Grid.Row>
                     <FormattedMessage id="switchToLogin" />
