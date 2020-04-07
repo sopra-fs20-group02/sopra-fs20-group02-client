@@ -13,10 +13,10 @@ class AppRouter extends React.Component {
         <Switch>
           <div>
             <Route
-              path="/game"
+              path="/lobby"
               render={() => (
                 <GameGuard>
-                  <GameRouter base={"/game"} />
+                  <GameRouter base={"/lobby"} />
                 </GameGuard>
               )}
             />
@@ -36,7 +36,7 @@ class AppRouter extends React.Component {
                 <Registration />
               )}
             />
-            <Route path="/" exact render={() => <Redirect to={"/game"} />} />
+            <Route path="/" exact render={() => <Redirect to={"/lobby"} />} />
           </div>
         </Switch>
       </BrowserRouter>

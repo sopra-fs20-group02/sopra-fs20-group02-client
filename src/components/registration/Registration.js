@@ -33,7 +33,7 @@ class Registration extends React.Component {
             // Get the returned user and update a new object.
             const user = new User(response.data);
 
-            // Login successfully worked --> navigate to the route /game in the GameRouter
+            // Login successfully worked --> navigate to the route /lobby in the GameRouter
             this.props.history.push(`/login`);
         } catch (error) {
             if(error.response.status === 409){
