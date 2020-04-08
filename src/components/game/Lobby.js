@@ -7,6 +7,7 @@ import {
   lobbyHeaderStyle, lobbySloganStyle, logoutIconStyle, lobbyFooterStyle
 } from "../../data/styles";
 import { FormattedMessage } from "react-intl";
+import GameStatus from "./GameStatus";
 
 class Lobby extends React.Component {
   constructor() {
@@ -37,13 +38,40 @@ class Lobby extends React.Component {
     this.props.history.push('/login');
   }
 
+  getUserId() {
+    let userId;
+    for (const userData of Array(this.state.users.length).keys()) {
+      if (this.state.users[userData].username === localStorage.getItem('user')) {
+        userId = this.state.users[userData].id;
+      }
+    }
+    return userId;
+  }
+
   // creates game with user and chosen opponent
   async createGame(opponent) {
     localStorage.setItem('currentOpponent', opponent);
-    // TODO: 1. get a list of all players searching from an opponent from the server
-    // TODO: 2. send the tuple of user and chosen opponent to the server to create a game
     const players = [localStorage.getItem('user'), opponent];
-    // TODO. 3. get game state from the server and render it
+
+    try {
+
+      const requestBody = JSON.stringify({
+        'userId': this.getUserId(),
+      });
+      const response = await api.post('/games', requestBody);
+
+      const gameStatus = new GameStatus(response.data);
+      localStorage.setItem('gameStatus', gameStatus);
+      this.props.history.push('/game');
+
+    } catch (error) {
+      if(error.response.status === 409){
+        alert(error.response.data);
+      }
+      else {
+        // alert(`Something went wrong while creating the game: \n${handleError(error)}`);
+      }
+    }
     this.props.history.push('/game');
   }
 
@@ -90,7 +118,7 @@ class Lobby extends React.Component {
               })}
             </List>
           </Grid.Row>
-          <Grid.Row style={lobbyFooterStyle}>
+          <Grid.Row style={lobbyFooterStyle} columns={2}>
             <Grid.Column textAlign='center'>
               <Icon
                   style={logoutIconStyle}
@@ -103,17 +131,14 @@ class Lobby extends React.Component {
                   }}
               />
             </Grid.Column>
-            {/* <Grid.Column style={{alignContent: 'left'}}>
+            <Grid.Column style={{alignContent: 'left'}}>
             <Icon
                 style={{align: 'left', margin: '20px'}}
                 name='user circle outline'
                 size='large'
                 color='#FF3377'
-                onClick={() => {
-                  this.props.history.push(`/lobby/profile/${id}`);
-                }}
               />
-            </Grid.Column> */}
+            </Grid.Column>
           </Grid.Row>
         </Grid>
     );

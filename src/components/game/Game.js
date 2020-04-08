@@ -70,7 +70,7 @@ class Game extends React.Component {
                             if (file % 2 == rank % 2) {
                                 color = 'white';
                             } else {
-                                color = 'black';
+                                color = '#FF8998';
                             }
                             return(
                                 <Grid.Column

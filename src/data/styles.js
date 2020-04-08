@@ -80,7 +80,7 @@ export const gameButtonStyle = {
     borderRadius: '20px',
     marginBottom: '20px',
     marginTop: '20px',
-    color: '#FF3377',
+    color: 'black',
 }
 
 export const playersListStyle = {
@@ -100,7 +100,11 @@ export const logoutIconStyle = {
 export const chessBoardStyle = {
     width: '95%',
     marginTop: '20px',
-    marginBottom: '20px'
+    marginBottom: '20px',
+    background: '#FF8998',
+    paddingTop: '10px',
+    paddingBottom: '10px',
+    borderRadius: '5px',
 }
 
 export const boardRankStyle = {
@@ -109,6 +113,8 @@ export const boardRankStyle = {
 }
 
 export const chessPieceStyle = {
+    marginTop: '10px',
+    paddingRight: '15px',
     align: 'center'
 }
 
