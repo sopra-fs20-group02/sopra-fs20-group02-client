@@ -1,131 +1,120 @@
 import React from 'react';
-import styled from 'styled-components';
-import { BaseContainer } from '../../helpers/layout';
 import { api, handleError } from '../../helpers/api';
-import Player from '../../views/Player';
-import { Spinner } from '../../views/design/Spinner';
-import { Button } from '../../views/design/Button';
 import { withRouter } from 'react-router-dom';
-
-const Container = styled(BaseContainer)`
-  color: white;
-  text-align: center;
-`;
-
-const Users = styled.ul`
-  list-style: none;
-  padding-left: 0;
-`;
-
-const PlayerContainer = styled.li`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
+import { Grid, Button, Header, Icon } from "semantic-ui-react";
+import {
+    gameStyle, gameButtonStyle, gameHeaderStyle,
+    chessBoardStyle, boardRankStyle, chessPieceStyle, gameFooterStyle
+} from "../../data/styles";
 
 class Game extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      users: null
-    };
-  }
-
-  /**
-   * The user is redirected to the profile page of the user with the given id
-   */
-  openProfile(id){
-    this.props.history.push(`/game/profile/${id}`);
-  }
-
-  /**
-   * HTTP PUT request is sent to the backend.
-   * If the request is successful, status code 204 is returned to the front-end,
-   * the token is removed from the localStorage and the user is redirected to login page.
-   */
-  async logout() {
-    try {
-      const requestBody = JSON.stringify({
-        token: localStorage.getItem("token")
-      });
-      const response = await api.put('/logout', requestBody);
-
-    } catch(error) {
-      if(error.response.status === 404) {
-        alert(error.response.data);
-      }
-      else {
-        alert(`Something went wrong during the logout: \n${handleError(error)}`);
-      }
+    constructor() {
+        super();
+        this.state = {
+            users: null,
+            pieces: [
+                'chess bishop',
+                'chess king',
+                'chess knight',
+                'chess pawn',
+                'chess queen',
+                'chess rook'
+            ]
+        };
     }
-    localStorage.removeItem('token');
-    this.props.history.push('/login');
-  }
 
-  /**
-   * HTTP GET request is sent to the backend.
-   * If the request is successful, all users are returned to the front-end
-   */
-  async componentDidMount() {
-    try {
-      const response = await api.get('/users');
-      // delays continuous execution of an async operation for 1 second.
-      // This is just a fake async call, so that the spinner can be displayed
-      // feel free to remove it :)
-      await new Promise(resolve => setTimeout(resolve, 200));
-
-      // Get the returned users and update the state.
-      this.setState({ users: response.data });
-
-      // This is just some data for you to see what is available.
-      // Feel free to remove it.
-      console.log('request to:', response.request.responseURL);
-      console.log('status code:', response.status);
-      console.log('status text:', response.statusText);
-      console.log('requested data:', response.data);
-
-      // See here to get more data.
-      console.log(response);
-    } catch (error) {
-      alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
+    // handles move when a piece is selected
+    async moveHandling() {
+        // TODO: implement move handling
     }
-  }
 
-  render() {
-    return (
-      <Container>
-        <h2>Happy Coding! </h2>
-        <p>Get all users from secure end point:</p>
-        {!this.state.users ? (
-          <Spinner />
-        ) : (
-          <div>
-            <Users>
-              {this.state.users.map(user => {
-                return (
-                  <div
-                    onClick={() => {this.openProfile(user.id);}}>
-                    <PlayerContainer key={user.id}>
-                      <Player user={user} />
-                    </PlayerContainer>
-                  </div>
-                );
-              })}
-            </Users>
-            <Button
-              width="150px"
-              onClick={() => {
-                this.logout();
-              }}
+    // logs out user
+    async logout() {
+        try {
+            const requestBody = JSON.stringify({
+                token: localStorage.getItem("token")
+            });
+            const response = await api.put('/logout', requestBody);
+
+        } catch(error) {
+            if(error.response.status === 404) {
+            alert(error.response.data);
+        } else {
+            alert(`Something went wrong during the logout: \n${
+                handleError(error)
+            }`);
+            }
+        }
+        localStorage.removeItem('token');
+        this.props.history.push('/login');
+    }
+
+    render() {
+        return (
+        <Grid style={gameStyle} centered>
+            <Grid.Row>
+                <Header as='h1' style={gameHeaderStyle}>
+                    {'Game against ' + localStorage.getItem('currentOpponent')}
+                </Header>
+            </Grid.Row>
+            <Grid
+                style={chessBoardStyle}
             >
-              Logout
-            </Button>
-          </div>
-        )}
-      </Container>
-    );
-  }
+            {Array.from(Array(8).keys()).map((rank) => {
+                return (
+                    <Grid.Row
+                        style={boardRankStyle}
+                    >
+                        {Array.from(Array(8).keys()).map((file) => {
+                            let color;
+                            if (file % 2 == rank % 2) {
+                                color = 'white';
+                            } else {
+                                color = '#FF8998';
+                            }
+                            return(
+                                <Grid.Column
+                                    width={2} style={{
+                                        alignContent: 'center',
+                                        background: color,
+                                        height: '40px'
+                                    }}
+                                >
+                                    <Icon
+                                        style={chessPieceStyle}
+                                        name={this.state.pieces[Math.floor(rank/2)]} // TODO: dummy placement
+                                        size='large'
+                                        color='#FF6464'
+                                        onClick={() => {
+                                            this.moveHandling();
+                                        }}
+                                    />
+                                </Grid.Column>
+                            )
+                        })}
+                    </Grid.Row>
+                )
+            })}
+            </Grid>
+            <Grid.Row columns={2} style={gameFooterStyle}>
+                <Grid.Column textAlign='center'>
+                    <Button
+                        style={gameButtonStyle}
+                    >
+                        Resign
+                    </Button>
+                </Grid.Column>
+                <Grid.Column textAlign='center'>
+                    <Button
+                        style={gameButtonStyle}
+                    >
+                        Offer draw
+                    </Button>
+                </Grid.Column>
+            </Grid.Row>
+        </Grid>
+        );
+    }
 }
 
 export default withRouter(Game);
