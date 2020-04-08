@@ -3,7 +3,8 @@ import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, Button, Header, Icon } from "semantic-ui-react";
 import {
-    lobbyStyle, gameButtonStyle, lobbyHeaderStyle
+    gameStyle, gameButtonStyle, gameHeaderStyle,
+    chessBoardStyle, boardRankStyle, chessPieceStyle, gameFooterStyle
 } from "../../data/styles";
 
 class Game extends React.Component {
@@ -11,14 +12,23 @@ class Game extends React.Component {
         super();
         this.state = {
             users: null,
-            pieces: ['chess bishop', 'chess king', 'chess knight', 'chess pawn', 'chess queen', 'chess rook']
+            pieces: [
+                'chess bishop',
+                'chess king',
+                'chess knight',
+                'chess pawn',
+                'chess queen',
+                'chess rook'
+            ]
         };
     }
 
-    openProfile(id) {
-        this.props.history.push(`/lobby/profile/${id}`);
+    // handles move when a piece is selected
+    async moveHandling() {
+        // TODO: implement move handling
     }
 
+    // logs out user
     async logout() {
         try {
             const requestBody = JSON.stringify({
@@ -41,43 +51,42 @@ class Game extends React.Component {
 
     render() {
         return (
-        <Grid style={lobbyStyle} centered>
+        <Grid style={gameStyle} centered>
             <Grid.Row>
-                <Header as='h1' style={lobbyHeaderStyle}>
+                <Header as='h1' style={gameHeaderStyle}>
                     {'Game against ' + localStorage.getItem('currentOpponent')}
                 </Header>
             </Grid.Row>
             <Grid
-                style={{width: '95%', marginTop: '20px', marginBottom: '20px'}}
+                style={chessBoardStyle}
             >
-            {Array.from(Array(8).keys()).map((row) => {
+            {Array.from(Array(8).keys()).map((rank) => {
                 return (
                     <Grid.Row
-                        style={{margin: '0px', padding: '0px'}}
+                        style={boardRankStyle}
                     >
-                        {Array.from(Array(8).keys()).map((tile) => {
-                            let color = 'white';
-                            if (tile % 2 == 0) {
+                        {Array.from(Array(8).keys()).map((file) => {
+                            let color;
+                            if (file % 2 == rank % 2) {
                                 color = 'white';
                             } else {
                                 color = 'black';
                             }
-                            if (row % 2 == 0) {
-                                if (color == 'white') {
-                                    color = 'black';
-                                } else {
-                                    color = 'white';
-                                }
-                            }
                             return(
-                                <Grid.Column width={2} style={{alignContent: 'center', background: color, height: '40px'}}>
+                                <Grid.Column
+                                    width={2} style={{
+                                        alignContent: 'center',
+                                        background: color,
+                                        height: '40px'
+                                    }}
+                                >
                                     <Icon
-                                        style={{align: 'center'}}
-                                        name={this.state.pieces[Math.floor(row/2)]}
+                                        style={chessPieceStyle}
+                                        name={this.state.pieces[Math.floor(rank/2)]} // TODO: dummy placement
                                         size='large'
-                                        flipped='horizontally'
+                                        color='#FF6464'
                                         onClick={() => {
-                                            this.logout();
+                                            this.moveHandling();
                                         }}
                                     />
                                 </Grid.Column>
@@ -87,15 +96,15 @@ class Game extends React.Component {
                 )
             })}
             </Grid>
-            <Grid.Row columns={2}>
-                <Grid.Column>
+            <Grid.Row columns={2} style={gameFooterStyle}>
+                <Grid.Column textAlign='center'>
                     <Button
                         style={gameButtonStyle}
                     >
                         Resign
                     </Button>
                 </Grid.Column>
-                <Grid.Column>
+                <Grid.Column textAlign='center'>
                     <Button
                         style={gameButtonStyle}
                     >
