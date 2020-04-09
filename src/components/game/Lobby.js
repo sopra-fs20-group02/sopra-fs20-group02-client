@@ -56,7 +56,7 @@ class Lobby extends React.Component {
     try {
 
       const requestBody = JSON.stringify({
-        'userId': this.getUserId(),
+        token: localStorage.getItem("token")
       });
       const response = await api.post('/games', requestBody);
 
@@ -69,10 +69,9 @@ class Lobby extends React.Component {
         alert(error.response.data);
       }
       else {
-        // alert(`Something went wrong while creating the game: \n${handleError(error)}`);
+        alert(`Something went wrong while creating the game: \n${handleError(error)}`);
       }
     }
-    this.props.history.push('/game');
   }
 
   async componentDidMount() {
