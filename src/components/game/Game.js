@@ -15,13 +15,30 @@ class Game extends React.Component {
             pieces: [
                 'chess bishop', 'chess king', 'chess knight',
                 'chess pawn', 'chess queen', 'chess rook'
-            ]
+            ],
+            game: JSON.parse(localStorage.getItem('game'))
         };
     }
 
-    // handles move when a piece is selected
-    async moveHandling() {
-        // TODO: IMPLEMENT
+    // get all possible moves for selected piece
+    async getPossibleMoves(pieceId) {
+        try {
+            const requestBody = JSON.stringify({
+                userId: localStorage.getItem('userId')
+            });
+            const mapping = '/games/' + this.state.game.gameId.toString() + '/' + pieceId.toString();
+            const response = await api.get(mapping, requestBody);
+
+            localStorage.setItem('possibleMoves', JSON.stringify(response.data));
+
+        } catch (error) {
+            if(error.response.status === 409){
+                alert(error.response.data);
+            }
+            else {
+                alert(`Something went wrong while getting the possible moves: \n${handleError(error)}`);
+            }
+        }
     }
 
     // logs out user
@@ -41,12 +58,12 @@ class Game extends React.Component {
             }`);
             }
         }
-        localStorage.removeItem('token');
+        localStorage.clear();
         this.props.history.push('/login');
     }
 
     render() {
-        const game = JSON.parse(localStorage.getItem('game'))
+        const game = JSON.parse(localStorage.getItem('game'));
         const opponentName = game.playerWhite.name === localStorage.getItem('name') ?
             game.playerBlack.name : game.playerWhite.name;
 
@@ -71,10 +88,12 @@ class Game extends React.Component {
 
                             let pieceType;
                             let pieceColor;
+                            let pieceId;
                             game.pieces.forEach(function (piece) {
                                 if (piece.xcord === 1 + file && piece.ycord === 8 - rank) {
                                     pieceType = 'chess ' + piece.pieceType.toLowerCase();
                                     pieceColor = piece.color.toLowerCase();
+                                    pieceId = piece.pieceId;
                                 }
                                 if (pieceColor === 'white') { pieceColor = 'grey'; }
                             })
@@ -98,7 +117,7 @@ class Game extends React.Component {
                                             name={pieceType}
                                             size='large'
                                             onClick={() => {
-                                                this.moveHandling();
+                                                this.getPossibleMoves(pieceId);
                                             }}
                                         />)
                                     }
