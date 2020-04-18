@@ -13,26 +13,22 @@ class Game extends React.Component {
         this.state = {
             users: null,
             pieces: [
-                'chess bishop',
-                'chess king',
-                'chess knight',
-                'chess pawn',
-                'chess queen',
-                'chess rook'
+                'chess bishop', 'chess king', 'chess knight',
+                'chess pawn', 'chess queen', 'chess rook'
             ]
         };
     }
 
     // handles move when a piece is selected
     async moveHandling() {
-        // TODO: implement move handling
+        // TODO: IMPLEMENT
     }
 
     // logs out user
     async logout() {
         try {
             const requestBody = JSON.stringify({
-                token: localStorage.getItem("token")
+                userId: localStorage.getItem('userId')
             });
             const response = await api.put('/logout', requestBody);
 
@@ -50,11 +46,15 @@ class Game extends React.Component {
     }
 
     render() {
+        const game = JSON.parse(localStorage.getItem('game'))
+        const opponentName = game.playerWhite.name === localStorage.getItem('name') ?
+            game.playerBlack.name : game.playerWhite.name;
+
         return (
         <Grid style={gameStyle} centered>
             <Grid.Row>
                 <Header as='h1' style={gameHeaderStyle}>
-                    {'Game against ' + localStorage.getItem('currentOpponent')}
+                    {'Game against ' + opponentName}
                 </Header>
             </Grid.Row>
             <Grid
@@ -66,12 +66,19 @@ class Game extends React.Component {
                         style={boardRankStyle}
                     >
                         {Array.from(Array(8).keys()).map((file) => {
-                            let color;
-                            if (file % 2 == rank % 2) {
-                                color = 'white';
-                            } else {
-                                color = '#FF8998';
-                            }
+                            let color = '#FF8998';
+                            if (file % 2 == rank % 2) { color = 'white'; }
+
+                            let pieceType;
+                            let pieceColor;
+                            game.pieces.forEach(function (piece) {
+                                if (piece.xcord === 1 + file && piece.ycord === 8 - rank) {
+                                    pieceType = 'chess ' + piece.pieceType.toLowerCase();
+                                    pieceColor = piece.color.toLowerCase();
+                                }
+                                if (pieceColor === 'white') { pieceColor = 'grey'; }
+                            })
+
                             return(
                                 <Grid.Column
                                     width={2} style={{
@@ -80,15 +87,21 @@ class Game extends React.Component {
                                         height: '40px'
                                     }}
                                 >
-                                    <Icon
-                                        style={chessPieceStyle}
-                                        name={this.state.pieces[Math.floor(rank/2)]} // TODO: dummy placement
-                                        size='large'
-                                        color='#FF6464'
-                                        onClick={() => {
-                                            this.moveHandling();
-                                        }}
-                                    />
+                                    {(pieceType) && (
+                                        <Icon
+                                            style={{
+                                                marginTop: '10px',
+                                                paddingRight: '15px',
+                                                align: 'center',
+                                                color: pieceColor,
+                                            }}
+                                            name={pieceType}
+                                            size='large'
+                                            onClick={() => {
+                                                this.moveHandling();
+                                            }}
+                                        />)
+                                    }
                                 </Grid.Column>
                             )
                         })}

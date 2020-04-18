@@ -21,7 +21,7 @@ class Lobby extends React.Component {
   async logout() {
     try {
       const requestBody = JSON.stringify({
-        token: localStorage.getItem("token")
+        userId: localStorage.getItem('userId')
       });
       const response = await api.put('/logout', requestBody);
 
@@ -33,35 +33,18 @@ class Lobby extends React.Component {
         alert(`Something went wrong during the logout: \n${handleError(error)}`);
       }
     }
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.clear();
     this.props.history.push('/login');
   }
 
-  getUserId() {
-    let userId;
-    for (const userData of Array(this.state.users.length).keys()) {
-      if (this.state.users[userData].username === localStorage.getItem('user')) {
-        userId = this.state.users[userData].id;
-      }
-    }
-    return userId;
-  }
-
   // creates game with user and chosen opponent
-  async createGame(opponent) {
-    localStorage.setItem('currentOpponent', opponent);
-    const players = [localStorage.getItem('user'), opponent];
-
+  async createGame() {
     try {
-
       const requestBody = JSON.stringify({
-        token: localStorage.getItem("token")
+        userId: localStorage.getItem('userId')
       });
       const response = await api.post('/games', requestBody);
-
-      const gameStatus = new GameStatus(response.data);
-      localStorage.setItem('gameStatus', gameStatus);
+      localStorage.setItem('game', JSON.stringify(response.data));
       this.props.history.push('/game');
 
     } catch (error) {
@@ -93,29 +76,14 @@ class Lobby extends React.Component {
             </Header>
           </Grid.Row>
           <Grid.Row>
-            <Header as='h3' style ={lobbySloganStyle}>
-              <FormattedMessage id="opponentsHeader" />
-            </Header>
-          </Grid.Row>
-          <Grid.Row>
-            <List style={playersListStyle}>
-              {this.state.users && this.state.users.map(user => {
-                if (localStorage.getItem('user') != user.username) {
-                  return (
-                      <List.Item style={userItemStyle}>
-                        <Button
-                            onClick={() => {
-                              this.createGame(user.username);
-                            }}
-                            style={playerButtonStyle}
-                        >
-                          {user.username}
-                        </Button>
-                      </List.Item>
-                  );
-                }
-              })}
-            </List>
+            <Button
+                onClick={() => {
+                  this.createGame();
+                }}
+                style={playerButtonStyle}
+            >
+              {'Join Game'}
+            </Button>
           </Grid.Row>
           <Grid.Row style={lobbyFooterStyle} columns={2}>
             <Grid.Column textAlign='center'>
