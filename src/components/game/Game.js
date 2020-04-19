@@ -30,6 +30,7 @@ class Game extends React.Component {
             const response = await api.get(mapping, requestBody);
 
             localStorage.setItem('possibleMoves', JSON.stringify(response.data));
+            localStorage.setItem('selectedPiece', pieceId);
 
         } catch (error) {
             if(error.response.status === 409){
@@ -37,6 +38,30 @@ class Game extends React.Component {
             }
             else {
                 alert(`Something went wrong while getting the possible moves: \n${handleError(error)}`);
+            }
+        }
+    }
+
+    // move piece
+    async moveSelectedPiece(coords) {
+        try {
+            const requestBody = JSON.stringify({
+                userId: JSON.parse(localStorage.getItem('user')).userId,
+                move: { 'x' : coords[0], 'y' : coords[0] }
+                // localStorage.getItem('selectedPiece')
+            });
+            const mapping = '/games/' + this.state.game.gameId.toString();
+            const response = await api.post(mapping, requestBody);
+
+            localStorage.setItem('game', JSON.stringify(response.data));
+            localStorage.removeItem('selectedPiece');
+
+        } catch (error) {
+            if(error.response.status === 409){
+                alert(error.response.data);
+            }
+            else {
+                alert(`Something went wrong while trying to make a move: \n${handleError(error)}`);
             }
         }
     }
@@ -62,14 +87,14 @@ class Game extends React.Component {
         this.props.history.push('/login');
     }
 
-    componentDidMount() {}
-
     render() {
+
         const game = JSON.parse(localStorage.getItem('game'));
 
-        const opponent = game.playerWhite.username ===
+        let opponent
+        opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.username ===
             JSON.parse(localStorage.getItem('user')).username ?
-            game.playerBlack.username : game.playerWhite.username;
+            game.playerBlack.username : game.playerWhite.username) : 'Error';
 
         return (
         <Grid style={gameStyle} centered>
@@ -105,7 +130,22 @@ class Game extends React.Component {
                                     pieceId = piece.pieceId;
                                 }
                                 if (pieceColor === 'white') { pieceColor = 'grey'; }
+                                if (Number(localStorage.getItem('selectedPiece')) === pieceId) {
+                                    pieceColor = '#0BD1FF';
+                                }
                             })
+
+                            let blueDot = false;
+                            let coordsToMoveTo;
+
+                            if (localStorage.getItem('possibleMoves')) {
+                                JSON.parse(localStorage.getItem('possibleMoves')).forEach(function (coords) {
+                                    if (coords.x === 1 + file && coords.y === 8 - rank) {
+                                        blueDot = true;
+                                        coordsToMoveTo = coords;
+                                    }
+                                })
+                            }
 
                             return(
                                 <Grid.Column
@@ -115,7 +155,7 @@ class Game extends React.Component {
                                         height: '40px'
                                     }}
                                 >
-                                    {(pieceType) && (
+                                    {(pieceType) ? (
                                         <Icon
                                             style={{
                                                 marginTop: '10px',
@@ -128,7 +168,19 @@ class Game extends React.Component {
                                             onClick={() => {
                                                 this.getPossibleMoves(pieceId);
                                             }}
-                                        />)
+                                        />) : ((blueDot) ? (
+                                        <Icon
+                                            style={{
+                                                marginTop: '15px',
+                                                align: 'center',
+                                                color: '#0BD1FF',
+                                            }}
+                                            name='circle'
+                                            size='small'
+                                            onClick={() => {
+                                                this.moveSelectedPiece(coordsToMoveTo);
+                                            }}
+                                        />) : (''))
                                     }
                                 </Grid.Column>
                             )
