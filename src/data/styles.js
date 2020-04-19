@@ -23,8 +23,8 @@ export const lobbyHeaderStyle = {
 }
 
 export const gameHeaderStyle = {
-    marginTop: '70px',
-    marginBottom: '30px',
+    marginTop: '10px',
+    marginBottom: '10px',
     color: 'white'
 }
 
@@ -79,7 +79,7 @@ export const gameButtonStyle = {
     width: '80%',
     borderRadius: '20px',
     marginBottom: '20px',
-    marginTop: '20px',
+    marginTop: '10px',
     color: 'black',
 }
 
@@ -125,4 +125,12 @@ export const gameFooterStyle = {
 
 export const lobbyFooterStyle = {
     background: 'white'
+}
+
+export const quoteStyle = {
+    marginTop: '10px',
+    marginBottom: '10px',
+    marginLeft: '20px',
+    marginRight: '20px',
+    color: 'white'
 }

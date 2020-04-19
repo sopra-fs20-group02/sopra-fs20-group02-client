@@ -3,8 +3,7 @@ import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, List, Button, Header, Icon} from "semantic-ui-react";
 import {
-  lobbyStyle, playerButtonStyle, playersListStyle, userItemStyle,
-  lobbyHeaderStyle, lobbySloganStyle, logoutIconStyle, lobbyFooterStyle
+  lobbyStyle, playerButtonStyle, lobbyHeaderStyle, logoutIconStyle, lobbyFooterStyle
 } from "../../data/styles";
 import { FormattedMessage } from "react-intl";
 import GameStatus from "./GameStatus";
@@ -21,7 +20,7 @@ class Lobby extends React.Component {
   async logout() {
     try {
       const requestBody = JSON.stringify({
-        userId: localStorage.getItem('userId')
+        userId: JSON.parse(localStorage.getItem('user')).userId
       });
       const response = await api.put('/logout', requestBody);
 
@@ -37,11 +36,25 @@ class Lobby extends React.Component {
     this.props.history.push('/login');
   }
 
+  // gets random quote
+  async getRandomQuote() {
+    try {
+      const response = await api.get('https://quotes.rest/qod.json');
+      const quote = response.data.contents.quotes[0].quote;
+      localStorage.setItem('quote', quote);
+    }
+    catch(error) {
+      alert(`Something went wrong during the quote fetching: \n${
+          handleError(error)
+      }`);
+    }
+  }
+
   // creates game with user and chosen opponent
   async createGame() {
     try {
       const requestBody = JSON.stringify({
-        userId: localStorage.getItem('userId')
+        userId: JSON.parse(localStorage.getItem('user')).userId
       });
       const response = await api.post('/games', requestBody);
       localStorage.setItem('game', JSON.stringify(response.data));
@@ -55,6 +68,11 @@ class Lobby extends React.Component {
         alert(`Something went wrong while creating the game: \n${handleError(error)}`);
       }
     }
+  }
+
+  async handlePlay() {
+    this.getRandomQuote();
+    this.createGame();
   }
 
   async componentDidMount() {
@@ -78,7 +96,7 @@ class Lobby extends React.Component {
           <Grid.Row>
             <Button
                 onClick={() => {
-                  this.createGame();
+                  this.handlePlay();
                 }}
                 style={playerButtonStyle}
             >

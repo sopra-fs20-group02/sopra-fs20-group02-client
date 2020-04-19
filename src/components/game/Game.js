@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { Grid, Button, Header, Icon } from "semantic-ui-react";
 import {
     gameStyle, gameButtonStyle, gameHeaderStyle,
-    chessBoardStyle, boardRankStyle, chessPieceStyle, gameFooterStyle
+    chessBoardStyle, boardRankStyle, quoteStyle, gameFooterStyle
 } from "../../data/styles";
 
 class Game extends React.Component {
@@ -16,7 +16,7 @@ class Game extends React.Component {
                 'chess bishop', 'chess king', 'chess knight',
                 'chess pawn', 'chess queen', 'chess rook'
             ],
-            game: JSON.parse(localStorage.getItem('game'))
+            game: JSON.parse(localStorage.getItem('game')),
         };
     }
 
@@ -24,7 +24,7 @@ class Game extends React.Component {
     async getPossibleMoves(pieceId) {
         try {
             const requestBody = JSON.stringify({
-                userId: localStorage.getItem('userId')
+                userId: JSON.parse(localStorage.getItem('user')).userId
             });
             const mapping = '/games/' + this.state.game.gameId.toString() + '/' + pieceId.toString();
             const response = await api.get(mapping, requestBody);
@@ -45,7 +45,7 @@ class Game extends React.Component {
     async logout() {
         try {
             const requestBody = JSON.stringify({
-                userId: localStorage.getItem('userId')
+                userId: JSON.parse(localStorage.getItem('user')).userId
             });
             const response = await api.put('/logout', requestBody);
 
@@ -62,16 +62,25 @@ class Game extends React.Component {
         this.props.history.push('/login');
     }
 
+    componentDidMount() {}
+
     render() {
         const game = JSON.parse(localStorage.getItem('game'));
-        const opponentName = game.playerWhite.name === localStorage.getItem('name') ?
-            game.playerBlack.name : game.playerWhite.name;
+
+        const opponent = game.playerWhite.username ===
+            JSON.parse(localStorage.getItem('user')).username ?
+            game.playerBlack.username : game.playerWhite.username;
 
         return (
         <Grid style={gameStyle} centered>
             <Grid.Row>
-                <Header as='h1' style={gameHeaderStyle}>
-                    {'Game against ' + opponentName}
+                <Header as='h4' style={quoteStyle}>
+                    {localStorage.getItem('quote')}
+                </Header>
+            </Grid.Row>
+            <Grid.Row>
+                <Header as='h2' style={gameHeaderStyle}>
+                    {'Game against ' + opponent}
                 </Header>
             </Grid.Row>
             <Grid
