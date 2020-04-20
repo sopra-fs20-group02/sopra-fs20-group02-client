@@ -66,28 +66,59 @@ class Game extends React.Component {
         }
     }
 
-    // logs out user
-    async logout() {
+    // resign
+    async resign() {
         try {
-            const requestBody = JSON.stringify({
-                userId: JSON.parse(localStorage.getItem('user')).userId
+            const params = JSON.stringify({
+                token: localStorage.getItem('token'),
             });
-            const response = await api.put('/logout', requestBody);
+            const mapping = '/games/' + this.state.game.gameId.toString();
 
-        } catch(error) {
-            if(error.response.status === 404) {
-            alert(error.response.data);
-        } else {
-            alert(`Something went wrong during the logout: \n${
-                handleError(error)
-            }`);
+            const response = await api.put(mapping, {params: params});
+            window.alert('You lost');
+
+            localStorage.removeItem('game');
+            localStorage.removeItem('selectedPiece');
+
+        } catch (error) {
+            if(error.response.status === 409){
+                alert(error.response.data);
+            }
+            else {
+                alert(`Something went wrong while trying to resign: \n${handleError(error)}`);
             }
         }
-        localStorage.clear();
-        this.props.history.push('/login');
+    }
+
+
+    // resign
+    async fetchGameStatus() {
+        try {
+            const parameters = JSON.stringify({
+                userId: JSON.parse(localStorage.getItem('user')).userId,
+            });
+            const mapping = '/games/' + this.state.game.gameId.toString();
+
+            const gameStatus = await api.get(mapping, {params: parameters});
+            this.setState({ game : gameStatus });
+            window.alert(JSON.stringify(this.state.game));
+
+        } catch (error) {
+            if(error.response.status === 409){
+                alert(error.response.data);
+            }
+            else {
+                alert(`Something went wrong while trying to get the game status: \n${handleError(error)}`);
+            }
+        }
     }
 
     render() {
+
+        // fetch game state every 20 seconds TODO: make smaller intervals
+        setInterval(async () => {
+            this.fetchGameStatus();
+        }, 20000);
 
         const game = JSON.parse(localStorage.getItem('game'));
 
@@ -193,6 +224,9 @@ class Game extends React.Component {
                 <Grid.Column textAlign='center'>
                     <Button
                         style={gameButtonStyle}
+                        onClick={() => {
+                            this.resign();
+                        }}
                     >
                         Resign
                     </Button>
@@ -200,8 +234,11 @@ class Game extends React.Component {
                 <Grid.Column textAlign='center'>
                     <Button
                         style={gameButtonStyle}
+                        onClick={() => {
+                            this.fetchGameStatus();
+                        }}
                     >
-                        Offer draw
+                        fetch game status
                     </Button>
                 </Grid.Column>
             </Grid.Row>
