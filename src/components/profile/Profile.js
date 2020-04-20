@@ -96,7 +96,7 @@ class Profile extends React.Component {
             <p>Creationdate: <Bold>{this.state.user.creationDate}</Bold></p>
             <p>Birthdate: <Bold>{this.state.user.birthDate}</Bold></p>
 
-            {(this.state.user.token === localStorage.getItem("token")) ? (
+            {(this.state.user.token === localStorage.getItem('token')) ? (
               <div>
                 <ButtonContainer>
                   <Button

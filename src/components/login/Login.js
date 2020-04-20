@@ -1,4 +1,5 @@
 import React from 'react';
+import { setGlobal, useGlobal } from 'reactn';
 import { api, handleError } from '../../helpers/api';
 import User from '../shared/models/User';
 import { withRouter } from 'react-router-dom';
@@ -31,9 +32,8 @@ class Login extends React.Component {
       const user = new User(response.data);
 
       // Store the token into the local storage.
+      localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('token', user.token);
-      localStorage.setItem('userId', user.id);
-      localStorage.setItem('user', this.state.username);
 
       // Login successfully worked --> navigate to the route /lobby in the GameRouter
       this.props.history.push(`/lobby`);

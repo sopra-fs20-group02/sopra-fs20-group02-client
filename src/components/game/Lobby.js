@@ -3,8 +3,7 @@ import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, List, Button, Header, Icon} from "semantic-ui-react";
 import {
-  lobbyStyle, playerButtonStyle, playersListStyle, userItemStyle,
-  lobbyHeaderStyle, lobbySloganStyle, logoutIconStyle, lobbyFooterStyle
+  lobbyStyle, playerButtonStyle, lobbyHeaderStyle, logoutIconStyle, lobbyFooterStyle
 } from "../../data/styles";
 import { FormattedMessage } from "react-intl";
 import GameStatus from "./GameStatus";
@@ -21,7 +20,7 @@ class Lobby extends React.Component {
   async logout() {
     try {
       const requestBody = JSON.stringify({
-        token: localStorage.getItem("token")
+        userId: JSON.parse(localStorage.getItem('user')).userId
       });
       const response = await api.put('/logout', requestBody);
 
@@ -33,35 +32,32 @@ class Lobby extends React.Component {
         alert(`Something went wrong during the logout: \n${handleError(error)}`);
       }
     }
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.clear();
     this.props.history.push('/login');
   }
 
-  getUserId() {
-    let userId;
-    for (const userData of Array(this.state.users.length).keys()) {
-      if (this.state.users[userData].username === localStorage.getItem('user')) {
-        userId = this.state.users[userData].id;
-      }
+  // gets random quote
+  async getRandomQuote() {
+    try {
+      const response = await api.get('https://quotes.rest/qod.json');
+      const quote = response.data.contents.quotes[0].quote;
+      localStorage.setItem('quote', quote);
     }
-    return userId;
+    catch(error) {
+      alert(`Something went wrong during the quote fetching: \n${
+          handleError(error)
+      }`);
+    }
   }
 
   // creates game with user and chosen opponent
-  async createGame(opponent) {
-    localStorage.setItem('currentOpponent', opponent);
-    const players = [localStorage.getItem('user'), opponent];
-
+  async createGame() {
     try {
-
       const requestBody = JSON.stringify({
-        'userId': this.getUserId(),
+        userId: JSON.parse(localStorage.getItem('user')).userId
       });
       const response = await api.post('/games', requestBody);
-
-      const gameStatus = new GameStatus(response.data);
-      localStorage.setItem('gameStatus', gameStatus);
+      localStorage.setItem('game', JSON.stringify(response.data));
       this.props.history.push('/game');
 
     } catch (error) {
@@ -69,10 +65,14 @@ class Lobby extends React.Component {
         alert(error.response.data);
       }
       else {
-        // alert(`Something went wrong while creating the game: \n${handleError(error)}`);
+        alert(`Something went wrong while creating the game: \n${handleError(error)}`);
       }
     }
-    this.props.history.push('/game');
+  }
+
+  async handlePlay() {
+    this.getRandomQuote();
+    this.createGame();
   }
 
   async componentDidMount() {
@@ -94,29 +94,14 @@ class Lobby extends React.Component {
             </Header>
           </Grid.Row>
           <Grid.Row>
-            <Header as='h3' style ={lobbySloganStyle}>
-              <FormattedMessage id="opponentsHeader" />
-            </Header>
-          </Grid.Row>
-          <Grid.Row>
-            <List style={playersListStyle}>
-              {this.state.users && this.state.users.map(user => {
-                if (localStorage.getItem('user') != user.username) {
-                  return (
-                      <List.Item style={userItemStyle}>
-                        <Button
-                            onClick={() => {
-                              this.createGame(user.username);
-                            }}
-                            style={playerButtonStyle}
-                        >
-                          {user.username}
-                        </Button>
-                      </List.Item>
-                  );
-                }
-              })}
-            </List>
+            <Button
+                onClick={() => {
+                  this.handlePlay();
+                }}
+                style={playerButtonStyle}
+            >
+              {'Join Game'}
+            </Button>
           </Grid.Row>
           <Grid.Row style={lobbyFooterStyle} columns={2}>
             <Grid.Column textAlign='center'>
