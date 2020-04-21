@@ -11,7 +11,8 @@ class Game extends React.Component {
     constructor() {
         super();
         this.state = {
-            users: null,
+            userId: JSON.parse(localStorage.getItem('user')).userId,
+            playersTurn: true, // TODO: set to false when it is not players turn
             pieces: [
                 'chess bishop', 'chess king', 'chess knight',
                 'chess pawn', 'chess queen', 'chess rook'
@@ -21,23 +22,28 @@ class Game extends React.Component {
     }
 
     // get all possible moves for selected piece
-    async getPossibleMoves(pieceId) {
-        try {
-            const requestBody = JSON.stringify({
-                userId: JSON.parse(localStorage.getItem('user')).userId
-            });
-            const mapping = '/games/' + this.state.game.gameId.toString() + '/' + pieceId.toString();
-            const response = await api.get(mapping, requestBody);
+    async getPossibleMoves(pieceId, pieceColor) {
+        if (this.state.playersTurn &&
+            ((pieceColor === 'grey' && this.state.game.playerWhite.userId === this.state.userId) ||
+                (pieceColor === 'black' && this.state.game.playerBlack.userId === this.state.userId))) {
+            try {
+                const requestBody = JSON.stringify({
+                    userId: JSON.parse(localStorage.getItem('user')).userId
+                });
+                const mapping = '/games/' + this.state.game.gameId.toString() + '/' + pieceId.toString();
+                const response = await api.get(mapping, requestBody);
 
-            localStorage.setItem('possibleMoves', JSON.stringify(response.data));
-            localStorage.setItem('selectedPiece', pieceId);
+                localStorage.setItem('possibleMoves', JSON.stringify(response.data));
+                localStorage.setItem('selectedPiece', pieceId);
+                window.location.reload(); // TODO: use state or functional component instead of this
 
-        } catch (error) {
-            if(error.response.status === 409){
-                alert(error.response.data);
-            }
-            else {
-                alert(`Something went wrong while getting the possible moves: \n${handleError(error)}`);
+            } catch (error) {
+                if(error.response.status === 409){
+                    alert(error.response.data);
+                }
+                else {
+                    alert(`Something went wrong while getting the possible moves: \n${handleError(error)}`);
+                }
             }
         }
     }
@@ -90,8 +96,7 @@ class Game extends React.Component {
         }
     }
 
-
-    // resign
+    // update game status
     async fetchGameStatus() {
         try {
             const parameters = JSON.stringify({
@@ -101,7 +106,6 @@ class Game extends React.Component {
 
             const gameStatus = await api.get(mapping, {params: parameters});
             this.setState({ game : gameStatus });
-            window.alert(JSON.stringify(this.state.game));
 
         } catch (error) {
             if(error.response.status === 409){
@@ -116,9 +120,10 @@ class Game extends React.Component {
     render() {
 
         // fetch game state every 20 seconds TODO: make smaller intervals
-        setInterval(async () => {
+        // Commented out due to unhandled rejection error
+        /* setInterval(async () => {
             this.fetchGameStatus();
-        }, 20000);
+        }, 20000);*/
 
         const game = JSON.parse(localStorage.getItem('game'));
 
@@ -126,6 +131,23 @@ class Game extends React.Component {
         opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.username ===
             JSON.parse(localStorage.getItem('user')).username ?
             game.playerBlack.username : game.playerWhite.username) : 'Error';
+
+        let fileShift;
+        let rankShift;
+        let fileSign;
+        let rankSign;
+
+        if (this.state.game.playerWhite.userId === this.state.userId) {
+            fileShift = 1;
+            rankShift = 8;
+            fileSign = 1;
+            rankSign = -1;
+        } else {
+            fileShift = 8;
+            rankShift = 1;
+            fileSign = -1;
+            rankSign = 1;
+        }
 
         return (
         <Grid style={gameStyle} centered>
@@ -155,7 +177,8 @@ class Game extends React.Component {
                             let pieceColor;
                             let pieceId;
                             game.pieces.forEach(function (piece) {
-                                if (piece.xcord === 1 + file && piece.ycord === 8 - rank) {
+                                if (piece.xcord === fileShift + fileSign * file &&
+                                    piece.ycord === rankShift + rankSign * rank) {
                                     pieceType = 'chess ' + piece.pieceType.toLowerCase();
                                     pieceColor = piece.color.toLowerCase();
                                     pieceId = piece.pieceId;
@@ -171,7 +194,8 @@ class Game extends React.Component {
 
                             if (localStorage.getItem('possibleMoves')) {
                                 JSON.parse(localStorage.getItem('possibleMoves')).forEach(function (coords) {
-                                    if (coords.x === 1 + file && coords.y === 8 - rank) {
+                                    if (coords.x === fileShift + fileSign * file &&
+                                        coords.y === rankShift + rankSign * rank) {
                                         blueDot = true;
                                         coordsToMoveTo = coords;
                                     }
@@ -197,7 +221,7 @@ class Game extends React.Component {
                                             name={pieceType}
                                             size='large'
                                             onClick={() => {
-                                                this.getPossibleMoves(pieceId);
+                                                this.getPossibleMoves(pieceId, pieceColor);
                                             }}
                                         />) : ((blueDot) ? (
                                         <Icon
@@ -238,7 +262,7 @@ class Game extends React.Component {
                             this.fetchGameStatus();
                         }}
                     >
-                        fetch game status
+                        test
                     </Button>
                 </Grid.Column>
             </Grid.Row>
