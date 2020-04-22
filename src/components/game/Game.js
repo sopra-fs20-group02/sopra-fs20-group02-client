@@ -7,12 +7,13 @@ import {
     chessBoardStyle, boardRankStyle, quoteStyle, gameFooterStyle
 } from "../../data/styles";
 
+// TODO: use state or functional component instead of localStorage !
+
 class Game extends React.Component {
     constructor() {
         super();
         this.state = {
             userId: JSON.parse(localStorage.getItem('user')).userId,
-            playersTurn: true, // TODO: set to false when it is not players turn
             pieces: [
                 'chess bishop', 'chess king', 'chess knight',
                 'chess pawn', 'chess queen', 'chess rook'
@@ -21,13 +22,14 @@ class Game extends React.Component {
         };
     }
 
-
     // get all possible moves for selected piece
     async getPossibleMoves(pieceId, pieceColor) {
-        if (((this.state.game.isWhiteTurn && this.state.game.playerWhite.userId === this.state.userId) ||
-            (!this.state.game.isWhiteTurn && this.state.game.playerBlack.userId === this.state.userId)) &&
-            ((pieceColor === 'grey' && this.state.game.playerWhite.userId === this.state.userId) ||
-                (pieceColor === 'black' && this.state.game.playerBlack.userId === this.state.userId))) {
+        if ((this.state.game.isWhiteTurn &&
+            this.state.game.playerWhite.userId === this.state.userId &&
+            pieceColor === 'grey')  ||
+            (!this.state.game.isWhiteTurn &&
+            this.state.game.playerBlack.userId === this.state.userId &&
+            pieceColor === 'black')) {
             try {
                 const requestBody = JSON.stringify({
                     userId: JSON.parse(localStorage.getItem('user')).userId
@@ -37,7 +39,7 @@ class Game extends React.Component {
 
                 localStorage.setItem('possibleMoves', JSON.stringify(response.data));
                 localStorage.setItem('selectedPiece', pieceId);
-                window.location.reload(); // TODO: use state or functional component instead of this
+                window.location.reload();
 
             } catch (error) {
                 if(error.response.status === 409){
@@ -63,6 +65,7 @@ class Game extends React.Component {
 
             localStorage.setItem('game', JSON.stringify(response.data));
             localStorage.removeItem('selectedPiece');
+            window.location.reload();
 
         } catch (error) {
             if(error.response.status === 409){
@@ -98,9 +101,9 @@ class Game extends React.Component {
         }
     }
 
-
     // update game status
     async fetchGameStatus() {
+        window.alert('test');
         try {
             const parameters = JSON.stringify({
                 userId: JSON.parse(localStorage.getItem('user')).userId,
@@ -120,6 +123,10 @@ class Game extends React.Component {
         }
     }
 
+
+    async test() {
+        window.alert('poormansdebugger');
+    }
 
     render() {
 
@@ -265,7 +272,7 @@ class Game extends React.Component {
                             this.test();
                         }}
                     >
-                        test
+                        Offer draw
                     </Button>
                 </Grid.Column>
             </Grid.Row>

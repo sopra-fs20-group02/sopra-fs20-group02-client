@@ -23,8 +23,8 @@ class Lobby extends React.Component {
     try {
       const requestBody = JSON.stringify({
         userId: JSON.parse(localStorage.getItem('user')).userId
-        // userId: this.state.userId
       });
+      // userId: this.state.userId
       const response = await api.put('/logout', requestBody);
 
     } catch(error) {
@@ -105,7 +105,7 @@ class Lobby extends React.Component {
         <Grid style={lobbyStyle} centered>
           <Grid.Row>
             <Header as='h1' style={lobbyHeaderStyle}>
-              {this.state.isWaiting ? 'Waiting...' : 'Play'}
+              Play
             </Header>
           </Grid.Row>
           <Grid.Row>
@@ -115,7 +115,7 @@ class Lobby extends React.Component {
                 }}
                 style={playerButtonStyle}
             >
-              {'Join Game'}
+              {this.state.isWaiting ? 'Waiting...' : 'Join Game'}
             </Button>
           </Grid.Row>
           <Grid.Row style={lobbyFooterStyle} columns={2}>
