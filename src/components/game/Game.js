@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { setGlobal, useGlobal } from 'reactn';
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, Button, Header, Icon } from "semantic-ui-react";
@@ -21,9 +21,11 @@ class Game extends React.Component {
         };
     }
 
+
     // get all possible moves for selected piece
     async getPossibleMoves(pieceId, pieceColor) {
-        if (this.state.playersTurn &&
+        if (((this.state.game.isWhiteTurn && this.state.game.playerWhite.userId === this.state.userId) ||
+            (!this.state.game.isWhiteTurn && this.state.game.playerBlack.userId === this.state.userId)) &&
             ((pieceColor === 'grey' && this.state.game.playerWhite.userId === this.state.userId) ||
                 (pieceColor === 'black' && this.state.game.playerBlack.userId === this.state.userId))) {
             try {
@@ -52,12 +54,12 @@ class Game extends React.Component {
     async moveSelectedPiece(coords) {
         try {
             const requestBody = JSON.stringify({
-                userId: JSON.parse(localStorage.getItem('user')).userId,
-                move: { 'x' : coords[0], 'y' : coords[0] }
-                // localStorage.getItem('selectedPiece')
+                x : coords[0],
+                y : coords[1]
             });
-            const mapping = '/games/' + this.state.game.gameId.toString();
-            const response = await api.post(mapping, requestBody);
+            const mapping = '/games/' + this.state.game.gameId.toString() + '/' +
+                localStorage.getItem('selectedPiece').toString();
+            const response = await api.put(mapping, requestBody);
 
             localStorage.setItem('game', JSON.stringify(response.data));
             localStorage.removeItem('selectedPiece');
@@ -96,6 +98,7 @@ class Game extends React.Component {
         }
     }
 
+
     // update game status
     async fetchGameStatus() {
         try {
@@ -104,8 +107,8 @@ class Game extends React.Component {
             });
             const mapping = '/games/' + this.state.game.gameId.toString();
 
-            const gameStatus = await api.get(mapping, {params: parameters});
-            this.setState({ game : gameStatus });
+            const game = await api.get(mapping, {params: parameters});
+            this.setState({ game : game });
 
         } catch (error) {
             if(error.response.status === 409){
@@ -117,13 +120,13 @@ class Game extends React.Component {
         }
     }
 
+
     render() {
 
-        // fetch game state every 20 seconds TODO: make smaller intervals
-        // Commented out due to unhandled rejection error
-        /* setInterval(async () => {
-            this.fetchGameStatus();
-        }, 20000);*/
+        // fetch game state every 10 seconds TODO: make smaller intervals
+        setInterval(async () => {
+            this.fetchGameStatus.bind(this);
+        }, 10000);
 
         const game = JSON.parse(localStorage.getItem('game'));
 
@@ -259,7 +262,7 @@ class Game extends React.Component {
                     <Button
                         style={gameButtonStyle}
                         onClick={() => {
-                            this.fetchGameStatus();
+                            this.test();
                         }}
                     >
                         test

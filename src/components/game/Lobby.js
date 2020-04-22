@@ -1,18 +1,20 @@
-import React from 'react';
+import React, { setGlobal, useGlobal } from 'reactn';
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, List, Button, Header, Icon} from "semantic-ui-react";
 import {
   lobbyStyle, playerButtonStyle, lobbyHeaderStyle, logoutIconStyle, lobbyFooterStyle
 } from "../../data/styles";
-import { FormattedMessage } from "react-intl";
-import GameStatus from "./GameStatus";
+import { fetchGameStatus } from '../requests/fetchGameStatus';
+
 
 class Lobby extends React.Component {
   constructor() {
     super();
     this.state = {
-      users: null
+      users: null,
+      userId : this.global.userId,
+      isWaiting : false
     };
   }
 
@@ -21,6 +23,7 @@ class Lobby extends React.Component {
     try {
       const requestBody = JSON.stringify({
         userId: JSON.parse(localStorage.getItem('user')).userId
+        // userId: this.state.userId
       });
       const response = await api.put('/logout', requestBody);
 
@@ -58,7 +61,8 @@ class Lobby extends React.Component {
       });
       const response = await api.post('/games', requestBody);
       localStorage.setItem('game', JSON.stringify(response.data));
-      this.props.history.push('/game');
+      this.setState({ game : response.data });
+      return response.data;
 
     } catch (error) {
       if(error.response.status === 409){
@@ -71,8 +75,19 @@ class Lobby extends React.Component {
   }
 
   async handlePlay() {
-    this.getRandomQuote();
-    this.createGame();
+    const game = await this.createGame();
+    let status = game.gameStatus;
+    this.setState({ isWaiting : true})
+    while (status === 'WAITING') {
+      setInterval(async () => {
+        status = fetchGameStatus().gameStatus;
+      }, 10000);
+    }
+    if (status === 'FULL') {
+      this.getRandomQuote();
+      this.props.history.push('/game');
+
+    }
   }
 
   async componentDidMount() {
@@ -90,7 +105,7 @@ class Lobby extends React.Component {
         <Grid style={lobbyStyle} centered>
           <Grid.Row>
             <Header as='h1' style={lobbyHeaderStyle}>
-              Play
+              {this.state.isWaiting ? 'Waiting...' : 'Play'}
             </Header>
           </Grid.Row>
           <Grid.Row>
