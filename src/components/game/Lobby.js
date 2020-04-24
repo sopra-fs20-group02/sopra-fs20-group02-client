@@ -3,12 +3,14 @@ import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, List, Button, Header, Icon} from "semantic-ui-react";
 import {
-  lobbyStyle, playerButtonStyle, lobbyHeaderStyle, logoutIconStyle, lobbyFooterStyle
+  lobbyStyle, playerButtonStyle, lobbyHeaderStyle, logoutIconStyle,
+  lobbyFooterStyle, playersListStyle, userItemStyle, lobbyTextStyle
 } from "../../data/styles";
 import { fetchGameStatus } from '../requests/fetchGameStatus';
 
-
 class Lobby extends React.Component {
+  // userId = this.props.history.location.state.user.userId; TODO: make this work
+  // userId = useGlobal('user')[0].userId; TODO: or this
   constructor() {
     super();
     this.state = {
@@ -24,7 +26,7 @@ class Lobby extends React.Component {
       const requestBody = JSON.stringify({
         userId: JSON.parse(localStorage.getItem('user')).userId
       });
-      // userId: this.state.userId
+      // userId: this.getUserId() TODO: replace above (with this)
       const response = await api.put('/logout', requestBody);
 
     } catch(error) {
@@ -103,19 +105,40 @@ class Lobby extends React.Component {
     return (
         <Grid style={lobbyStyle} centered>
           <Grid.Row>
-            <Header as='h1' style={lobbyHeaderStyle}>
-              Play
-            </Header>
           </Grid.Row>
-          <Grid.Row>
+          <Grid.Row style={lobbyHeaderStyle}>
             <Button
                 onClick={() => {
                   this.handlePlay();
                 }}
                 style={playerButtonStyle}
             >
-              {this.state.isWaiting ? 'Waiting...' : 'Join Game'}
+              Random Game
             </Button>
+          </Grid.Row>
+          <Header as='h3' style={lobbyTextStyle}>
+            or choose an opponent:
+          </Header>
+          <Grid.Row>
+            <List style={playersListStyle}>
+              {this.state.users && this.state.users.map(user => {
+                if (JSON.parse(localStorage.getItem('user')).username != user.username) {
+                  return (
+                      <List.Item style={userItemStyle}>
+                        <Button
+                            onClick={() => {
+                              this.handlePlay();
+                            }}
+                            style={playerButtonStyle}
+                        >
+                          {user.username}
+                        </Button>
+                      </List.Item>
+                  );
+                }
+              })}
+            </List>
+
           </Grid.Row>
           <Grid.Row style={lobbyFooterStyle} columns={2}>
             <Grid.Column textAlign='center'>

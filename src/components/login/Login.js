@@ -40,7 +40,10 @@ class Login extends React.Component {
       await setGlobal({user: response.data});
 
       // Login successfully worked --> navigate to the route /lobby in the GameRouter
-      this.props.history.push(`/lobby`);
+      this.props.history.push({
+          pathname: `/lobby`,
+          state: { user: user } // TODO: make this work
+      });
     } catch (error) {
       if (error.response.status === 401){
         alert(error.response.data);

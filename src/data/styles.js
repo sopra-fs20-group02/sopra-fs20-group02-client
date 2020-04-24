@@ -18,9 +18,15 @@ export const headerStyle = {
 }
 
 export const lobbyHeaderStyle = {
-    marginTop: '70px',
+    marginTop: '50px',
     color: 'white'
 }
+
+export const lobbyTextStyle = {
+    marginTop: '20px',
+    color: 'white'
+}
+
 
 export const gameHeaderStyle = {
     marginTop: '10px',
