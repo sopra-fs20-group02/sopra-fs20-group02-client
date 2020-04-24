@@ -47,7 +47,7 @@ class AppRouter extends React.Component {
                             path="/"
                             exact
                             render={() => (
-                                <Redirect to={"/lobby"} />
+                                <Redirect to={"/login"} />
                                 )}
                         />
                     </div>

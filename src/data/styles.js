@@ -18,12 +18,24 @@ export const headerStyle = {
 }
 
 export const lobbyHeaderStyle = {
-    marginTop: '70px',
+    marginTop: '50px',
     color: 'white'
 }
 
+export const lobbyTextStyle = {
+    marginTop: '20px',
+    color: 'white'
+}
+
+
 export const gameHeaderStyle = {
     marginTop: '10px',
+    marginBottom: '0px',
+    color: 'white'
+}
+
+export const opponentStyle = {
+    marginTop: '0px',
     marginBottom: '10px',
     color: 'white'
 }
@@ -99,8 +111,8 @@ export const logoutIconStyle = {
 
 export const chessBoardStyle = {
     width: '95%',
-    marginTop: '20px',
-    marginBottom: '20px',
+    marginTop: '0px',
+    marginBottom: '0px',
     background: '#FF8998',
     paddingTop: '10px',
     paddingBottom: '10px',
@@ -110,6 +122,12 @@ export const chessBoardStyle = {
 export const boardRankStyle = {
     margin: '0px',
     padding: '0px'
+}
+
+export const capturedPiecesStyle = {
+    margin: '0px',
+    padding: '10px',
+    backgroundColor: '#DCDCDC'
 }
 
 export const chessPieceStyle = {

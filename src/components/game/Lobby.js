@@ -1,18 +1,22 @@
-import React from 'react';
+import React, { setGlobal, useGlobal } from 'reactn';
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, List, Button, Header, Icon} from "semantic-ui-react";
 import {
-  lobbyStyle, playerButtonStyle, lobbyHeaderStyle, logoutIconStyle, lobbyFooterStyle
+  lobbyStyle, playerButtonStyle, lobbyHeaderStyle, logoutIconStyle,
+  lobbyFooterStyle, playersListStyle, userItemStyle, lobbyTextStyle
 } from "../../data/styles";
-import { FormattedMessage } from "react-intl";
-import GameStatus from "./GameStatus";
+import { fetchGameStatus } from '../requests/fetchGameStatus';
 
 class Lobby extends React.Component {
+  // userId = this.props.history.location.state.user.userId; TODO: make this work
+  // userId = useGlobal('user')[0].userId; TODO: or this
   constructor() {
     super();
     this.state = {
-      users: null
+      users: null,
+      userId : this.global.userId,
+      isWaiting : false
     };
   }
 
@@ -22,6 +26,7 @@ class Lobby extends React.Component {
       const requestBody = JSON.stringify({
         userId: JSON.parse(localStorage.getItem('user')).userId
       });
+      // userId: this.getUserId() TODO: replace above (with this)
       const response = await api.put('/logout', requestBody);
 
     } catch(error) {
@@ -58,7 +63,8 @@ class Lobby extends React.Component {
       });
       const response = await api.post('/games', requestBody);
       localStorage.setItem('game', JSON.stringify(response.data));
-      this.props.history.push('/game');
+      this.setState({ game : response.data });
+      return response.data;
 
     } catch (error) {
       if(error.response.status === 409){
@@ -71,8 +77,18 @@ class Lobby extends React.Component {
   }
 
   async handlePlay() {
-    this.getRandomQuote();
-    this.createGame();
+    const game = await this.createGame();
+    let status = game.gameStatus;
+    this.setState({ isWaiting : true})
+    while (status === 'WAITING') {
+      setInterval(async () => {
+        status = fetchGameStatus().gameStatus;
+      }, 10000);
+    }
+    if (status === 'FULL') {
+      this.getRandomQuote();
+      this.props.history.push('/game');
+    }
   }
 
   async componentDidMount() {
@@ -89,19 +105,40 @@ class Lobby extends React.Component {
     return (
         <Grid style={lobbyStyle} centered>
           <Grid.Row>
-            <Header as='h1' style={lobbyHeaderStyle}>
-              Play
-            </Header>
           </Grid.Row>
-          <Grid.Row>
+          <Grid.Row style={lobbyHeaderStyle}>
             <Button
                 onClick={() => {
                   this.handlePlay();
                 }}
                 style={playerButtonStyle}
             >
-              {'Join Game'}
+              Random Game
             </Button>
+          </Grid.Row>
+          <Header as='h3' style={lobbyTextStyle}>
+            or choose an opponent:
+          </Header>
+          <Grid.Row>
+            <List style={playersListStyle}>
+              {this.state.users && this.state.users.map(user => {
+                if (JSON.parse(localStorage.getItem('user')).username != user.username) {
+                  return (
+                      <List.Item style={userItemStyle}>
+                        <Button
+                            onClick={() => {
+                              this.handlePlay();
+                            }}
+                            style={playerButtonStyle}
+                        >
+                          {user.username}
+                        </Button>
+                      </List.Item>
+                  );
+                }
+              })}
+            </List>
+
           </Grid.Row>
           <Grid.Row style={lobbyFooterStyle} columns={2}>
             <Grid.Column textAlign='center'>

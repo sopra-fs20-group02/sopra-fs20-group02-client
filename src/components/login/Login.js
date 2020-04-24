@@ -21,6 +21,8 @@ class Login extends React.Component {
   }
 
   async login() {
+    let user;
+
     try {
       const requestBody = JSON.stringify({
         username: this.state.username,
@@ -29,14 +31,19 @@ class Login extends React.Component {
       const response = await api.put('/login',requestBody);
 
       // Get the returned user and update a new object.
-      const user = new User(response.data);
+      user = new User(response.data);
 
       // Store the token into the local storage.
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('token', user.token);
 
+      await setGlobal({user: response.data});
+
       // Login successfully worked --> navigate to the route /lobby in the GameRouter
-      this.props.history.push(`/lobby`);
+      this.props.history.push({
+          pathname: `/lobby`,
+          state: { user: user } // TODO: make this work
+      });
     } catch (error) {
       if (error.response.status === 401){
         alert(error.response.data);
