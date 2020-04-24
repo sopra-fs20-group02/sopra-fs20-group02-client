@@ -3,8 +3,9 @@ import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, Button, Header, Icon } from "semantic-ui-react";
 import {
-    gameStyle, gameButtonStyle, gameHeaderStyle,
-    chessBoardStyle, boardRankStyle, quoteStyle, gameFooterStyle
+    gameStyle, gameButtonStyle, gameHeaderStyle, opponentStyle,
+    chessBoardStyle, boardRankStyle, quoteStyle, gameFooterStyle,
+    capturedPiecesStyle
 } from "../../data/styles";
 
 // TODO: use state or functional component instead of localStorage !
@@ -161,99 +162,121 @@ class Game extends React.Component {
 
         return (
         <Grid style={gameStyle} centered>
-            <Grid.Row>
-                <Header as='h4' style={quoteStyle}>
-                    {localStorage.getItem('quote')}
+            <Grid.Row style={{marginBottom: '0px'}}>
+                <Header as='h4' style={gameHeaderStyle}>
+                    Playing against
                 </Header>
             </Grid.Row>
-            <Grid.Row>
-                <Header as='h2' style={gameHeaderStyle}>
-                    {'Game against ' + opponent}
+            <Grid.Row style={{marginTop: '0px'}}>
+                <Header as='h2' style={opponentStyle}>
+                    {opponent}
                 </Header>
+            </Grid.Row>
+            <Grid.Row style={capturedPiecesStyle}>
+                {['chess king', 'chess pawn'].map(piece => {
+                    return (<Icon // TODO: this is only mockup piece
+                        style={{
+                            align: 'center',
+                            color: 'grey',
+                        }}
+                        name={piece}
+                    />)
+                })}
             </Grid.Row>
             <Grid
                 style={chessBoardStyle}
             >
-            {Array.from(Array(8).keys()).map((rank) => {
-                return (
-                    <Grid.Row
-                        style={boardRankStyle}
-                    >
-                        {Array.from(Array(8).keys()).map((file) => {
-                            let color = '#FF8998';
-                            if (file % 2 == rank % 2) { color = 'white'; }
+                {Array.from(Array(8).keys()).map((rank) => {
+                    return (
+                        <Grid.Row
+                            style={boardRankStyle}
+                        >
+                            {Array.from(Array(8).keys()).map((file) => {
+                                let color = '#FF8998';
+                                if (file % 2 == rank % 2) { color = 'white'; }
 
-                            let pieceType;
-                            let pieceColor;
-                            let pieceId;
-                            game.pieces.forEach(function (piece) {
-                                if (piece.xcord === fileShift + fileSign * file &&
-                                    piece.ycord === rankShift + rankSign * rank) {
-                                    pieceType = 'chess ' + piece.pieceType.toLowerCase();
-                                    pieceColor = piece.color.toLowerCase();
-                                    pieceId = piece.pieceId;
-                                }
-                                if (pieceColor === 'white') { pieceColor = 'grey'; }
-                                if (Number(localStorage.getItem('selectedPiece')) === pieceId) {
-                                    pieceColor = '#0BD1FF';
-                                }
-                            })
-
-                            let blueDot = false;
-                            let coordsToMoveTo;
-
-                            if (localStorage.getItem('possibleMoves')) {
-                                JSON.parse(localStorage.getItem('possibleMoves')).forEach(function (coords) {
-                                    if (coords.x === fileShift + fileSign * file &&
-                                        coords.y === rankShift + rankSign * rank) {
-                                        blueDot = true;
-                                        coordsToMoveTo = coords;
+                                let pieceType;
+                                let pieceColor;
+                                let pieceId;
+                                game.pieces.forEach(function (piece) {
+                                    if (piece.xcord === fileShift + fileSign * file &&
+                                        piece.ycord === rankShift + rankSign * rank) {
+                                        pieceType = 'chess ' + piece.pieceType.toLowerCase();
+                                        pieceColor = piece.color.toLowerCase();
+                                        pieceId = piece.pieceId;
+                                    }
+                                    if (pieceColor === 'white') { pieceColor = 'grey'; }
+                                    if (Number(localStorage.getItem('selectedPiece')) === pieceId) {
+                                        pieceColor = '#0BD1FF';
                                     }
                                 })
-                            }
 
-                            return(
-                                <Grid.Column
-                                    width={2} style={{
-                                        alignContent: 'center',
-                                        background: color,
-                                        height: '40px'
-                                    }}
-                                >
-                                    {(pieceType) ? (
-                                        <Icon
-                                            style={{
-                                                marginTop: '10px',
-                                                paddingRight: '15px',
-                                                align: 'center',
-                                                color: pieceColor,
-                                            }}
-                                            name={pieceType}
-                                            size='large'
-                                            onClick={() => {
-                                                this.getPossibleMoves(pieceId, pieceColor);
-                                            }}
-                                        />) : ((blueDot) ? (
-                                        <Icon
-                                            style={{
-                                                marginTop: '15px',
-                                                align: 'center',
-                                                color: '#0BD1FF',
-                                            }}
-                                            name='circle'
-                                            size='small'
-                                            onClick={() => {
-                                                this.moveSelectedPiece(coordsToMoveTo);
-                                            }}
-                                        />) : (''))
-                                    }
-                                </Grid.Column>
-                            )
-                        })}
-                    </Grid.Row>
-                )
-            })}
+                                let blueDot = false;
+                                let coordsToMoveTo;
+
+                                if (localStorage.getItem('possibleMoves')) {
+                                    JSON.parse(localStorage.getItem('possibleMoves')).forEach(function (coords) {
+                                        if (coords.x === fileShift + fileSign * file &&
+                                            coords.y === rankShift + rankSign * rank) {
+                                            blueDot = true;
+                                            coordsToMoveTo = coords;
+                                        }
+                                    })
+                                }
+
+                                return(
+                                    <Grid.Column
+                                        width={2} style={{
+                                            alignContent: 'center',
+                                            background: color,
+                                            height: '40px'
+                                        }}
+                                    >
+                                        {(pieceType) ? (
+                                            <Icon
+                                                style={{
+                                                    marginTop: '10px',
+                                                    paddingRight: '15px',
+                                                    align: 'center',
+                                                    color: pieceColor,
+                                                }}
+                                                name={pieceType}
+                                                size='large'
+                                                onClick={() => {
+                                                    this.getPossibleMoves(pieceId, pieceColor);
+                                                }}
+                                            />) : ((blueDot) ? (
+                                            <Icon
+                                                style={{
+                                                    marginTop: '15px',
+                                                    align: 'center',
+                                                    color: '#0BD1FF',
+                                                }}
+                                                name='circle'
+                                                size='small'
+                                                onClick={() => {
+                                                    this.moveSelectedPiece(coordsToMoveTo);
+                                                }}
+                                            />) : (''))
+                                        }
+                                    </Grid.Column>
+                                )
+                            })}
+                        </Grid.Row>
+                    )
+                })}
             </Grid>
+            <Grid.Row style={capturedPiecesStyle}>
+                {['chess king', 'chess pawn'].map(piece => {
+                    return (<Icon // TODO: this is only mockup piece
+                        style={{
+                            align: 'center',
+                            color: 'black',
+                        }}
+                        name={piece}
+                    />)
+                })}
+            </Grid.Row>
             <Grid.Row columns={2} style={gameFooterStyle}>
                 <Grid.Column textAlign='center'>
                     <Button
@@ -272,7 +295,7 @@ class Game extends React.Component {
                             this.test();
                         }}
                     >
-                        Offer draw
+                        Test
                     </Button>
                 </Grid.Column>
             </Grid.Row>

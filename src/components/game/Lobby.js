@@ -86,7 +86,6 @@ class Lobby extends React.Component {
     if (status === 'FULL') {
       this.getRandomQuote();
       this.props.history.push('/game');
-
     }
   }
 
