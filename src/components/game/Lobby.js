@@ -1,4 +1,4 @@
-import React, { setGlobal, useGlobal } from 'reactn';
+import React from "react";
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, List, Button, Header, Icon} from "semantic-ui-react";
@@ -10,13 +10,11 @@ import { fetchGameStatus } from '../requests/fetchGameStatus';
 
 class Lobby extends React.Component {
   // userId = this.props.history.location.state.user.userId; TODO: make this work
-  // userId = useGlobal('user')[0].userId; TODO: or this
   constructor() {
     super();
     this.state = {
       users: null,
-      userId : this.global.userId,
-      isWaiting : false
+      userId : JSON.parse(localStorage.getItem('user')).userId
     };
   }
 
@@ -79,19 +77,16 @@ class Lobby extends React.Component {
   async handlePlay() {
     const game = await this.createGame();
     let status = game.gameStatus;
-    this.setState({ isWaiting : true})
-    while (status === 'WAITING') {
-      setInterval(async () => {
-        status = fetchGameStatus().gameStatus;
-      }, 10000);
-    }
+    window.alert(status);
     if (status === 'FULL') {
-      this.getRandomQuote();
       this.props.history.push('/game');
+    } else {
+      this.getRandomQuote();
+      this.props.history.push('/waiting');
     }
   }
 
-  async componentDidMount() {
+  async getUsers() {
     try {
       const response = await api.get('/users');
       this.setState({ users: response.data });
@@ -102,6 +97,7 @@ class Lobby extends React.Component {
   }
 
   render() {
+    this.getUsers()
     return (
         <Grid style={lobbyStyle} centered>
           <Grid.Row>
