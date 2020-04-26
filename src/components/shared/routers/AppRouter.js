@@ -6,6 +6,7 @@ import { LoginGuard } from "../routeProtectors/LoginGuard";
 import Login from "../../login/Login";
 import Game from "../../game/Game";
 import Registration from "../../registration/Registration";
+import Waiting from "../../game/Waiting";
 
 class AppRouter extends React.Component {
     render() {
@@ -25,6 +26,12 @@ class AppRouter extends React.Component {
                             path="/game"
                             render={() => (
                                 <Game />
+                            )}
+                        />
+                        <Route
+                            path="/waiting"
+                            render={() => (
+                                <Waiting />
                             )}
                         />
                         <Route

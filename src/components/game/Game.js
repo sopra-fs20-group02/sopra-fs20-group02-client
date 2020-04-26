@@ -1,4 +1,4 @@
-import React, { setGlobal, useGlobal } from 'reactn';
+import React from "react";
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, Button, Header, Icon } from "semantic-ui-react";
@@ -104,7 +104,6 @@ class Game extends React.Component {
 
     // update game status
     async fetchGameStatus() {
-        window.alert('test');
         try {
             const parameters = JSON.stringify({
                 userId: JSON.parse(localStorage.getItem('user')).userId,
@@ -126,7 +125,7 @@ class Game extends React.Component {
 
 
     async test() {
-        window.alert('poormansdebugger');
+
     }
 
     render() {

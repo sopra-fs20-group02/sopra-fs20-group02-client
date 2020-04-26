@@ -152,3 +152,8 @@ export const quoteStyle = {
     marginRight: '20px',
     color: 'white'
 }
+
+export const waitingPageStyle = {
+    height: '100%',
+    background: 'linear-gradient(#FF6464, #FF5A86)'
+}
