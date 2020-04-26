@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Redirect, Route } from "react-router-dom";
 import Game from "../../game/Lobby";
 import Profile from "../../profile/Profile";
+import Waiting from "../../game/Waiting";
 
 const Container = styled.div`
   display: flex;
@@ -26,6 +27,12 @@ class GameRouter extends React.Component {
           exact
           path={`${this.props.base}/dashboard`}
           render={() => <Game />}
+        />
+
+        <Route
+            exact
+            path={`${this.props.base}/quote`}
+            render={() => <Waiting />}
         />
 
         <Route

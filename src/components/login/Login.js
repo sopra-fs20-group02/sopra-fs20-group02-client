@@ -100,7 +100,7 @@ class Login extends React.Component {
             <button
                 style={{textDecoration: 'underline'}}
                 onClick={() => {
-                  this.props.history.push('/registration');;
+                  this.props.history.push('/registration');
                 }}
             >
               Register

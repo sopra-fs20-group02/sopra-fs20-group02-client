@@ -77,11 +77,10 @@ class Lobby extends React.Component {
   async handlePlay() {
     const game = await this.createGame();
     let status = game.gameStatus;
+    window.alert(status);
     if (status === 'FULL') {
-      window.alert('status is full');
       this.props.history.push('/game');
     } else {
-      window.alert('status is waiting');
       this.getRandomQuote();
       this.props.history.push('/waiting');
     }

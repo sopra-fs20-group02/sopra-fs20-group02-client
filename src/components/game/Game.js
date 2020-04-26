@@ -140,7 +140,7 @@ class Game extends React.Component {
         let opponent
         opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.username ===
             JSON.parse(localStorage.getItem('user')).username ?
-            game.playerBlack.username : game.playerWhite.username) : 'Error';
+            game.playerBlack.username : game.playerWhite.username) : '';
 
         let fileShift;
         let rankShift;

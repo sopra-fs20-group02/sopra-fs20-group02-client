@@ -17,7 +17,6 @@ class Waiting extends React.Component {
 
     // update game status
     async fetchGameStatus() {
-        window.alert('test');
         try {
             const parameters = JSON.stringify({
                 userId: JSON.parse(localStorage.getItem('user')).userId,
@@ -41,6 +40,7 @@ class Waiting extends React.Component {
         let status = 'WAITING';
         while (status === 'WAITING') {
             setInterval(async () => {
+                window.alert(status);
                 status = fetchGameStatus().gameStatus;
                 // TODO: make smaller intervals
             }, 10000);
@@ -52,7 +52,7 @@ class Waiting extends React.Component {
 
 
     render() {
-        this.handleWaiting()
+        // this.handleWaiting()
 
         return (
         <Grid style={waitingPageStyle} centered>
