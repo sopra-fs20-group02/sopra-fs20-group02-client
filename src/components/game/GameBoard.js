@@ -144,6 +144,7 @@ class GameBoard extends React.Component {
             rankSign = 1;
         }
 
+        // TODO: get rid of all the redundant localStorage accesses
         return (
         <Grid style={gameStyle} centered>
             <Grid.Row style={{marginBottom: '0px'}}>
