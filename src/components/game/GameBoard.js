@@ -53,10 +53,10 @@ class GameBoard extends React.Component {
                 const requestBody = JSON.stringify({
                     userId: Number(this.state.userId)
                 });
-                const mapping = '/games/' + this.state.game.gameId.toString() + '/' + pieceId.toString();
+                const mapping = '/games/' + this.state.game.gameId + '/' + pieceId.toString();
                 const response = await api.get(mapping, requestBody);
 
-                this.setState({possibleMoves: JSON.stringify(response.data)});
+                this.setState({possibleMoves: response.data});
                 this.setState({selectedPiece: pieceId})
 
                 // maybe add force update
@@ -139,7 +139,6 @@ class GameBoard extends React.Component {
 
             const response = await api.put(mapping, {params: params});
             window.alert('You lost');
-
 
         } catch (error) {
             if(error.response.status === 409){
