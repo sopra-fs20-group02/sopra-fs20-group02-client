@@ -7,6 +7,7 @@ import Login from "../../login/Login";
 import Game from "../../game/Game";
 import Registration from "../../registration/Registration";
 import Waiting from "../../game/Waiting";
+import Lobby from "../../game/Lobby";
 
 class AppRouter extends React.Component {
     render() {
@@ -18,7 +19,8 @@ class AppRouter extends React.Component {
                             path="/lobby"
                             render={() => (
                                 <GameGuard>
-                                    <GameRouter base={"/lobby"} />
+                                    <Lobby/>
+
                                 </GameGuard>
                             )}
                         />

@@ -6,34 +6,30 @@ import {
   lobbyStyle, playerButtonStyle, lobbyHeaderStyle, logoutIconStyle,
   lobbyFooterStyle, playersListStyle, userItemStyle, lobbyTextStyle
 } from "../../data/styles";
-import { fetchGameStatus } from '../requests/fetchGameStatus';
 
 class Lobby extends React.Component {
-  // userId = this.props.history.location.state.user.userId; TODO: make this work
   constructor() {
     super();
     this.state = {
       users: null,
-      userId : JSON.parse(localStorage.getItem('user')).userId
     };
+  }
+
+  componentDidMount() {
+    console.log(localStorage.getItem('id'))
+    this.getUsers()
   }
 
   // logs out user
   async logout() {
     try {
       const requestBody = JSON.stringify({
-        userId: JSON.parse(localStorage.getItem('user')).userId
+        userId: localStorage.getItem('id')
       });
-      // userId: this.getUserId() TODO: replace above (with this)
       const response = await api.put('/logout', requestBody);
 
     } catch(error) {
-      if(error.response.status === 404) {
-        alert(error.response.data);
-      }
-      else {
         alert(`Something went wrong during the logout: \n${handleError(error)}`);
-      }
     }
     localStorage.clear();
     this.props.history.push('/login');
@@ -57,7 +53,7 @@ class Lobby extends React.Component {
   async createGame() {
     try {
       const requestBody = JSON.stringify({
-        userId: JSON.parse(localStorage.getItem('user')).userId
+        userId: localStorage.getItem('id')
       });
       const response = await api.post('/games', requestBody);
       localStorage.setItem('game', JSON.stringify(response.data));
@@ -65,12 +61,7 @@ class Lobby extends React.Component {
       return response.data;
 
     } catch (error) {
-      if(error.response.status === 409){
-        alert(error.response.data);
-      }
-      else {
-        alert(`Something went wrong while creating the game: \n${handleError(error)}`);
-      }
+      alert(`Something went wrong while creating the game: \n${handleError(error)}`);
     }
   }
 
@@ -90,14 +81,12 @@ class Lobby extends React.Component {
     try {
       const response = await api.get('/users');
       this.setState({ users: response.data });
-      console.log(response);
     } catch (error) {
       alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
     }
   }
 
   render() {
-    this.getUsers()
     return (
         <Grid style={lobbyStyle} centered>
           <Grid.Row>
@@ -118,7 +107,9 @@ class Lobby extends React.Component {
           <Grid.Row>
             <List style={playersListStyle}>
               {this.state.users && this.state.users.map(user => {
-                if (JSON.parse(localStorage.getItem('user')).username != user.username) {
+                if (localStorage.getItem('id') !== user.userId) {
+                  console.log(user.userId);
+                  console.log(localStorage.getItem('id'));
                   return (
                       <List.Item style={userItemStyle}>
                         <Button
