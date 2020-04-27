@@ -55,7 +55,7 @@ class GameBoard extends React.Component {
                 });
                 const mapping = '/games/' + this.state.game.gameId + '/' + pieceId.toString();
                 const response = await api.get(mapping, requestBody);
-
+                
                 this.setState({possibleMoves: response.data});
                 this.setState({selectedPiece: pieceId})
 
@@ -151,6 +151,7 @@ class GameBoard extends React.Component {
     }
 
     render() {
+
         const game = this.state.game;
 
         if (game){
@@ -161,8 +162,6 @@ class GameBoard extends React.Component {
             let rankShift;
             let fileSign;
             let rankSign;
-
-            console.log(game)
 
             if (game.playerWhite.userId === Number(this.state.userId)) {
                 fileShift = 1;
@@ -177,6 +176,9 @@ class GameBoard extends React.Component {
             }
 
             // TODO: get rid of all the redundant localStorage accesses
+            /*window.alert(this.state.game.isWhiteTurn);
+            window.alert(this.state.game.playerWhite.userId);
+            window.alert(this.state.userId);*/
             return (
                 <Grid style={gameStyle} centered>
                     <Grid.Row style={{marginBottom: '0px'}}>
