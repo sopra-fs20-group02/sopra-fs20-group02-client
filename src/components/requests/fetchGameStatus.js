@@ -4,9 +4,9 @@ import {api, handleError} from "../../helpers/api";
 export const fetchGameStatus = async (userId, gameId) => {
   try {
     const parameters = JSON.stringify({
-      userId: JSON.parse(localStorage.getItem('user')).userId,
+      userId: userId,
     });
-    const mapping = '/games/' + this.state.game.gameId.toString();
+    const mapping = '/games/' + gameId.toString();
 
     const gameStatus = await api.get(mapping, {params: parameters});
 

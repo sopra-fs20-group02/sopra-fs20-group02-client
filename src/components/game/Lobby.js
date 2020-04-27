@@ -81,7 +81,10 @@ class Lobby extends React.Component {
     if (status === 'FULL') {
       this.props.history.push('/game');
     } else {
-      this.props.history.push('/waiting');
+      this.props.history.push({
+          pathname: '/waiting',
+          state: { gameId: game.gameId }
+      });
     }
   }
 

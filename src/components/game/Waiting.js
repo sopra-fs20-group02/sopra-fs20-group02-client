@@ -11,11 +11,13 @@ class Waiting extends React.Component {
     constructor() {
         super();
         this.state = {
-            quote: null
+            quote: null,
+            gameId: null
         };
     }
 
     componentDidMount() {
+        this.setState({gameId: this.props.location.state.gameId});
         this.getRandomQuote();
         this.handleWaiting();
     }
@@ -33,40 +35,24 @@ class Waiting extends React.Component {
         }
     }
 
-    // update game status
-    async fetchGameStatus() {
-        try {
-            const parameters = JSON.stringify({
-                userId: JSON.parse(localStorage.getItem('user')).userId,
-            });
-            const mapping = '/games/' + this.state.game.gameId.toString();
-
-            const game = await api.get(mapping, {params: parameters});
-            this.setState({ game : game });
-
-        } catch (error) {
-            if(error.response.status === 409){
-                alert(error.response.data);
-            }
-            else {
-                alert(`Something went wrong while trying to get the game status: \n${handleError(error)}`);
-            }
-        }
-    }
-
     async handleWaiting() {
-        let status;
-        do {
-            setInterval(async () => {
-                status = fetchGameStatus().gameStatus;
-                console.log(status)
-                // TODO: make smaller intervals
-            }, 500);
-        } while (status === 'WAITING');
+        let status = 'WAITING';
 
-        if (status === 'FULL') {
-            this.props.history.push('/game');
-        }
+        const interval = setInterval(async () => {
+            const  gameStatusObject = await fetchGameStatus(localStorage.getItem('userId'), this.state.gameId);
+            if (gameStatusObject.data){
+                status = gameStatusObject.data.gameStatus
+            }
+            console.log(status);
+
+            if (status === 'FULL') {
+                clearInterval(interval);
+                this.props.history.push('/game');
+            }
+
+            // TODO: make smaller intervals
+        }, 500);
+
     }
 
 
