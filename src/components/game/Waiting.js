@@ -22,6 +22,10 @@ class Waiting extends React.Component {
         this.handleWaiting();
     }
 
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
     // gets random quote
     async getRandomQuote() {
         try {
@@ -38,23 +42,21 @@ class Waiting extends React.Component {
     async handleWaiting() {
         let status = 'WAITING';
 
-        const interval = setInterval(async () => {
+        this.interval = setInterval(async () => {
             const  gameStatusObject = await fetchGameStatus(localStorage.getItem('userId'), this.state.gameId);
             if (gameStatusObject.data){
                 status = gameStatusObject.data.gameStatus
             }
-            console.log(status);
 
             if (status === 'FULL') {
-                clearInterval(interval);
                 this.props.history.push({
                     pathname: '/game',
-                    state: { gameId: game.gameId }
+                    state: { gameId: gameStatusObject.data.gameId }
                 });
             }
 
             // TODO: make smaller intervals
-        }, 500);
+        }, 1000);
 
     }
 

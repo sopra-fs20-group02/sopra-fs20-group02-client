@@ -20,16 +20,29 @@ class GameBoard extends React.Component {
                 'chess pawn', 'chess queen', 'chess rook'
             ],
             game: null,
+            gameId: null,
             possibleMoves: null,
             selectedPiece: null
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.setState({gameId: this.props.location.state.gameId});
+        console.log(this.props.location.state.gameId);
+        const game = await fetchGameStatus(localStorage.getItem('userId'), this.props.location.state.gameId);
         this.setState({
-            game: fetchGameStatus(localStorage.getItem('userId'), this.state.gameId)
-        })
+            game: game
+        });
+        this.interval = setInterval(async () => {
+            if (this.state.gameId){
+                const gameStatusObject = await fetchGameStatus(localStorage.getItem('userId'), this.state.gameId);
+                this.setState({game: gameStatusObject})
+            }
+        }, 1000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
     }
 
     // get all possible moves for selected piece
@@ -47,7 +60,7 @@ class GameBoard extends React.Component {
                 const mapping = '/games/' + this.state.game.gameId.toString() + '/' + pieceId.toString();
                 const response = await api.get(mapping, requestBody);
 
-                this.setState({possibleMoves: JSON.stringify(response.data)})
+                this.setState({possibleMoves: JSON.stringify(response.data)});
                 this.setState({selectedPiece: pieceId})
 
                 // maybe add force update
@@ -113,15 +126,8 @@ class GameBoard extends React.Component {
 
     render() {
 
-        // fetch game state every 10 seconds TODO: make smaller intervals
-        setInterval(async () => {
-            if (this.state.gameId){
-                const gameStatusObject = await fetchGameStatus(localStorage.getItem('userId'), this.state.gameId);
-                this.setState({game: gameStatusObject})
-            }
-        }, 500);
-
         const game = this.state.game;
+        console.log(game);
 
         const opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.userId ===
             localStorage.getItem('userId') ?
@@ -145,7 +151,7 @@ class GameBoard extends React.Component {
         }
 
         // TODO: get rid of all the redundant localStorage accesses
-        return (
+        return (<div>test</div>);/*(
         <Grid style={gameStyle} centered>
             <Grid.Row style={{marginBottom: '0px'}}>
                 <Header as='h4' style={gameHeaderStyle}>
@@ -191,7 +197,7 @@ class GameBoard extends React.Component {
                                         pieceId = piece.pieceId;
                                     }
                                     if (pieceColor === 'white') { pieceColor = 'grey'; }
-                                    if (Number(localStorage.getItem('selectedPiece')) === pieceId) {
+                                    if (this.state.selectedPiece === pieceId) {
                                         pieceColor = '#0BD1FF';
                                     }
                                 })
@@ -199,8 +205,8 @@ class GameBoard extends React.Component {
                                 let blueDot = false;
                                 let coordsToMoveTo;
 
-                                if (localStorage.getItem('possibleMoves')) {
-                                    JSON.parse(localStorage.getItem('possibleMoves')).forEach(function (coords) {
+                                if (this.state.possibleMoves) {
+                                    this.state.possibleMoves.forEach(function (coords) {
                                         if (coords.x === fileShift + fileSign * file &&
                                             coords.y === rankShift + rankSign * rank) {
                                             blueDot = true;
@@ -285,7 +291,7 @@ class GameBoard extends React.Component {
                 </Grid.Column>
             </Grid.Row>
         </Grid>
-        );
+        );*/
     }
 }
 
