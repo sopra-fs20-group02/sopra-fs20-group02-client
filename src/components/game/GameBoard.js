@@ -41,7 +41,7 @@ class GameBoard extends React.Component {
         clearInterval(this.interval);
     }
 
-    // get all possible moves for selected piece
+    // gets all possible moves for the selected piece
     async getPossibleMoves(pieceId, pieceColor) {
         if ((this.state.game.isWhiteTurn &&
             this.state.game.playerWhite.userId === Number(this.state.userId) &&
@@ -73,7 +73,7 @@ class GameBoard extends React.Component {
         }
     }
 
-    // move piece
+    // moves the piece
     async moveSelectedPiece(coords) {
         try {
             const requestBody = JSON.stringify({
@@ -101,6 +101,7 @@ class GameBoard extends React.Component {
         }
     }
 
+    // returns the piece
     getPiece(pieceColor, pieceType, pieceId, blueDotsActive, pieceInDanger, coordsToMoveTo) {
         return (<Icon
             style={{
@@ -121,6 +122,7 @@ class GameBoard extends React.Component {
         />)
     }
 
+    // returns a blue dot to indicate that the user can move his selected piece there
     getBlueDot(coordsToMoveTo) {
         return (<Icon
             style={{
@@ -136,8 +138,8 @@ class GameBoard extends React.Component {
         />)
     }
 
-    // resign
-    // TODO
+    // allows player to resign from game
+    // TODO: test this implementation
     async resign() {
         try {
             const params = JSON.stringify({
@@ -158,8 +160,9 @@ class GameBoard extends React.Component {
         }
     }
 
+    // allows player to offer draw
+    // TODO: implement this using the correct request
     async offerDraw() {
-        // TODO: use correct request
         try {
             const params = JSON.stringify({
                 token: localStorage.getItem('token'),
@@ -179,13 +182,30 @@ class GameBoard extends React.Component {
         }
     }
 
+    // returns opponent name
+    getOpponentName(game) {
+        if (game.playerWhite && game.playerBlack) {
+            if (game.playerWhite.userId === Number(this.state.userId)) {
+                return game.playerWhite.username;
+            } else {
+                return game.playerBlack.username;
+            }
+        } else {
+            return '';
+        }
+    }
+
+    // return information on whose turn it is and the opponents name
     getHeader(game) {
-        const opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.userId === Number(this.state.userId) ?
-            game.playerWhite.username : game.playerBlack.username) : '';
+        const opponent = this.getOpponentName(game);
         let header;
-        header = ((game.isWhiteTurn && game.playerWhite.userId === Number(this.state.userId)) ||
-                (!game.isWhiteTurn && game.playerBlack.userId === Number(this.state.userId))) ?
-                'Your turn' : opponent + "'s turn"
+        if ((game.isWhiteTurn && game.playerWhite.userId === Number(this.state.userId)) ||
+            (!game.isWhiteTurn && game.playerBlack.userId === Number(this.state.userId))) {
+            header = 'Your turn';
+        } else {
+            header = opponent + "'s turn";
+        }
+
         return (
             <Grid.Row style={{marginBottom: '0px'}}>
                 <Header as='h3' style={gameHeaderStyle}>
@@ -193,6 +213,73 @@ class GameBoard extends React.Component {
                 </Header>
             </Grid.Row>
         );
+    }
+
+    // returns information on the piece to display
+    getPieceData(game, fileShift, fileSign, rankShift, rankSign, file, rank) {
+        let pieceType;
+        let pieceColor;
+        let pieceId;
+        let pieceCoords;
+        game.pieces.forEach( (piece) => {
+            if (piece.xcord === fileShift + fileSign * file &&
+                piece.ycord === rankShift + rankSign * rank) {
+                pieceType = 'chess ' + piece.pieceType.toLowerCase();
+                pieceColor = piece.color.toLowerCase();
+                pieceId = piece.pieceId;
+                pieceCoords = [piece.xcord, piece.ycord]
+            }
+            if (pieceColor === 'white') { pieceColor = 'grey'; }
+            if (this.state.selectedPiece === pieceId) {
+                pieceColor = '#0BD1FF';
+            }
+        })
+        return [pieceType, pieceColor, pieceId, pieceCoords];
+    }
+
+    // returns information needed for converting indices and rotating the board
+    getRanksAndShifts(game) {
+        let fileShift;
+        let rankShift;
+        let fileSign;
+        let rankSign;
+
+        if (game.playerWhite.userId === Number(this.state.userId)) {
+            fileShift = 1;
+            rankShift = 8;
+            fileSign = 1;
+            rankSign = -1;
+        } else {
+            fileShift = 8;
+            rankShift = 1;
+            fileSign = -1;
+            rankSign = 1;
+        }
+        return [fileShift, rankShift, fileSign, rankSign];
+    }
+
+    // returns information for displaying possible moves
+    getPossibleMovesData(fileShift, fileSign, rankShift, rankSign, file, rank, pieceCoords) {
+        let blueDot = false;
+        let coordsToMoveTo = false
+        let pieceInDanger = false
+
+        if (this.state.possibleMoves) {
+            this.state.possibleMoves.forEach(function (coords) {
+                if (coords.x === fileShift + fileSign * file &&
+                    coords.y === rankShift + rankSign * rank) {
+                    blueDot = true;
+                    coordsToMoveTo = coords;
+                }
+                if (pieceCoords) {
+                    if (coords.x == pieceCoords[0] && coords.y ===  pieceCoords[1]) {
+                        pieceInDanger = true;
+                    }
+                }
+            })
+        }
+        const blueDotsActive = blueDot && this.state.blueDots;
+        return [blueDot, coordsToMoveTo, pieceInDanger, blueDotsActive];
     }
 
     // TODO: make this work (not yet tested)
@@ -233,82 +320,30 @@ class GameBoard extends React.Component {
         const game = this.state.game;
 
         if (game){
-            const opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.userId === Number(this.state.userId) ?
-                game.playerBlack.username : game.playerWhite.username) : '';
+            //const opponent = this.getOpponent(game);
 
-            let fileShift;
-            let rankShift;
-            let fileSign;
-            let rankSign;
-
-            if (game.playerWhite.userId === Number(this.state.userId)) {
-                fileShift = 1;
-                rankShift = 8;
-                fileSign = 1;
-                rankSign = -1;
-            } else {
-                fileShift = 8;
-                rankShift = 1;
-                fileSign = -1;
-                rankSign = 1;
-            }
+            const [fileShift, rankShift, fileSign, rankSign] = this.getRanksAndShifts(game);
 
             return (
                 <Grid style={gameStyle} centered>
                     {this.getHeader(game)}
                     {this.getCapturedPieces('opponent')}
-                    <Grid
-                        style={chessBoardStyle}
-                    >
+                    <Grid style={chessBoardStyle} >
                         {Array.from(Array(8).keys()).map((rank) => {
                             return (
-                                <Grid.Row
-                                    style={boardRankStyle}
-                                >
+                                <Grid.Row style={boardRankStyle} >
                                     {Array.from(Array(8).keys()).map((file) => {
-                                        let color = '#FF8998';
-                                        if (file % 2 == rank % 2) { color = 'white'; }
+                                        const color = file % 2 == rank % 2 ? 'white' : '#FF8998';
 
-                                        let pieceType;
-                                        let pieceColor;
-                                        let pieceId;
-                                        let pieceCoords;
-                                        game.pieces.forEach( (piece) => {
-                                            if (piece.xcord === fileShift + fileSign * file &&
-                                                piece.ycord === rankShift + rankSign * rank) {
-                                                pieceType = 'chess ' + piece.pieceType.toLowerCase();
-                                                pieceColor = piece.color.toLowerCase();
-                                                pieceId = piece.pieceId;
-                                                pieceCoords = [piece.xcord, piece.ycord]
-                                            }
-                                            if (pieceColor === 'white') { pieceColor = 'grey'; }
-                                            if (this.state.selectedPiece === pieceId) {
-                                                pieceColor = '#0BD1FF';
-                                            }
-                                        })
+                                        const [pieceType, pieceColor, pieceId, pieceCoords] = this.getPieceData(
+                                            game, fileShift, fileSign, rankShift, rankSign, file, rank
+                                        );
 
-                                        let blueDot = false;
-                                        let coordsToMoveTo = false
-                                        let pieceInDanger = false
-
-                                        if (this.state.possibleMoves) {
-                                            this.state.possibleMoves.forEach(function (coords) {
-                                                if (coords.x === fileShift + fileSign * file &&
-                                                    coords.y === rankShift + rankSign * rank) {
-                                                    blueDot = true;
-                                                    coordsToMoveTo = coords;
-                                                }
-                                                console.log(pieceCoords);
-                                                if (pieceCoords) {
-                                                    if (coords.x == pieceCoords[0] && coords.y ===  pieceCoords[1]) {
-                                                        pieceInDanger = true;
-                                                    }
-                                                }
-                                            })
-                                        }
-                                        if (pieceInDanger) {console.log(pieceCoords);}
-
-                                        const blueDotsActive = blueDot && this.state.blueDots;
+                                        const [
+                                            blueDot, coordsToMoveTo, pieceInDanger, blueDotsActive
+                                        ] = this.getPossibleMovesData(
+                                            fileShift, fileSign, rankShift, rankSign, file, rank, pieceCoords
+                                        );
 
                                         return(
                                             <Grid.Column
@@ -360,7 +395,18 @@ class GameBoard extends React.Component {
                 );
         }
         else{
-            return (<div>fetching...</div>)
+            return (
+                <Grid style={gameStyle} centered>
+                    <Grid.Row style={{
+                        marginBottom: '270px',
+                        marginTop: '270px'
+                    }}>
+                        <Header as='h3' style={gameHeaderStyle}>
+                            fetching...
+                        </Header>
+                    </Grid.Row>
+                </Grid>
+            )
         }
     }
 }
