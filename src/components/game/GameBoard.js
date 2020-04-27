@@ -108,7 +108,7 @@ class GameBoard extends React.Component {
                 marginTop: '10px',
                 paddingRight: '15px',
                 align: 'center',
-                color: pieceInDanger ? 'red' : pieceColor,
+                color: (pieceInDanger && this.state.blueDots) ? 'red' : pieceColor,
             }}
             name={pieceType}
             size='large'
@@ -279,7 +279,7 @@ class GameBoard extends React.Component {
             })
         }
         const blueDotsActive = blueDot && this.state.blueDots;
-        return [blueDot, coordsToMoveTo, pieceInDanger, blueDotsActive];
+        return [coordsToMoveTo, pieceInDanger, blueDotsActive];
     }
 
     // TODO: make this work (not yet tested)
@@ -320,7 +320,6 @@ class GameBoard extends React.Component {
         const game = this.state.game;
 
         if (game){
-            //const opponent = this.getOpponent(game);
 
             const [fileShift, rankShift, fileSign, rankSign] = this.getRanksAndShifts(game);
 
@@ -339,9 +338,7 @@ class GameBoard extends React.Component {
                                             game, fileShift, fileSign, rankShift, rankSign, file, rank
                                         );
 
-                                        const [
-                                            blueDot, coordsToMoveTo, pieceInDanger, blueDotsActive
-                                        ] = this.getPossibleMovesData(
+                                        const [coordsToMoveTo, pieceInDanger, blueDotsActive] = this.getPossibleMovesData(
                                             fileShift, fileSign, rankShift, rankSign, file, rank, pieceCoords
                                         );
 
