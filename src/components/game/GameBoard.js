@@ -22,7 +22,8 @@ class GameBoard extends React.Component {
             game: null,
             gameId: null,
             possibleMoves: null,
-            selectedPiece: null
+            selectedPiece: null,
+            userId: localStorage.getItem('userId')
         };
     }
 
@@ -96,6 +97,37 @@ class GameBoard extends React.Component {
         }
     }
 
+    getPiece(pieceColor, pieceType, pieceId) {
+        return (<Icon
+            style={{
+                marginTop: '10px',
+                paddingRight: '15px',
+                align: 'center',
+                color: pieceColor,
+            }}
+            name={pieceType}
+            size='large'
+            onClick={() => {
+                this.getPossibleMoves(pieceId, pieceColor);
+            }}
+        />)
+    }
+
+    getBlueDot(coordsToMoveTo) {
+        return (<Icon
+            style={{
+                marginTop: '15px',
+                align: 'center',
+                color: '#0BD1FF',
+            }}
+            name='circle'
+            size='small'
+            onClick={() => {
+                this.moveSelectedPiece(coordsToMoveTo);
+            }}
+        />)
+    }
+
     // resign
     // TODO
     async resign() {
@@ -123,9 +155,8 @@ class GameBoard extends React.Component {
         const game = this.state.game;
 
         if (game){
-            const opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.userId ===
-            localStorage.getItem('userId') ?
-                game.playerBlack.username : game.playerWhite.username) : '';
+            const opponent = game.playerWhite.userId === Number(localStorage.getItem('userId')) ?
+                game.playerBlack.username : game.playerWhite.username;
 
             let fileShift;
             let rankShift;
@@ -146,9 +177,20 @@ class GameBoard extends React.Component {
                 rankSign = 1;
             }
 
+            console.log(typeof this.state.game.playerWhite.userId);
+            console.log(typeof this.state.userId);
+
             // TODO: get rid of all the redundant localStorage accesses
             return (
                 <Grid style={gameStyle} centered>
+                    <Grid.Row style={{marginBottom: '0px'}}>
+                        <Header as='h4' style={gameHeaderStyle}>
+                            {(this.state.game.isWhiteTurn &&
+                              this.state.game.playerWhite.userId === Number(this.state.userId) ?
+                                'Your turn' : 'Opponents turn'
+                            )}
+                        </Header>
+                    </Grid.Row>
                     <Grid.Row style={{marginBottom: '0px'}}>
                         <Header as='h4' style={gameHeaderStyle}>
                             Playing against
@@ -220,32 +262,10 @@ class GameBoard extends React.Component {
                                                 }}
                                             >
                                                 {(pieceType) ? (
-                                                    <Icon
-                                                        style={{
-                                                            marginTop: '10px',
-                                                            paddingRight: '15px',
-                                                            align: 'center',
-                                                            color: pieceColor,
-                                                        }}
-                                                        name={pieceType}
-                                                        size='large'
-                                                        onClick={() => {
-                                                            this.getPossibleMoves(pieceId, pieceColor);
-                                                        }}
-                                                    />) : ((blueDot) ? (
-                                                    <Icon
-                                                        style={{
-                                                            marginTop: '15px',
-                                                            align: 'center',
-                                                            color: '#0BD1FF',
-                                                        }}
-                                                        name='circle'
-                                                        size='small'
-                                                        onClick={() => {
-                                                            this.moveSelectedPiece(coordsToMoveTo);
-                                                        }}
-                                                    />) : (''))
-                                                }
+                                                    this.getPiece(pieceColor, pieceType, pieceId)
+                                                ) : ((blueDot) ? (
+                                                    this.getBlueDot(coordsToMoveTo)
+                                                ) : (''))}
                                             </Grid.Column>
                                         )
                                     })}
