@@ -44,14 +44,14 @@ class GameBoard extends React.Component {
     // get all possible moves for selected piece
     async getPossibleMoves(pieceId, pieceColor) {
         if ((this.state.game.isWhiteTurn &&
-            this.state.game.playerWhite.userId === this.state.userId &&
+            this.state.game.playerWhite.userId === Number(this.state.userId) &&
             pieceColor === 'grey')  ||
             (!this.state.game.isWhiteTurn &&
-            this.state.game.playerBlack.userId === this.state.userId &&
+            this.state.game.playerBlack.userId === Number(this.state.userId) &&
             pieceColor === 'black')) {
             try {
                 const requestBody = JSON.stringify({
-                    userId: localStorage.getItem('userId')
+                    userId: Number(this.state.userId)
                 });
                 const mapping = '/games/' + this.state.game.gameId.toString() + '/' + pieceId.toString();
                 const response = await api.get(mapping, requestBody);
@@ -155,7 +155,7 @@ class GameBoard extends React.Component {
         const game = this.state.game;
 
         if (game){
-            const opponent = game.playerWhite.userId === Number(localStorage.getItem('userId')) ?
+            const opponent = game.playerWhite.userId === Number(this.state.userId) ?
                 game.playerBlack.username : game.playerWhite.username;
 
             let fileShift;
@@ -165,7 +165,7 @@ class GameBoard extends React.Component {
 
             console.log(game)
 
-            if (game.playerWhite.userId === localStorage.getItem('userId')) {
+            if (game.playerWhite.userId === Number(this.state.userId)) {
                 fileShift = 1;
                 rankShift = 8;
                 fileSign = 1;
@@ -176,9 +176,6 @@ class GameBoard extends React.Component {
                 fileSign = -1;
                 rankSign = 1;
             }
-
-            console.log(typeof this.state.game.playerWhite.userId);
-            console.log(typeof this.state.userId);
 
             // TODO: get rid of all the redundant localStorage accesses
             return (
