@@ -282,7 +282,7 @@ class GameBoard extends React.Component {
         return [coordsToMoveTo, pieceInDanger, blueDotsActive];
     }
 
-    // TODO: make this work (not yet tested)
+    // TODO: ensure this works as intendend
     getCapturedPieces(player) {
         const pieceColors = this.state.game.playerWhite.userId === Number(this.state.userId) ? 'WHITE' : 'BLACK';
         let capturedPieces = [];
