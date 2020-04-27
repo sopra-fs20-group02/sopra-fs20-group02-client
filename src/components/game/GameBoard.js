@@ -175,6 +175,55 @@ class GameBoard extends React.Component {
         }
     }
 
+    getHeader(game) {
+        const opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.userId === Number(this.state.userId) ?
+            game.playerWhite.username : game.playerBlack.username) : '';
+        let header;
+        header = ((game.isWhiteTurn && game.playerWhite.userId === Number(this.state.userId)) ||
+                (!game.isWhiteTurn && game.playerBlack.userId === Number(this.state.userId))) ?
+                'Your turn' : opponent + "'s turn"
+        return (
+            <Grid.Row style={{marginBottom: '0px'}}>
+                <Header as='h3' style={gameHeaderStyle}>
+                    {header}
+                </Header>
+            </Grid.Row>
+        );
+    }
+
+    // TODO: make this work (not yet tested)
+    getCapturedPieces(player) {
+        const pieceColors = this.state.game.playerWhite.userId === Number(this.state.userId) ? 'WHITE' : 'BLACK';
+        let capturedPieces = [];
+        this.state.game.pieces.forEach(function (piece) {
+            if (piece.captured) {
+                if (player === 'opponent') {
+                    if (pieceColors !== piece.color) {
+                        capturedPieces.push(piece);
+                    }
+                } else {
+                    if (pieceColors === piece.color) {
+                        capturedPieces.push(piece);
+                    }
+                }
+            }
+        })
+
+        return (
+            <Grid.Row style={capturedPiecesStyle}>
+                {capturedPieces.map(piece => {
+                    return (<Icon
+                        style={{
+                            align: 'center',
+                            color: pieceColors,
+                        }}
+                        name={piece}
+                    />)
+                })}
+            </Grid.Row>
+        )
+    }
+
     render() {
 
         const game = this.state.game;
@@ -202,35 +251,8 @@ class GameBoard extends React.Component {
 
             return (
                 <Grid style={gameStyle} centered>
-                    <Grid.Row style={{marginBottom: '0px'}}>
-                        <Header as='h4' style={gameHeaderStyle}>
-                            {(this.state.game.isWhiteTurn &&
-                              this.state.game.playerWhite.userId === Number(this.state.userId) ?
-                                'Your turn' : 'Opponents turn'
-                            )}
-                        </Header>
-                    </Grid.Row>
-                    <Grid.Row style={{marginBottom: '0px'}}>
-                        <Header as='h4' style={gameHeaderStyle}>
-                            Playing against
-                        </Header>
-                    </Grid.Row>
-                    <Grid.Row style={{marginTop: '0px'}}>
-                        <Header as='h2' style={opponentStyle}>
-                            {opponent}
-                        </Header>
-                    </Grid.Row>
-                    <Grid.Row style={capturedPiecesStyle}>
-                        {['chess king', 'chess pawn'].map(piece => {
-                            return (<Icon // TODO: this is only mockup piece
-                                style={{
-                                    align: 'center',
-                                    color: 'grey',
-                                }}
-                                name={piece}
-                            />)
-                        })}
-                    </Grid.Row>
+                    {this.getHeader(game)}
+                    {this.getCapturedPieces('opponent')}
                     <Grid
                         style={chessBoardStyle}
                     >
@@ -294,17 +316,7 @@ class GameBoard extends React.Component {
                             )
                         })}
                     </Grid>
-                    <Grid.Row style={capturedPiecesStyle}>
-                        {['chess king', 'chess pawn'].map(piece => {
-                            return (<Icon // TODO: this is only mockup piece
-                                style={{
-                                    align: 'center',
-                                    color: 'black',
-                                }}
-                                name={piece}
-                            />)
-                        })}
-                    </Grid.Row>
+                    {this.getCapturedPieces('own')}
                     <Grid.Row columns={2} style={gameFooterStyle}>
                         <Grid.Column textAlign='center'>
                             <Button
