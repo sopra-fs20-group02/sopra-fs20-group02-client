@@ -50,17 +50,17 @@ class GameBoard extends React.Component {
             this.state.game.playerBlack.userId === Number(this.state.userId) &&
             pieceColor === 'black')) {
             try {
-                this.setState({ blueDots: true});
                 const requestBody = JSON.stringify({
                     userId: Number(this.state.userId)
                 });
                 const mapping = '/games/' + this.state.game.gameId + '/' + pieceId.toString();
                 const response = await api.get(mapping, requestBody);
 
-                this.setState({possibleMoves: response.data});
-                this.setState({selectedPiece: pieceId})
-
-                // maybe add force update
+                this.setState({
+                    possibleMoves: response.data,
+                    selectedPiece: pieceId,
+                    blueDots: true
+                });
 
             } catch (error) {
                 if(error.response.status === 409){
@@ -101,18 +101,22 @@ class GameBoard extends React.Component {
         }
     }
 
-    getPiece(pieceColor, pieceType, pieceId, blueDotsActive) {
+    getPiece(pieceColor, pieceType, pieceId, blueDotsActive, pieceInDanger, coordsToMoveTo) {
         return (<Icon
             style={{
                 marginTop: '10px',
                 paddingRight: '15px',
                 align: 'center',
-                color: pieceColor,
+                color: pieceInDanger ? 'red' : pieceColor,
             }}
             name={pieceType}
             size='large'
             onClick={() => {
-                this.getPossibleMoves(pieceId, pieceColor);
+                if (!pieceInDanger) {
+                    this.getPossibleMoves(pieceId, pieceColor);
+                } else {
+                    this.moveSelectedPiece(coordsToMoveTo);
+                }
             }}
         />)
     }
@@ -268,12 +272,14 @@ class GameBoard extends React.Component {
                                         let pieceType;
                                         let pieceColor;
                                         let pieceId;
+                                        let pieceCoords;
                                         game.pieces.forEach( (piece) => {
                                             if (piece.xcord === fileShift + fileSign * file &&
                                                 piece.ycord === rankShift + rankSign * rank) {
                                                 pieceType = 'chess ' + piece.pieceType.toLowerCase();
                                                 pieceColor = piece.color.toLowerCase();
                                                 pieceId = piece.pieceId;
+                                                pieceCoords = [piece.xcord, piece.ycord]
                                             }
                                             if (pieceColor === 'white') { pieceColor = 'grey'; }
                                             if (this.state.selectedPiece === pieceId) {
@@ -282,7 +288,8 @@ class GameBoard extends React.Component {
                                         })
 
                                         let blueDot = false;
-                                        let coordsToMoveTo;
+                                        let coordsToMoveTo = false
+                                        let pieceInDanger = false
 
                                         if (this.state.possibleMoves) {
                                             this.state.possibleMoves.forEach(function (coords) {
@@ -291,8 +298,15 @@ class GameBoard extends React.Component {
                                                     blueDot = true;
                                                     coordsToMoveTo = coords;
                                                 }
+                                                console.log(pieceCoords);
+                                                if (pieceCoords) {
+                                                    if (coords.x == pieceCoords[0] && coords.y ===  pieceCoords[1]) {
+                                                        pieceInDanger = true;
+                                                    }
+                                                }
                                             })
                                         }
+                                        if (pieceInDanger) {console.log(pieceCoords);}
 
                                         const blueDotsActive = blueDot && this.state.blueDots;
 
@@ -305,7 +319,10 @@ class GameBoard extends React.Component {
                                                 }}
                                             >
                                                 {(pieceType) ? (
-                                                    this.getPiece(pieceColor, pieceType, pieceId, blueDotsActive)
+                                                    this.getPiece(
+                                                        pieceColor, pieceType, pieceId, blueDotsActive,
+                                                        pieceInDanger, coordsToMoveTo
+                                                    )
                                                 ) : ((blueDotsActive) ? (
                                                     this.getBlueDot(coordsToMoveTo)
                                                 ) : (''))}
@@ -345,8 +362,6 @@ class GameBoard extends React.Component {
         else{
             return (<div>fetching...</div>)
         }
-
-
     }
 }
 
