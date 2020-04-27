@@ -11,8 +11,26 @@ class Waiting extends React.Component {
     constructor() {
         super();
         this.state = {
-            quote: localStorage.getItem('quote'),
+            quote: null
         };
+    }
+
+    componentDidMount() {
+        this.getRandomQuote();
+        this.handleWaiting();
+    }
+
+    // gets random quote
+    async getRandomQuote() {
+        try {
+            const response = await api.get('https://quotes.rest/qod.json');
+            this.setState({quote: response.data.contents.quotes[0].quote})
+        }
+        catch(error) {
+            alert(`Something went wrong during the quote fetching: \n${
+                handleError(error)
+            }`);
+        }
     }
 
     // update game status
@@ -37,14 +55,15 @@ class Waiting extends React.Component {
     }
 
     async handleWaiting() {
-        let status = 'WAITING';
-        while (status === 'WAITING') {
+        let status;
+        do {
             setInterval(async () => {
-                window.alert(status);
                 status = fetchGameStatus().gameStatus;
+                console.log(status)
                 // TODO: make smaller intervals
-            }, 10000);
-        }
+            }, 500);
+        } while (status === 'WAITING');
+
         if (status === 'FULL') {
             this.props.history.push('/game');
         }
@@ -52,8 +71,6 @@ class Waiting extends React.Component {
 
 
     render() {
-        // this.handleWaiting()
-
         return (
         <Grid style={waitingPageStyle} centered>
             <Grid.Row>

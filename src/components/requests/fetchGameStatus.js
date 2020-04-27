@@ -13,10 +13,6 @@ export const fetchGameStatus = async (userId, gameId) => {
     return gameStatus;
 
   } catch (error) {
-    if (error.response.status === 409) {
-      alert(error.response.data);
-    } else {
       alert(`Something went wrong while trying to get the game status: \n${handleError(error)}`);
-    }
   }
 };

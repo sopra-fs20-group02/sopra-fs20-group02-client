@@ -10,7 +10,7 @@ import {
 
 // TODO: use state or functional component instead of localStorage !
 
-class Game extends React.Component {
+class GameBoard extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -303,4 +303,4 @@ class Game extends React.Component {
     }
 }
 
-export default withRouter(Game);
+export default withRouter(GameBoard);

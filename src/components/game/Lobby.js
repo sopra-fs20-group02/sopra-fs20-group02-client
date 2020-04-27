@@ -11,12 +11,12 @@ class Lobby extends React.Component {
   constructor() {
     super();
     this.state = {
-      users: null,
+      games: null,
     };
   }
 
   componentDidMount() {
-    this.getUsers()
+    this.getGames()
   }
 
   // logs out user
@@ -34,19 +34,6 @@ class Lobby extends React.Component {
     this.props.history.push('/login');
   }
 
-  // gets random quote
-  async getRandomQuote() {
-    try {
-      const response = await api.get('https://quotes.rest/qod.json');
-      const quote = response.data.contents.quotes[0].quote;
-      localStorage.setItem('quote', quote);
-    }
-    catch(error) {
-      alert(`Something went wrong during the quote fetching: \n${
-          handleError(error)
-      }`);
-    }
-  }
 
   // creates game with user and chosen opponent
   async createGame() {
@@ -55,31 +42,53 @@ class Lobby extends React.Component {
         userId: localStorage.getItem('userId')
       });
       const response = await api.post('/games', requestBody);
-      localStorage.setItem('game', JSON.stringify(response.data));
-      this.setState({ game : response.data });
-      return response.data;
-
+      const game = response.data;
+      this.navigateToGame(game)
     } catch (error) {
       alert(`Something went wrong while creating the game: \n${handleError(error)}`);
     }
   }
 
-  async handlePlay() {
-    const game = await this.createGame();
-    let status = game.gameStatus;
-    window.alert(status);
+  async joinRandomGame(){
+    try {
+      const requestBody = JSON.stringify({
+        userId: localStorage.getItem('userId')
+      });
+      const response = await api.put('/games', requestBody);
+      const game = response.data;
+      this.navigateToGame(game)
+    } catch (error) {
+      alert(`Something went wrong while creating the game: \n${handleError(error)}`);
+    }
+  }
+
+  async joinSpecificGame(game){
+    console.log(game);
+    try {
+      const requestBody = JSON.stringify({
+        userId: localStorage.getItem('userId'),
+        gameId: game.gameId
+      });
+      const response = await api.put('/games', requestBody);
+      this.navigateToGame(game)
+    } catch (error) {
+      alert(`Something went wrong while creating the game: \n${handleError(error)}`);
+    }
+  }
+
+  async navigateToGame(game){
+    const status = game.gameStatus;
     if (status === 'FULL') {
       this.props.history.push('/game');
     } else {
-      this.getRandomQuote();
       this.props.history.push('/waiting');
     }
   }
 
-  async getUsers() {
+  async getGames() {
     try {
-      const response = await api.get('/users');
-      this.setState({ users: response.data });
+      const response = await api.get('/games');
+      this.setState({ games: response.data });
     } catch (error) {
       alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
     }
@@ -93,33 +102,40 @@ class Lobby extends React.Component {
           <Grid.Row style={lobbyHeaderStyle}>
             <Button
                 onClick={() => {
-                  this.handlePlay();
+                  this.createGame();
                 }}
                 style={playerButtonStyle}
             >
-              Random Game
+              Create random game
+            </Button>
+            <Button
+                onClick={() => {
+                  this.joinRandomGame();
+                }}
+                style={playerButtonStyle}
+            >
+              Join random game
             </Button>
           </Grid.Row>
           <Header as='h3' style={lobbyTextStyle}>
-            or choose an opponent:
+            or select an existing game:
           </Header>
           <Grid.Row>
             <List style={playersListStyle}>
-              {this.state.users && this.state.users.map(user => {
-                if (parseInt(localStorage.getItem('userId'), 10)!== user.userId) {
-                  return (
-                      <List.Item style={userItemStyle}>
-                        <Button
-                            onClick={() => {
-                              this.handlePlay();
-                            }}
-                            style={playerButtonStyle}
-                        >
-                          {user.username}
-                        </Button>
-                      </List.Item>
-                  );
-                }
+              {this.state.games && this.state.games.map(game => {
+                return (
+                    <List.Item style={userItemStyle}>
+                      <Button
+                          onClick={() => {
+                            this.joinSpecificGame(game);
+                          }}
+                          style={playerButtonStyle}
+                      >
+                        {game.gameId}
+                      </Button>
+                    </List.Item>
+                );
+
               })}
             </List>
 
