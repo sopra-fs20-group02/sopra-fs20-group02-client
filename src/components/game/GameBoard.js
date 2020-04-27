@@ -28,15 +28,10 @@ class GameBoard extends React.Component {
 
     async componentDidMount() {
         this.setState({gameId: this.props.location.state.gameId});
-        console.log(this.props.location.state.gameId);
-        const game = await fetchGameStatus(localStorage.getItem('userId'), this.props.location.state.gameId);
-        this.setState({
-            game: game
-        });
         this.interval = setInterval(async () => {
             if (this.state.gameId){
                 const gameStatusObject = await fetchGameStatus(localStorage.getItem('userId'), this.state.gameId);
-                this.setState({game: gameStatusObject})
+                this.setState({game: gameStatusObject.data})
             }
         }, 1000);
     }
@@ -125,173 +120,180 @@ class GameBoard extends React.Component {
     }
 
     render() {
-
         const game = this.state.game;
-        console.log(game);
 
-        const opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.userId ===
+        if (game){
+            const opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.userId ===
             localStorage.getItem('userId') ?
-            game.playerBlack.username : game.playerWhite.username) : '';
+                game.playerBlack.username : game.playerWhite.username) : '';
 
-        let fileShift;
-        let rankShift;
-        let fileSign;
-        let rankSign;
+            let fileShift;
+            let rankShift;
+            let fileSign;
+            let rankSign;
 
-        if (this.state.game.playerWhite.userId === this.state.userId) {
-            fileShift = 1;
-            rankShift = 8;
-            fileSign = 1;
-            rankSign = -1;
-        } else {
-            fileShift = 8;
-            rankShift = 1;
-            fileSign = -1;
-            rankSign = 1;
+            console.log(game)
+
+            if (game.playerWhite.userId === localStorage.getItem('userId')) {
+                fileShift = 1;
+                rankShift = 8;
+                fileSign = 1;
+                rankSign = -1;
+            } else {
+                fileShift = 8;
+                rankShift = 1;
+                fileSign = -1;
+                rankSign = 1;
+            }
+
+            // TODO: get rid of all the redundant localStorage accesses
+            return (
+                <Grid style={gameStyle} centered>
+                    <Grid.Row style={{marginBottom: '0px'}}>
+                        <Header as='h4' style={gameHeaderStyle}>
+                            Playing against
+                        </Header>
+                    </Grid.Row>
+                    <Grid.Row style={{marginTop: '0px'}}>
+                        <Header as='h2' style={opponentStyle}>
+                            {opponent}
+                        </Header>
+                    </Grid.Row>
+                    <Grid.Row style={capturedPiecesStyle}>
+                        {['chess king', 'chess pawn'].map(piece => {
+                            return (<Icon // TODO: this is only mockup piece
+                                style={{
+                                    align: 'center',
+                                    color: 'grey',
+                                }}
+                                name={piece}
+                            />)
+                        })}
+                    </Grid.Row>
+                    <Grid
+                        style={chessBoardStyle}
+                    >
+                        {Array.from(Array(8).keys()).map((rank) => {
+                            return (
+                                <Grid.Row
+                                    style={boardRankStyle}
+                                >
+                                    {Array.from(Array(8).keys()).map((file) => {
+                                        let color = '#FF8998';
+                                        if (file % 2 == rank % 2) { color = 'white'; }
+
+                                        let pieceType;
+                                        let pieceColor;
+                                        let pieceId;
+                                        game.pieces.forEach( (piece) => {
+                                            if (piece.xcord === fileShift + fileSign * file &&
+                                                piece.ycord === rankShift + rankSign * rank) {
+                                                pieceType = 'chess ' + piece.pieceType.toLowerCase();
+                                                pieceColor = piece.color.toLowerCase();
+                                                pieceId = piece.pieceId;
+                                            }
+                                            if (pieceColor === 'white') { pieceColor = 'grey'; }
+                                            if (this.state.selectedPiece === pieceId) {
+                                                pieceColor = '#0BD1FF';
+                                            }
+                                        })
+
+                                        let blueDot = false;
+                                        let coordsToMoveTo;
+
+                                        if (this.state.possibleMoves) {
+                                            this.state.possibleMoves.forEach(function (coords) {
+                                                if (coords.x === fileShift + fileSign * file &&
+                                                    coords.y === rankShift + rankSign * rank) {
+                                                    blueDot = true;
+                                                    coordsToMoveTo = coords;
+                                                }
+                                            })
+                                        }
+
+                                        return(
+                                            <Grid.Column
+                                                width={2} style={{
+                                                    alignContent: 'center',
+                                                    background: color,
+                                                    height: '40px'
+                                                }}
+                                            >
+                                                {(pieceType) ? (
+                                                    <Icon
+                                                        style={{
+                                                            marginTop: '10px',
+                                                            paddingRight: '15px',
+                                                            align: 'center',
+                                                            color: pieceColor,
+                                                        }}
+                                                        name={pieceType}
+                                                        size='large'
+                                                        onClick={() => {
+                                                            this.getPossibleMoves(pieceId, pieceColor);
+                                                        }}
+                                                    />) : ((blueDot) ? (
+                                                    <Icon
+                                                        style={{
+                                                            marginTop: '15px',
+                                                            align: 'center',
+                                                            color: '#0BD1FF',
+                                                        }}
+                                                        name='circle'
+                                                        size='small'
+                                                        onClick={() => {
+                                                            this.moveSelectedPiece(coordsToMoveTo);
+                                                        }}
+                                                    />) : (''))
+                                                }
+                                            </Grid.Column>
+                                        )
+                                    })}
+                                </Grid.Row>
+                            )
+                        })}
+                    </Grid>
+                    <Grid.Row style={capturedPiecesStyle}>
+                        {['chess king', 'chess pawn'].map(piece => {
+                            return (<Icon // TODO: this is only mockup piece
+                                style={{
+                                    align: 'center',
+                                    color: 'black',
+                                }}
+                                name={piece}
+                            />)
+                        })}
+                    </Grid.Row>
+                    <Grid.Row columns={2} style={gameFooterStyle}>
+                        <Grid.Column textAlign='center'>
+                            <Button
+                                style={gameButtonStyle}
+                                onClick={() => {
+                                    this.resign();
+                                }}
+                            >
+                                Resign
+                            </Button>
+                        </Grid.Column>
+                        <Grid.Column textAlign='center'>
+                            <Button
+                                style={gameButtonStyle}
+                                onClick={() => {
+                                    this.test();
+                                }}
+                            >
+                                Test
+                            </Button>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+                );
+        }
+        else{
+            return (<div>fetching...</div>)
         }
 
-        // TODO: get rid of all the redundant localStorage accesses
-        return (<div>test</div>);/*(
-        <Grid style={gameStyle} centered>
-            <Grid.Row style={{marginBottom: '0px'}}>
-                <Header as='h4' style={gameHeaderStyle}>
-                    Playing against
-                </Header>
-            </Grid.Row>
-            <Grid.Row style={{marginTop: '0px'}}>
-                <Header as='h2' style={opponentStyle}>
-                    {opponent}
-                </Header>
-            </Grid.Row>
-            <Grid.Row style={capturedPiecesStyle}>
-                {['chess king', 'chess pawn'].map(piece => {
-                    return (<Icon // TODO: this is only mockup piece
-                        style={{
-                            align: 'center',
-                            color: 'grey',
-                        }}
-                        name={piece}
-                    />)
-                })}
-            </Grid.Row>
-            <Grid
-                style={chessBoardStyle}
-            >
-                {Array.from(Array(8).keys()).map((rank) => {
-                    return (
-                        <Grid.Row
-                            style={boardRankStyle}
-                        >
-                            {Array.from(Array(8).keys()).map((file) => {
-                                let color = '#FF8998';
-                                if (file % 2 == rank % 2) { color = 'white'; }
 
-                                let pieceType;
-                                let pieceColor;
-                                let pieceId;
-                                game.pieces.forEach(function (piece) {
-                                    if (piece.xcord === fileShift + fileSign * file &&
-                                        piece.ycord === rankShift + rankSign * rank) {
-                                        pieceType = 'chess ' + piece.pieceType.toLowerCase();
-                                        pieceColor = piece.color.toLowerCase();
-                                        pieceId = piece.pieceId;
-                                    }
-                                    if (pieceColor === 'white') { pieceColor = 'grey'; }
-                                    if (this.state.selectedPiece === pieceId) {
-                                        pieceColor = '#0BD1FF';
-                                    }
-                                })
-
-                                let blueDot = false;
-                                let coordsToMoveTo;
-
-                                if (this.state.possibleMoves) {
-                                    this.state.possibleMoves.forEach(function (coords) {
-                                        if (coords.x === fileShift + fileSign * file &&
-                                            coords.y === rankShift + rankSign * rank) {
-                                            blueDot = true;
-                                            coordsToMoveTo = coords;
-                                        }
-                                    })
-                                }
-
-                                return(
-                                    <Grid.Column
-                                        width={2} style={{
-                                            alignContent: 'center',
-                                            background: color,
-                                            height: '40px'
-                                        }}
-                                    >
-                                        {(pieceType) ? (
-                                            <Icon
-                                                style={{
-                                                    marginTop: '10px',
-                                                    paddingRight: '15px',
-                                                    align: 'center',
-                                                    color: pieceColor,
-                                                }}
-                                                name={pieceType}
-                                                size='large'
-                                                onClick={() => {
-                                                    this.getPossibleMoves(pieceId, pieceColor);
-                                                }}
-                                            />) : ((blueDot) ? (
-                                            <Icon
-                                                style={{
-                                                    marginTop: '15px',
-                                                    align: 'center',
-                                                    color: '#0BD1FF',
-                                                }}
-                                                name='circle'
-                                                size='small'
-                                                onClick={() => {
-                                                    this.moveSelectedPiece(coordsToMoveTo);
-                                                }}
-                                            />) : (''))
-                                        }
-                                    </Grid.Column>
-                                )
-                            })}
-                        </Grid.Row>
-                    )
-                })}
-            </Grid>
-            <Grid.Row style={capturedPiecesStyle}>
-                {['chess king', 'chess pawn'].map(piece => {
-                    return (<Icon // TODO: this is only mockup piece
-                        style={{
-                            align: 'center',
-                            color: 'black',
-                        }}
-                        name={piece}
-                    />)
-                })}
-            </Grid.Row>
-            <Grid.Row columns={2} style={gameFooterStyle}>
-                <Grid.Column textAlign='center'>
-                    <Button
-                        style={gameButtonStyle}
-                        onClick={() => {
-                            this.resign();
-                        }}
-                    >
-                        Resign
-                    </Button>
-                </Grid.Column>
-                <Grid.Column textAlign='center'>
-                    <Button
-                        style={gameButtonStyle}
-                        onClick={() => {
-                            this.test();
-                        }}
-                    >
-                        Test
-                    </Button>
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
-        );*/
     }
 }
 
