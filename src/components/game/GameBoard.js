@@ -50,12 +50,13 @@ class GameBoard extends React.Component {
             this.state.game.playerBlack.userId === Number(this.state.userId) &&
             pieceColor === 'black')) {
             try {
+                this.setState({ blueDots: true});
                 const requestBody = JSON.stringify({
                     userId: Number(this.state.userId)
                 });
                 const mapping = '/games/' + this.state.game.gameId + '/' + pieceId.toString();
                 const response = await api.get(mapping, requestBody);
-                
+
                 this.setState({possibleMoves: response.data});
                 this.setState({selectedPiece: pieceId})
 
@@ -84,8 +85,11 @@ class GameBoard extends React.Component {
             const response = await api.put(mapping, requestBody);
 
             this.setState({
-                game: JSON.stringify(response.data)
+                game: response.data,
+                selectedPiece: null,
+                blueDots: false,
             });
+
 
         } catch (error) {
             if(error.response.status === 409){
@@ -97,7 +101,7 @@ class GameBoard extends React.Component {
         }
     }
 
-    getPiece(pieceColor, pieceType, pieceId) {
+    getPiece(pieceColor, pieceType, pieceId, blueDotsActive) {
         return (<Icon
             style={{
                 marginTop: '10px',
@@ -150,6 +154,27 @@ class GameBoard extends React.Component {
         }
     }
 
+    async offerDraw() {
+        // TODO: use correct request
+        try {
+            const params = JSON.stringify({
+                token: localStorage.getItem('token'),
+            });
+            const mapping = '/games/' + this.state.game.gameId.toString();
+
+            const response = await api.put(mapping, {params: params});
+            window.alert('You lost');
+
+        } catch (error) {
+            if(error.response.status === 409){
+                alert(error.response.data);
+            }
+            else {
+                alert(`Something went wrong while trying to offer draw: \n${handleError(error)}`);
+            }
+        }
+    }
+
     render() {
 
         const game = this.state.game;
@@ -175,10 +200,6 @@ class GameBoard extends React.Component {
                 rankSign = 1;
             }
 
-            // TODO: get rid of all the redundant localStorage accesses
-            /*window.alert(this.state.game.isWhiteTurn);
-            window.alert(this.state.game.playerWhite.userId);
-            window.alert(this.state.userId);*/
             return (
                 <Grid style={gameStyle} centered>
                     <Grid.Row style={{marginBottom: '0px'}}>
@@ -251,6 +272,8 @@ class GameBoard extends React.Component {
                                             })
                                         }
 
+                                        const blueDotsActive = blueDot && this.state.blueDots;
+
                                         return(
                                             <Grid.Column
                                                 width={2} style={{
@@ -260,8 +283,8 @@ class GameBoard extends React.Component {
                                                 }}
                                             >
                                                 {(pieceType) ? (
-                                                    this.getPiece(pieceColor, pieceType, pieceId)
-                                                ) : ((blueDot) ? (
+                                                    this.getPiece(pieceColor, pieceType, pieceId, blueDotsActive)
+                                                ) : ((blueDotsActive) ? (
                                                     this.getBlueDot(coordsToMoveTo)
                                                 ) : (''))}
                                             </Grid.Column>
@@ -297,10 +320,10 @@ class GameBoard extends React.Component {
                             <Button
                                 style={gameButtonStyle}
                                 onClick={() => {
-                                    this.test();
+                                    this.offerDraw();
                                 }}
                             >
-                                Test
+                                Offer draw
                             </Button>
                         </Grid.Column>
                     </Grid.Row>
