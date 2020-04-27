@@ -16,7 +16,6 @@ class Lobby extends React.Component {
   }
 
   componentDidMount() {
-    console.log(localStorage.getItem('id'))
     this.getUsers()
   }
 
@@ -24,7 +23,7 @@ class Lobby extends React.Component {
   async logout() {
     try {
       const requestBody = JSON.stringify({
-        userId: localStorage.getItem('id')
+        userId: localStorage.getItem('userId')
       });
       const response = await api.put('/logout', requestBody);
 
@@ -53,7 +52,7 @@ class Lobby extends React.Component {
   async createGame() {
     try {
       const requestBody = JSON.stringify({
-        userId: localStorage.getItem('id')
+        userId: localStorage.getItem('userId')
       });
       const response = await api.post('/games', requestBody);
       localStorage.setItem('game', JSON.stringify(response.data));
@@ -107,9 +106,7 @@ class Lobby extends React.Component {
           <Grid.Row>
             <List style={playersListStyle}>
               {this.state.users && this.state.users.map(user => {
-                if (localStorage.getItem('id') !== user.userId) {
-                  console.log(user.userId);
-                  console.log(localStorage.getItem('id'));
+                if (parseInt(localStorage.getItem('userId'), 10)!== user.userId) {
                   return (
                       <List.Item style={userItemStyle}>
                         <Button
