@@ -76,10 +76,10 @@ class GameBoard extends React.Component {
     async moveSelectedPiece(coords) {
         try {
             const requestBody = JSON.stringify({
-                x : coords[0],
-                y : coords[1]
+                x : coords.x,
+                y : coords.y
             });
-            const mapping = '/games/' + this.state.game.gameId.toString() + '/' +
+            const mapping = '/games/' + this.state.game.gameId + '/' +
                 this.state.selectedPiece.toString();
             const response = await api.put(mapping, requestBody);
 
@@ -154,8 +154,8 @@ class GameBoard extends React.Component {
         const game = this.state.game;
 
         if (game){
-            const opponent = game.playerWhite.userId === Number(this.state.userId) ?
-                game.playerBlack.username : game.playerWhite.username;
+            const opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.userId === Number(this.state.userId) ?
+                game.playerBlack.username : game.playerWhite.username) : '';
 
             let fileShift;
             let rankShift;
