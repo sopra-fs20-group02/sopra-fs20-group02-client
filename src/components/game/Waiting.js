@@ -47,7 +47,10 @@ class Waiting extends React.Component {
 
             if (status === 'FULL') {
                 clearInterval(interval);
-                this.props.history.push('/game');
+                this.props.history.push({
+                    pathname: '/game',
+                    state: { gameId: game.gameId }
+                });
             }
 
             // TODO: make smaller intervals

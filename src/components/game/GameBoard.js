@@ -7,6 +7,7 @@ import {
     chessBoardStyle, boardRankStyle, quoteStyle, gameFooterStyle,
     capturedPiecesStyle
 } from "../../data/styles";
+import {fetchGameStatus} from "../requests/fetchGameStatus";
 
 // TODO: use state or functional component instead of localStorage !
 
@@ -14,13 +15,21 @@ class GameBoard extends React.Component {
     constructor() {
         super();
         this.state = {
-            userId: JSON.parse(localStorage.getItem('user')).userId,
             pieces: [
                 'chess bishop', 'chess king', 'chess knight',
                 'chess pawn', 'chess queen', 'chess rook'
             ],
-            game: JSON.parse(localStorage.getItem('game')),
+            game: null,
+            possibleMoves: null,
+            selectedPiece: null
         };
+    }
+
+    componentDidMount() {
+        this.setState({gameId: this.props.location.state.gameId});
+        this.setState({
+            game: fetchGameStatus(localStorage.getItem('userId'), this.state.gameId)
+        })
     }
 
     // get all possible moves for selected piece
@@ -33,14 +42,15 @@ class GameBoard extends React.Component {
             pieceColor === 'black')) {
             try {
                 const requestBody = JSON.stringify({
-                    userId: JSON.parse(localStorage.getItem('user')).userId
+                    userId: localStorage.getItem('userId')
                 });
                 const mapping = '/games/' + this.state.game.gameId.toString() + '/' + pieceId.toString();
                 const response = await api.get(mapping, requestBody);
 
-                localStorage.setItem('possibleMoves', JSON.stringify(response.data));
-                localStorage.setItem('selectedPiece', pieceId);
-                window.location.reload();
+                this.setState({possibleMoves: JSON.stringify(response.data)})
+                this.setState({selectedPiece: pieceId})
+
+                // maybe add force update
 
             } catch (error) {
                 if(error.response.status === 409){
@@ -61,12 +71,12 @@ class GameBoard extends React.Component {
                 y : coords[1]
             });
             const mapping = '/games/' + this.state.game.gameId.toString() + '/' +
-                localStorage.getItem('selectedPiece').toString();
+                this.state.selectedPiece.toString();
             const response = await api.put(mapping, requestBody);
 
-            localStorage.setItem('game', JSON.stringify(response.data));
-            localStorage.removeItem('selectedPiece');
-            window.location.reload();
+            this.setState({
+                game: JSON.stringify(response.data)
+            });
 
         } catch (error) {
             if(error.response.status === 409){
@@ -79,6 +89,7 @@ class GameBoard extends React.Component {
     }
 
     // resign
+    // TODO
     async resign() {
         try {
             const params = JSON.stringify({
@@ -89,8 +100,6 @@ class GameBoard extends React.Component {
             const response = await api.put(mapping, {params: params});
             window.alert('You lost');
 
-            localStorage.removeItem('game');
-            localStorage.removeItem('selectedPiece');
 
         } catch (error) {
             if(error.response.status === 409){
@@ -102,44 +111,20 @@ class GameBoard extends React.Component {
         }
     }
 
-    // update game status
-    async fetchGameStatus() {
-        try {
-            const parameters = JSON.stringify({
-                userId: JSON.parse(localStorage.getItem('user')).userId,
-            });
-            const mapping = '/games/' + this.state.game.gameId.toString();
-
-            const game = await api.get(mapping, {params: parameters});
-            this.setState({ game : game });
-
-        } catch (error) {
-            if(error.response.status === 409){
-                alert(error.response.data);
-            }
-            else {
-                alert(`Something went wrong while trying to get the game status: \n${handleError(error)}`);
-            }
-        }
-    }
-
-
-    async test() {
-
-    }
-
     render() {
 
         // fetch game state every 10 seconds TODO: make smaller intervals
         setInterval(async () => {
-            this.fetchGameStatus.bind(this);
-        }, 10000);
+            if (this.state.gameId){
+                const gameStatusObject = await fetchGameStatus(localStorage.getItem('userId'), this.state.gameId);
+                this.setState({game: gameStatusObject})
+            }
+        }, 500);
 
-        const game = JSON.parse(localStorage.getItem('game'));
+        const game = this.state.game;
 
-        let opponent
-        opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.username ===
-            JSON.parse(localStorage.getItem('user')).username ?
+        const opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.userId ===
+            localStorage.getItem('userId') ?
             game.playerBlack.username : game.playerWhite.username) : '';
 
         let fileShift;
