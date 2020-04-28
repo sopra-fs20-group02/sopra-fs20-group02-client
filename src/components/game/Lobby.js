@@ -77,14 +77,17 @@ class Lobby extends React.Component {
 
   async navigateToGame(game){
     const status = game.gameStatus;
-    if (status === 'FULL') {
+    /*if (status === 'FULL') {
       this.props.history.push('/game');
     } else {
       this.props.history.push({
           pathname: '/waiting',
           state: { gameId: game.gameId }
-      });
-    }
+      });*/
+    this.props.history.push({
+      pathname: '/waiting',
+      state: { gameId: game.gameId }
+    })
   }
 
   async getGames() {

@@ -29,8 +29,8 @@ export const lobbyTextStyle = {
 
 
 export const gameHeaderStyle = {
-    marginTop: '10px',
-    marginBottom: '0px',
+    marginTop: '50px',
+    marginBottom: '35px',
     color: 'white'
 }
 
@@ -90,8 +90,8 @@ export const gameButtonStyle = {
     background: 'white',
     width: '80%',
     borderRadius: '20px',
-    marginBottom: '20px',
-    marginTop: '10px',
+    marginBottom: '30px',
+    marginTop: '25px',
     color: 'black',
 }
 
