@@ -23,7 +23,8 @@ class GameBoard extends React.Component {
             gameId: null,
             possibleMoves: null,
             selectedPiece: null,
-            userId: localStorage.getItem('userId')
+            userId: localStorage.getItem('userId'),
+            isWatching: null
         };
     }
 
@@ -33,6 +34,10 @@ class GameBoard extends React.Component {
             if (this.state.gameId){
                 const gameStatusObject = await fetchGameStatus(localStorage.getItem('userId'), this.state.gameId);
                 this.setState({game: gameStatusObject.data})
+                this.setState({
+                    isWatching: ( Number(this.state.userId) !== this.state.game.playerWhite.userId
+                        && Number(this.state.userId) !== this.state.game.playerBlack.userId)
+                })
             }
         }, 1000);
     }
@@ -43,31 +48,33 @@ class GameBoard extends React.Component {
 
     // gets all possible moves for the selected piece
     async getPossibleMoves(pieceId, pieceColor) {
-        if ((this.state.game.isWhiteTurn &&
-            this.state.game.playerWhite.userId === Number(this.state.userId) &&
-            pieceColor === 'grey')  ||
-            (!this.state.game.isWhiteTurn &&
-            this.state.game.playerBlack.userId === Number(this.state.userId) &&
-            pieceColor === 'black')) {
-            try {
-                const requestBody = JSON.stringify({
-                    userId: Number(this.state.userId)
-                });
-                const mapping = '/games/' + this.state.game.gameId + '/' + pieceId.toString();
-                const response = await api.get(mapping, requestBody);
+        if (!this.state.isWatching){
+            if ((this.state.game.isWhiteTurn &&
+                this.state.game.playerWhite.userId === Number(this.state.userId) &&
+                pieceColor === 'grey')  ||
+                (!this.state.game.isWhiteTurn &&
+                    this.state.game.playerBlack.userId === Number(this.state.userId) &&
+                    pieceColor === 'black')) {
+                try {
+                    const requestBody = JSON.stringify({
+                        userId: Number(this.state.userId)
+                    });
+                    const mapping = '/games/' + this.state.game.gameId + '/' + pieceId.toString();
+                    const response = await api.get(mapping, requestBody);
 
-                this.setState({
-                    possibleMoves: response.data,
-                    selectedPiece: pieceId,
-                    blueDots: true
-                });
+                    this.setState({
+                        possibleMoves: response.data,
+                        selectedPiece: pieceId,
+                        blueDots: true
+                    });
 
-            } catch (error) {
-                if(error.response.status === 409){
-                    alert(error.response.data);
-                }
-                else {
-                    alert(`Something went wrong while getting the possible moves: \n${handleError(error)}`);
+                } catch (error) {
+                    if(error.response.status === 409){
+                        alert(error.response.data);
+                    }
+                    else {
+                        alert(`Something went wrong while getting the possible moves: \n${handleError(error)}`);
+                    }
                 }
             }
         }
@@ -75,28 +82,30 @@ class GameBoard extends React.Component {
 
     // moves the piece
     async moveSelectedPiece(coords) {
-        try {
-            const requestBody = JSON.stringify({
-                x : coords.x,
-                y : coords.y
-            });
-            const mapping = '/games/' + this.state.game.gameId + '/' +
-                this.state.selectedPiece.toString();
-            const response = await api.put(mapping, requestBody);
+        if (!this.state.isWatching){
+            try {
+                const requestBody = JSON.stringify({
+                    x : coords.x,
+                    y : coords.y
+                });
+                const mapping = '/games/' + this.state.game.gameId + '/' +
+                    this.state.selectedPiece.toString();
+                const response = await api.put(mapping, requestBody);
 
-            this.setState({
-                game: response.data,
-                selectedPiece: null,
-                blueDots: false,
-            });
+                this.setState({
+                    game: response.data,
+                    selectedPiece: null,
+                    blueDots: false,
+                });
 
 
-        } catch (error) {
-            if(error.response.status === 409){
-                alert(error.response.data);
-            }
-            else {
-                alert(`Something went wrong while trying to make a move: \n${handleError(error)}`);
+            } catch (error) {
+                if(error.response.status === 409){
+                    alert(error.response.data);
+                }
+                else {
+                    alert(`Something went wrong while trying to make a move: \n${handleError(error)}`);
+                }
             }
         }
     }
@@ -199,11 +208,17 @@ class GameBoard extends React.Component {
     getHeader(game) {
         const opponent = this.getOpponentName(game);
         let header;
-        if ((game.isWhiteTurn && game.playerWhite.userId === Number(this.state.userId)) ||
-            (!game.isWhiteTurn && game.playerBlack.userId === Number(this.state.userId))) {
-            header = 'Your turn';
-        } else {
-            header = opponent + "'s turn";
+        console.log(this.state.isWatching)
+        if (!this.state.isWatching){
+            if ((game.isWhiteTurn && game.playerWhite.userId === Number(this.state.userId)) ||
+                (!game.isWhiteTurn && game.playerBlack.userId === Number(this.state.userId))) {
+                header = 'Your turn';
+            } else {
+                header = opponent + "'s turn";
+            }
+        }
+        else{
+            header = 'Watch mode'
         }
 
         return (

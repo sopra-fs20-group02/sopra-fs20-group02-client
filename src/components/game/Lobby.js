@@ -75,15 +75,17 @@ class Lobby extends React.Component {
     }
   }
 
+  async watchGame(game){
+    console.log(game);
+    try {
+      this.navigateToGame(game)
+    } catch (error) {
+      alert(`Something went wrong while creating the game: \n${handleError(error)}`);
+    }
+  }
+
   async navigateToGame(game){
     const status = game.gameStatus;
-    /*if (status === 'FULL') {
-      this.props.history.push('/game');
-    } else {
-      this.props.history.push({
-          pathname: '/waiting',
-          state: { gameId: game.gameId }
-      });*/
     this.props.history.push({
       pathname: '/waiting',
       state: { gameId: game.gameId }
@@ -143,7 +145,7 @@ class Lobby extends React.Component {
                       }
                         <Button
                           onClick={() => {
-                            this.joinSpecificGame(game);
+                            this.watchGame(game);
                           }}
                           style={playerButtonStyle}
                       >
