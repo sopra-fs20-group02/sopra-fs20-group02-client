@@ -151,13 +151,15 @@ class GameBoard extends React.Component {
     // TODO: test this implementation
     async resign() {
         try {
-            const params = JSON.stringify({
-                token: localStorage.getItem('token'),
+            console.log(this.state.userId)
+            const requestBody = JSON.stringify({
+                userId: this.state.userId
             });
             const mapping = '/games/' + this.state.game.gameId.toString();
 
-            const response = await api.put(mapping, {params: params});
+            const response = await api.put(mapping, requestBody);
             window.alert('You lost');
+            this.toLobby();
 
         } catch (error) {
             if(error.response.status === 409){
@@ -167,6 +169,12 @@ class GameBoard extends React.Component {
                 alert(`Something went wrong while trying to resign: \n${handleError(error)}`);
             }
         }
+    }
+
+    async toLobby() {
+        this.props.history.push({
+            pathname: '/lobby'
+        })
     }
 
     // allows player to offer draw
@@ -386,28 +394,44 @@ class GameBoard extends React.Component {
                         })}
                     </Grid>
                     {this.getCapturedPieces('own')}
-                    <Grid.Row columns={2} style={gameFooterStyle}>
-                        <Grid.Column textAlign='center'>
-                            <Button
-                                style={gameButtonStyle}
-                                onClick={() => {
-                                    this.resign();
-                                }}
-                            >
-                                Resign
-                            </Button>
-                        </Grid.Column>
-                        <Grid.Column textAlign='center'>
-                            <Button
-                                style={gameButtonStyle}
-                                onClick={() => {
-                                    this.offerDraw();
-                                }}
-                            >
-                                Offer draw
-                            </Button>
-                        </Grid.Column>
-                    </Grid.Row>
+                    {!this.state.isWatching &&
+                        <Grid.Row columns={2} style={gameFooterStyle}>
+                            <Grid.Column textAlign='center'>
+                                <Button
+                                    style={gameButtonStyle}
+                                    onClick={() => {
+                                        this.resign();
+                                    }}
+                                >
+                                    Resign
+                                </Button>
+                            </Grid.Column>
+                            <Grid.Column textAlign='center'>
+                                <Button
+                                    style={gameButtonStyle}
+                                    onClick={() => {
+                                        this.offerDraw();
+                                    }}
+                                >
+                                    Offer draw
+                                </Button>
+                            </Grid.Column>
+                        </Grid.Row>
+                    }
+                    {this.state.isWatching &&
+                        <Grid.Row columns={2} style={gameFooterStyle}>
+                            <Grid.Column textAlign='center'>
+                                <Button
+                                    style={gameButtonStyle}
+                                    onClick={() => {
+                                        this.toLobby();
+                                    }}
+                                >
+                                    Lobby
+                                </Button>
+                            </Grid.Column>
+                        </Grid.Row>
+                    }
                 </Grid>
                 );
         }
