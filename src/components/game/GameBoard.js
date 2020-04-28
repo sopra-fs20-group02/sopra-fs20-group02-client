@@ -118,6 +118,7 @@ class GameBoard extends React.Component {
                 paddingRight: '15px',
                 align: 'center',
                 color: (pieceInDanger && this.state.blueDots) ? 'red' : pieceColor,
+                textShadow: pieceColor === 'white' ? '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' : ''
             }}
             name={pieceType}
             size='large'
@@ -252,7 +253,7 @@ class GameBoard extends React.Component {
                 pieceId = piece.pieceId;
                 pieceCoords = [piece.xcord, piece.ycord]
             }
-            if (pieceColor === 'white') { pieceColor = 'grey'; }
+            if (pieceColor === 'white') { pieceColor = 'white'; }
             if (this.state.selectedPiece === pieceId) {
                 pieceColor = '#0BD1FF';
             }
