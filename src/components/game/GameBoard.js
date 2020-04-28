@@ -108,7 +108,6 @@ class GameBoard extends React.Component {
             const response = await api.put(mapping, {params: params});
             window.alert('You lost');
 
-
         } catch (error) {
             if(error.response.status === 409){
                 alert(error.response.data);
@@ -132,7 +131,7 @@ class GameBoard extends React.Component {
             let fileSign;
             let rankSign;
 
-            console.log(game)
+            console.log(game);
 
             if (game.playerWhite.userId === localStorage.getItem('userId')) {
                 fileShift = 1;
@@ -292,8 +291,6 @@ class GameBoard extends React.Component {
         else{
             return (<div>fetching...</div>)
         }
-
-
     }
 }
 

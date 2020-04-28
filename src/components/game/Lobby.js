@@ -34,7 +34,6 @@ class Lobby extends React.Component {
     this.props.history.push('/login');
   }
 
-
   // creates game with user and chosen opponent
   async createGame() {
     try {

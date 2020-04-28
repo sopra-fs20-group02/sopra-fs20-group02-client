@@ -60,7 +60,6 @@ class Waiting extends React.Component {
 
     }
 
-
     render() {
         return (
         <Grid style={waitingPageStyle} centered>
