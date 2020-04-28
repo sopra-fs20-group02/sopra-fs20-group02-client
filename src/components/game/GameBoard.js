@@ -51,7 +51,7 @@ class GameBoard extends React.Component {
         if (!this.state.isWatching){
             if ((this.state.game.isWhiteTurn &&
                 this.state.game.playerWhite.userId === Number(this.state.userId) &&
-                pieceColor === 'grey')  ||
+                pieceColor === 'white')  ||
                 (!this.state.game.isWhiteTurn &&
                     this.state.game.playerBlack.userId === Number(this.state.userId) &&
                     pieceColor === 'black')) {
@@ -152,7 +152,6 @@ class GameBoard extends React.Component {
     // TODO: test this implementation
     async resign() {
         try {
-            console.log(this.state.userId)
             const requestBody = JSON.stringify({
                 userId: this.state.userId
             });
@@ -217,7 +216,6 @@ class GameBoard extends React.Component {
     getHeader(game) {
         const opponent = this.getOpponentName(game);
         let header;
-        console.log(this.state.isWatching)
         if (!this.state.isWatching){
             if ((game.isWhiteTurn && game.playerWhite.userId === Number(this.state.userId)) ||
                 (!game.isWhiteTurn && game.playerBlack.userId === Number(this.state.userId))) {
@@ -306,33 +304,37 @@ class GameBoard extends React.Component {
         return [coordsToMoveTo, pieceInDanger, blueDotsActive];
     }
 
-    // TODO: ensure this works as intendend
     getCapturedPieces(player) {
-        const pieceColors = this.state.game.playerWhite.userId === Number(this.state.userId) ? 'WHITE' : 'BLACK';
+        let pieceColors;
+        if (player === 'opponent') {
+            if (this.state.game.playerWhite.userId === Number(this.state.userId)) {
+                pieceColors = 'WHITE'; } else { pieceColors = 'BLACK'; }
+        } else {
+            if (this.state.game.playerWhite.userId === Number(this.state.userId)) {
+                pieceColors = 'BLACK'; } else { pieceColors = 'WHITE'; }
+        }
+
         let capturedPieces = [];
         this.state.game.pieces.forEach(function (piece) {
             if (piece.captured) {
-                if (player === 'opponent') {
-                    if (pieceColors !== piece.color) {
-                        capturedPieces.push(piece);
-                    }
-                } else {
-                    if (pieceColors === piece.color) {
-                        capturedPieces.push(piece);
-                    }
+                if (pieceColors === piece.color) {
+                    capturedPieces.push(piece.pieceType);
                 }
             }
         })
 
         return (
             <Grid.Row style={capturedPiecesStyle}>
-                {capturedPieces.map(piece => {
+                {capturedPieces[0] && capturedPieces.map(piece => {
                     return (<Icon
                         style={{
                             align: 'center',
-                            color: pieceColors,
+                            color: pieceColors.toLowerCase(),
+                            textShadow: pieceColors.toLowerCase() === 'white' ?
+                                '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' : ''
                         }}
-                        name={piece}
+                        name={'chess ' + piece.toLowerCase()}
+                        size='large'
                     />)
                 })}
             </Grid.Row>
@@ -347,8 +349,6 @@ class GameBoard extends React.Component {
             const opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.userId ===
             localStorage.getItem('userId') ?
                 game.playerBlack.username : game.playerWhite.username) : '';
-
-            console.log(game);
 
             const [fileShift, rankShift, fileSign, rankSign] = this.getRanksAndShifts(game);
 
