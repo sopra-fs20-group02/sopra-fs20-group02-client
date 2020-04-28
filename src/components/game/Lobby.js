@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { Grid, List, Button, Header, Icon} from "semantic-ui-react";
 import {
   lobbyStyle, playerButtonStyle, lobbyHeaderStyle, logoutIconStyle,
-  lobbyFooterStyle, playersListStyle, userItemStyle, lobbyTextStyle
+  lobbyFooterStyle, playersListStyle, userItemStyle, lobbyTextStyle, controlButtonStyle, LobbyUserTextStyle
 } from "../../data/styles";
 
 class Lobby extends React.Component {
@@ -109,34 +109,45 @@ class Lobby extends React.Component {
                 onClick={() => {
                   this.createGame();
                 }}
-                style={playerButtonStyle}
+                style={controlButtonStyle}
             >
-              Create random game
+              Create game
             </Button>
             <Button
                 onClick={() => {
                   this.joinRandomGame();
                 }}
-                style={playerButtonStyle}
+                style={controlButtonStyle}
             >
               Join random game
             </Button>
           </Grid.Row>
           <Header as='h3' style={lobbyTextStyle}>
-            or select an existing game:
+            play against another user:
           </Header>
           <Grid.Row>
             <List style={playersListStyle}>
               {this.state.games && this.state.games.map(game => {
                 return (
                     <List.Item style={userItemStyle}>
-                      <Button
+                        {game.playerWhite ? game.playerWhite.username : game.playerBlack.username}
+                      {game.playerWhite == null || game.playerBlack == null &&
+                        <Button
+                            onClick={() => {
+                              this.joinSpecificGame(game);
+                            }}
+                            style={playerButtonStyle}
+                        >
+                          play
+                        </Button>
+                      }
+                        <Button
                           onClick={() => {
                             this.joinSpecificGame(game);
                           }}
                           style={playerButtonStyle}
                       >
-                        {game.gameId}
+                        watch
                       </Button>
                     </List.Item>
                 );

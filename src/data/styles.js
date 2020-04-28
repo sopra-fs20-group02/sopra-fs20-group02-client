@@ -27,6 +27,10 @@ export const lobbyTextStyle = {
     color: 'white'
 }
 
+export const LobbyUserTextStyle = {
+    color: 'white'
+}
+
 
 export const gameHeaderStyle = {
     marginTop: '50px',
@@ -74,13 +78,24 @@ export const loginButtonStyle = {
     color: 'white',
 }
 
-export const playerButtonStyle = {
+export const controlButtonStyle = {
     background: 'white',
-    width: '40%',
-    height: '25px',
+    width: '150px',
+    height: '50px',
     borderRadius: '4px',
     marginBottom: '5px',
     marginTop: '5px',
+    paddingBottom: '0px',
+    paddingTop: '0px',
+    color: '#FF3377',
+}
+
+export const playerButtonStyle = {
+    background: 'white',
+    width: '100px',
+    height: '25px',
+    borderRadius: '4px',
+    marginLeft: '10px',
     paddingBottom: '0px',
     paddingTop: '0px',
     color: '#FF3377',
@@ -101,7 +116,7 @@ export const playersListStyle = {
 }
 
 export const userItemStyle = {
-    color: 'black'
+    color: 'white'
 }
 
 export const logoutIconStyle = {
