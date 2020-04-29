@@ -1,13 +1,15 @@
 import React from "react";
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
-import { Grid, Button, Header, Icon } from "semantic-ui-react";
+import { Grid, Header, Icon } from "semantic-ui-react";
+import Tile from './Tile';
 import {
-    gameStyle, gameButtonStyle, gameHeaderStyle, opponentStyle,
-    chessBoardStyle, boardRankStyle, quoteStyle, gameFooterStyle,
-    capturedPiecesStyle
+    gameStyle, gameHeaderStyle,
+    chessBoardStyle, boardRankStyle,
+    capturedPiecesStyle, gameButtonStyle, gameFooterStyle
 } from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
+import {Button} from "../../views/design/Button";
 
 // TODO: use state or functional component instead of localStorage !
 
@@ -22,10 +24,13 @@ class GameBoard extends React.Component {
             game: null,
             gameId: null,
             possibleMoves: null,
+            displayMoves: false,
             selectedPiece: null,
             userId: localStorage.getItem('userId'),
-            isWatching: null
+            isWatching: null,
+            isPlayerWhite: null
         };
+        this.tileCallback = this.tileCallback.bind(this);
     }
 
     async componentDidMount() {
@@ -33,11 +38,15 @@ class GameBoard extends React.Component {
         this.interval = setInterval(async () => {
             if (this.state.gameId){
                 const gameStatusObject = await fetchGameStatus(localStorage.getItem('userId'), this.state.gameId);
-                this.setState({game: gameStatusObject.data})
+                this.setState({game: gameStatusObject.data});
                 this.setState({
                     isWatching: ( Number(this.state.userId) !== this.state.game.playerWhite.userId
                         && Number(this.state.userId) !== this.state.game.playerBlack.userId)
-                })
+                });
+                this.setState({
+                    isPlayerWhite: Number(localStorage.getItem('userId')) === gameStatusObject.data.playerWhite.userId
+                });
+                console.log(this.state.game)
             }
         }, 1000);
     }
@@ -47,26 +56,28 @@ class GameBoard extends React.Component {
     }
 
     // gets all possible moves for the selected piece
-    async getPossibleMoves(pieceId, pieceColor) {
+    async getPossibleMoves(pieceId, pieceIsWhite) {
         if (!this.state.isWatching){
-            if ((this.state.game.isWhiteTurn &&
-                this.state.game.playerWhite.userId === Number(this.state.userId) &&
-                pieceColor === 'white')  ||
-                (!this.state.game.isWhiteTurn &&
-                    this.state.game.playerBlack.userId === Number(this.state.userId) &&
-                    pieceColor === 'black')) {
+
+            if ((this.state.game.isWhiteTurn && pieceIsWhite &&
+                this.state.game.playerWhite.userId === Number(this.state.userId)
+                ) || (
+                !this.state.game.isWhiteTurn && !pieceIsWhite &&
+                this.state.game.playerBlack.userId === Number(this.state.userId)
+            )) {
                 try {
+                    this.setState({displayMoves: true});
                     const requestBody = JSON.stringify({
                         userId: Number(this.state.userId)
                     });
                     const mapping = '/games/' + this.state.game.gameId + '/' + pieceId.toString();
                     const response = await api.get(mapping, requestBody);
-
                     this.setState({
                         possibleMoves: response.data,
                         selectedPiece: pieceId,
                         blueDots: true
                     });
+                    console.log(response.data);
 
                 } catch (error) {
                     if(error.response.status === 409){
@@ -81,13 +92,14 @@ class GameBoard extends React.Component {
     }
 
     // moves the piece
-    async moveSelectedPiece(coords) {
+    async moveSelectedPiece(x, y) {
         if (!this.state.isWatching){
             try {
                 const requestBody = JSON.stringify({
-                    x : coords.x,
-                    y : coords.y
+                    x : x,
+                    y : y
                 });
+                console.log(requestBody);
                 const mapping = '/games/' + this.state.game.gameId + '/' +
                     this.state.selectedPiece.toString();
                 const response = await api.put(mapping, requestBody);
@@ -108,44 +120,6 @@ class GameBoard extends React.Component {
                 }
             }
         }
-    }
-
-    // returns the piece
-    getPiece(pieceColor, pieceType, pieceId, blueDotsActive, pieceInDanger, coordsToMoveTo) {
-        return (<Icon
-            style={{
-                marginTop: '10px',
-                paddingRight: '15px',
-                align: 'center',
-                color: (pieceInDanger && this.state.blueDots) ? 'red' : pieceColor,
-                textShadow: pieceColor === 'white' ? '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' : ''
-            }}
-            name={pieceType}
-            size='large'
-            onClick={() => {
-                if (!pieceInDanger) {
-                    this.getPossibleMoves(pieceId, pieceColor);
-                } else {
-                    this.moveSelectedPiece(coordsToMoveTo);
-                }
-            }}
-        />)
-    }
-
-    // returns a blue dot to indicate that the user can move his selected piece there
-    getBlueDot(coordsToMoveTo) {
-        return (<Icon
-            style={{
-                marginTop: '15px',
-                align: 'center',
-                color: '#0BD1FF',
-            }}
-            name='circle'
-            size='small'
-            onClick={() => {
-                this.moveSelectedPiece(coordsToMoveTo);
-            }}
-        />)
     }
 
     // allows player to resign from game
@@ -237,28 +211,6 @@ class GameBoard extends React.Component {
         );
     }
 
-    // returns information on the piece to display
-    getPieceData(game, fileShift, fileSign, rankShift, rankSign, file, rank) {
-        let pieceType;
-        let pieceColor;
-        let pieceId;
-        let pieceCoords;
-        game.pieces.forEach( (piece) => {
-            if (piece.xcord === fileShift + fileSign * file &&
-                piece.ycord === rankShift + rankSign * rank) {
-                pieceType = 'chess ' + piece.pieceType.toLowerCase();
-                pieceColor = piece.color.toLowerCase();
-                pieceId = piece.pieceId;
-                pieceCoords = [piece.xcord, piece.ycord]
-            }
-            if (pieceColor === 'white') { pieceColor = 'white'; }
-            if (this.state.selectedPiece === pieceId) {
-                pieceColor = '#0BD1FF';
-            }
-        })
-        return [pieceType, pieceColor, pieceId, pieceCoords];
-    }
-
     // returns information needed for converting indices and rotating the board
     getRanksAndShifts(game) {
         let fileShift;
@@ -278,30 +230,6 @@ class GameBoard extends React.Component {
             rankSign = 1;
         }
         return [fileShift, rankShift, fileSign, rankSign];
-    }
-
-    // returns information for displaying possible moves
-    getPossibleMovesData(fileShift, fileSign, rankShift, rankSign, file, rank, pieceCoords) {
-        let blueDot = false;
-        let coordsToMoveTo = false
-        let pieceInDanger = false
-
-        if (this.state.possibleMoves) {
-            this.state.possibleMoves.forEach(function (coords) {
-                if (coords.x === fileShift + fileSign * file &&
-                    coords.y === rankShift + rankSign * rank) {
-                    blueDot = true;
-                    coordsToMoveTo = coords;
-                }
-                if (pieceCoords) {
-                    if (coords.x == pieceCoords[0] && coords.y ===  pieceCoords[1]) {
-                        pieceInDanger = true;
-                    }
-                }
-            })
-        }
-        const blueDotsActive = blueDot && this.state.blueDots;
-        return [coordsToMoveTo, pieceInDanger, blueDotsActive];
     }
 
     getCapturedPieces(player) {
@@ -341,10 +269,58 @@ class GameBoard extends React.Component {
         )
     }
 
+    async tileCallback(id, x, y, isWhiteTile){
+        console.log(id, x ,y);
+        if (!this.state.displayMoves){
+            await this.getPossibleMoves(id,isWhiteTile);
+        }
+        else {
+            console.log('B');
+            this.setState({displayMoves: false});
+            this.setState({possibleMoves: null});
+            for (let i = 0; i < this.state.possibleMoves.length; i++){
+                if (
+                    x === this.state.possibleMoves[i].x &&
+                    y === this.state.possibleMoves[i].y
+                ){
+                    this.moveSelectedPiece(x,y)
+                }
+            }
+        }
+    }
+
+    renderBoard(){
+        let board = [];
+        for (let y = 1; y <= 8; y++){
+            let row = [];
+            for (let x = 1; x <= 8; x++){
+                row.push(
+                    <Tile
+                        x={x}
+                        y={y}
+                        game={this.state.game}
+                        isPlayerWhite={this.state.isPlayerWhite}
+                        click={this.tileCallback}
+                        moves={this.state.possibleMoves}
+                    />
+                )
+            }
+            board.push(
+                <Grid.Row style={boardRankStyle} >
+                    {row}
+                </Grid.Row>
+            );
+        }
+
+        return(
+            <Grid style={chessBoardStyle} >
+                {board}
+            </Grid>
+        )
+    }
+
     render() {
-
         const game = this.state.game;
-
         if (game){
             const opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.userId ===
             localStorage.getItem('userId') ?
@@ -353,47 +329,11 @@ class GameBoard extends React.Component {
             const [fileShift, rankShift, fileSign, rankSign] = this.getRanksAndShifts(game);
 
             return (
+
                 <Grid style={gameStyle} centered>
                     {this.getHeader(game)}
                     {this.getCapturedPieces('opponent')}
-                    <Grid style={chessBoardStyle} >
-                        {Array.from(Array(8).keys()).map((rank) => {
-                            return (
-                                <Grid.Row style={boardRankStyle} >
-                                    {Array.from(Array(8).keys()).map((file) => {
-                                        const color = file % 2 == rank % 2 ? 'white' : '#FF8998';
-
-                                        const [pieceType, pieceColor, pieceId, pieceCoords] = this.getPieceData(
-                                            game, fileShift, fileSign, rankShift, rankSign, file, rank
-                                        );
-
-                                        const [coordsToMoveTo, pieceInDanger, blueDotsActive] = this.getPossibleMovesData(
-                                            fileShift, fileSign, rankShift, rankSign, file, rank, pieceCoords
-                                        );
-
-                                        return(
-                                            <Grid.Column
-                                                width={2} style={{
-                                                    alignContent: 'center',
-                                                    background: color,
-                                                    height: '40px'
-                                                }}
-                                            >
-                                                {(pieceType) ? (
-                                                    this.getPiece(
-                                                        pieceColor, pieceType, pieceId, blueDotsActive,
-                                                        pieceInDanger, coordsToMoveTo
-                                                    )
-                                                ) : ((blueDotsActive) ? (
-                                                    this.getBlueDot(coordsToMoveTo)
-                                                ) : (''))}
-                                            </Grid.Column>
-                                        )
-                                    })}
-                                </Grid.Row>
-                            )
-                        })}
-                    </Grid>
+                    {this.renderBoard()}
                     {this.getCapturedPieces('own')}
                     {!this.state.isWatching &&
                         <Grid.Row columns={2} style={gameFooterStyle}>
