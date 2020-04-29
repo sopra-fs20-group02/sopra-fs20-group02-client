@@ -147,7 +147,7 @@ class GameBoard extends React.Component {
 
             const response = await api.post(mapping, {params: params});
             console.log(response);
-            this.endGame();
+            // this.endGame();
 
         } catch (error) {
             console.error(error)
