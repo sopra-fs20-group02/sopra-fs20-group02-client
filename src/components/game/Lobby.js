@@ -22,6 +22,10 @@ class Lobby extends React.Component {
     }, 1000);
   }
 
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
   // logs out user
   async logout() {
     try {
@@ -105,6 +109,7 @@ class Lobby extends React.Component {
   }
 
   render() {
+    console.log(this.state.games);
     return (
         <Grid style={lobbyStyle} centered>
           <Grid.Row>
@@ -128,15 +133,19 @@ class Lobby extends React.Component {
             </Button>
           </Grid.Row>
           <Header as='h3' style={lobbyTextStyle}>
-            play against another user:
+            play or watch game:
           </Header>
           <Grid.Row>
             <List style={playersListStyle}>
               {this.state.games && this.state.games.map(game => {
                 return (
-                    <List.Item style={userItemStyle}>
-                        {game.playerWhite ? game.playerWhite.username : game.playerBlack.username}
-                      {game.playerWhite == null || game.playerBlack == null &&
+                    <div>
+                      { (game.gameStatus === "WAITING" || game.gameStatus === "FULL") &&
+                      <List.Item style={userItemStyle}>
+                        {game.playerWhite ? game.playerWhite.username : '-'}
+                        {' vs. '}
+                        {game.playerBlack ? game.playerBlack.username : '-'}
+                        {(game.playerWhite == null || game.playerBlack == null) &&
                         <Button
                             onClick={() => {
                               this.joinSpecificGame(game);
@@ -145,16 +154,18 @@ class Lobby extends React.Component {
                         >
                           play
                         </Button>
-                      }
+                        }
                         <Button
-                          onClick={() => {
-                            this.watchGame(game);
-                          }}
-                          style={playerButtonStyle}
-                      >
-                        watch
-                      </Button>
-                    </List.Item>
+                            onClick={() => {
+                              this.watchGame(game);
+                            }}
+                            style={playerButtonStyle}
+                        >
+                          watch
+                        </Button>
+                      </List.Item>
+                      }
+                    </div>
                 );
 
               })}

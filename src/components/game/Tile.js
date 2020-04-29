@@ -73,7 +73,7 @@ export default class Tile extends React.Component {
                             color: '#0BD1FF',
                         }}
                         name='circle'
-                        size='small'
+                        size='mini'
                     />
                 }
             </div>
