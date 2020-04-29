@@ -11,8 +11,6 @@ import {
 import {fetchGameStatus} from "../requests/fetchGameStatus";
 import {Button} from "../../views/design/Button";
 
-// TODO: use state or functional component instead of localStorage !
-
 class GameBoard extends React.Component {
     constructor() {
         super();
@@ -111,7 +109,6 @@ class GameBoard extends React.Component {
     }
 
     // allows player to resign from game
-    // TODO: test this implementation
     async resign() {
         try {
             const requestBody = JSON.stringify({
