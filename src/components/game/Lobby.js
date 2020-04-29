@@ -6,6 +6,7 @@ import {
   lobbyStyle, playerButtonStyle, lobbyHeaderStyle, logoutIconStyle,
   lobbyFooterStyle, playersListStyle, userItemStyle, lobbyTextStyle, controlButtonStyle, LobbyUserTextStyle
 } from "../../data/styles";
+import {fetchGameStatus} from "../requests/fetchGameStatus";
 
 class Lobby extends React.Component {
   constructor() {
@@ -16,7 +17,9 @@ class Lobby extends React.Component {
   }
 
   componentDidMount() {
-    this.getGames()
+    this.interval = setInterval(async () => {
+      this.getGames()
+    }, 1000);
   }
 
   // logs out user

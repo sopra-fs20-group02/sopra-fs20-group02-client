@@ -46,7 +46,9 @@ class GameBoard extends React.Component {
                 this.setState({
                     isPlayerWhite: Number(localStorage.getItem('userId')) === gameStatusObject.data.playerWhite.userId
                 });
-                console.log(this.state.game)
+                if (this.state.game.gameStatus !== 'FULL'){
+                    this.toLobby();
+                }
             }
         }, 1000);
     }
@@ -80,12 +82,7 @@ class GameBoard extends React.Component {
                     console.log(response.data);
 
                 } catch (error) {
-                    if(error.response.status === 409){
-                        alert(error.response.data);
-                    }
-                    else {
-                        alert(`Something went wrong while getting the possible moves: \n${handleError(error)}`);
-                    }
+                    console.error(error)
                 }
             }
         }
@@ -112,12 +109,7 @@ class GameBoard extends React.Component {
 
 
             } catch (error) {
-                if(error.response.status === 409){
-                    alert(error.response.data);
-                }
-                else {
-                    alert(`Something went wrong while trying to make a move: \n${handleError(error)}`);
-                }
+                console.error(error)
             }
         }
     }
@@ -136,12 +128,7 @@ class GameBoard extends React.Component {
             this.toLobby();
 
         } catch (error) {
-            if(error.response.status === 409){
-                alert(error.response.data);
-            }
-            else {
-                alert(`Something went wrong while trying to resign: \n${handleError(error)}`);
-            }
+            console.error(error)
         }
     }
 
@@ -164,12 +151,7 @@ class GameBoard extends React.Component {
             window.alert('You lost');
 
         } catch (error) {
-            if(error.response.status === 409){
-                alert(error.response.data);
-            }
-            else {
-                alert(`Something went wrong while trying to offer draw: \n${handleError(error)}`);
-            }
+            console.error(error)
         }
     }
 
@@ -211,27 +193,6 @@ class GameBoard extends React.Component {
         );
     }
 
-    // returns information needed for converting indices and rotating the board
-    getRanksAndShifts(game) {
-        let fileShift;
-        let rankShift;
-        let fileSign;
-        let rankSign;
-
-        if (game.playerWhite.userId === Number(this.state.userId)) {
-            fileShift = 1;
-            rankShift = 8;
-            fileSign = 1;
-            rankSign = -1;
-        } else {
-            fileShift = 8;
-            rankShift = 1;
-            fileSign = -1;
-            rankSign = 1;
-        }
-        return [fileShift, rankShift, fileSign, rankSign];
-    }
-
     getCapturedPieces(player) {
         let pieceColors;
         if (player === 'opponent') {
@@ -249,7 +210,7 @@ class GameBoard extends React.Component {
                     capturedPieces.push(piece.pieceType);
                 }
             }
-        })
+        });
 
         return (
             <Grid.Row style={capturedPiecesStyle}>
@@ -270,12 +231,10 @@ class GameBoard extends React.Component {
     }
 
     async tileCallback(id, x, y, isWhiteTile){
-        console.log(id, x ,y);
         if (!this.state.displayMoves){
             await this.getPossibleMoves(id,isWhiteTile);
         }
         else {
-            console.log('B');
             this.setState({displayMoves: false});
             this.setState({possibleMoves: null});
             for (let i = 0; i < this.state.possibleMoves.length; i++){
@@ -311,6 +270,10 @@ class GameBoard extends React.Component {
                 </Grid.Row>
             );
         }
+        // flip board
+        if (Number(this.state.game.playerWhite.userId) === Number(this.state.userId)){
+            board = board.reverse();
+        }
 
         return(
             <Grid style={chessBoardStyle} >
@@ -322,14 +285,7 @@ class GameBoard extends React.Component {
     render() {
         const game = this.state.game;
         if (game){
-            const opponent = (game.playerWhite && game.playerBlack) ? (game.playerWhite.userId ===
-            localStorage.getItem('userId') ?
-                game.playerBlack.username : game.playerWhite.username) : '';
-
-            const [fileShift, rankShift, fileSign, rankSign] = this.getRanksAndShifts(game);
-
             return (
-
                 <Grid style={gameStyle} centered>
                     {this.getHeader(game)}
                     {this.getCapturedPieces('opponent')}
