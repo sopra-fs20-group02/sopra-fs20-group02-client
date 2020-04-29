@@ -122,6 +122,7 @@ export const playersListStyle = {
 }
 
 export const userItemStyle = {
+    margin: '4px',
     color: 'white'
 }
 
@@ -179,6 +180,7 @@ export const quoteStyle = {
 }
 
 export const waitingPageStyle = {
-    height: '100%',
+    height: '100vh',
+    margin: '0',
     background: 'linear-gradient(#FF6464, #FF5A86)'
 }

@@ -8,6 +8,7 @@ import Game from "../../game/GameBoard";
 import Registration from "../../registration/Registration";
 import Waiting from "../../game/Waiting";
 import Lobby from "../../game/Lobby";
+import GameEnded from "../../game/GameEnded";
 
 class AppRouter extends React.Component {
     render() {
@@ -34,6 +35,12 @@ class AppRouter extends React.Component {
                             path="/waiting"
                             render={() => (
                                 <Waiting />
+                            )}
+                        />
+                        <Route
+                            path="/ended"
+                            render={() => (
+                                <GameEnded />
                             )}
                         />
                         <Route

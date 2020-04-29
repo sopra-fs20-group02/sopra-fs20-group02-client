@@ -47,7 +47,7 @@ class GameBoard extends React.Component {
                     isPlayerWhite: Number(localStorage.getItem('userId')) === gameStatusObject.data.playerWhite.userId
                 });
                 if (this.state.game.gameStatus !== 'FULL'){
-                    this.toLobby();
+                    this.endGame();
                 }
             }
         }, 1000);
@@ -79,7 +79,6 @@ class GameBoard extends React.Component {
                         selectedPiece: pieceId,
                         blueDots: true
                     });
-                    console.log(response.data);
 
                 } catch (error) {
                     console.error(error)
@@ -122,16 +121,19 @@ class GameBoard extends React.Component {
 
             const response = await api.put(mapping, requestBody);
             window.alert('You lost');
-            this.toLobby();
+            this.endGame();
 
         } catch (error) {
             console.error(error)
         }
     }
 
-    async toLobby() {
+    async endGame() {
         this.props.history.push({
-            pathname: '/lobby'
+            pathname: '/ended',
+            state: {
+                game: this.state.game
+            }
         })
     }
 
@@ -178,7 +180,7 @@ class GameBoard extends React.Component {
             }
         }
         else{
-            header = 'Watch mode'
+            header = 'Watching: ' + game.playerWhite.username + ' (w) vs. ' + game.playerBlack.username + ' (b)'
         }
 
         return (
@@ -318,7 +320,7 @@ class GameBoard extends React.Component {
                                 <Button
                                     style={gameButtonStyle}
                                     onClick={() => {
-                                        this.toLobby();
+                                        this.endGame();
                                     }}
                                 >
                                     Lobby
@@ -337,7 +339,7 @@ class GameBoard extends React.Component {
                         marginTop: '270px'
                     }}>
                         <Header as='h3' style={gameHeaderStyle}>
-                            fetching...
+                            saddling horses...
                         </Header>
                     </Grid.Row>
                 </Grid>

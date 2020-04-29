@@ -2,7 +2,7 @@ import React from "react";
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, Button, Header, Icon } from "semantic-ui-react";
-import {quoteStyle, waitingPageStyle} from "../../data/styles";
+import {gameButtonStyle, gameFooterStyle, quoteStyle, waitingPageStyle} from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
 
 // TODO: use state or functional component instead of localStorage !
@@ -12,18 +12,13 @@ class GameEnded extends React.Component {
         super();
         this.state = {
             quote: null,
-            gameId: null
+            game: null
         };
     }
 
     componentDidMount() {
-        this.setState({gameId: this.props.location.state.gameId});
+        this.setState({game: this.props.location.state.game});
         this.getRandomQuote();
-        this.handleWaiting();
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.interval);
     }
 
     // gets random quote
@@ -39,27 +34,6 @@ class GameEnded extends React.Component {
         }
     }
 
-    async handleWaiting() {
-        let status = 'WAITING';
-
-        this.interval = setInterval(async () => {
-            const  gameStatusObject = await fetchGameStatus(localStorage.getItem('userId'), this.state.gameId);
-            if (gameStatusObject.data){
-                status = gameStatusObject.data.gameStatus
-            }
-
-            if (status === 'FULL') {
-                this.props.history.push({
-                    pathname: '/game',
-                    state: { gameId: gameStatusObject.data.gameId }
-                });
-            }
-
-            // TODO: make smaller intervals
-        }, 1000);
-
-    }
-
     render() {
         return (
         <Grid style={waitingPageStyle} centered>
@@ -69,13 +43,28 @@ class GameEnded extends React.Component {
                 </Header>
             </Grid.Row>
             <Grid.Row>
+
                 <Header as='h4' style={quoteStyle}>
-                    Waiting...
+                    game finished
                 </Header>
+            </Grid.Row>
+            <Grid.Row columns={2} style={gameFooterStyle}>
+                <Grid.Column textAlign='center'>
+                    <Button
+                        style={gameButtonStyle}
+                        onClick={() => {
+                            this.props.history.push({
+                                pathname: '/lobby',
+                            })
+                        }}
+                    >
+                        Lobby
+                    </Button>
+                </Grid.Column>
             </Grid.Row>
         </Grid>
         );
     }
 }
 
-export default withRouter(Waiting);
+export default withRouter(GameEnded);
