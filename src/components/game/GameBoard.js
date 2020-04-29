@@ -117,7 +117,6 @@ class GameBoard extends React.Component {
             const mapping = '/games/' + this.state.game.gameId.toString();
 
             const response = await api.put(mapping, requestBody);
-            window.alert('You lost');
             this.endGame();
 
         } catch (error) {
@@ -144,7 +143,6 @@ class GameBoard extends React.Component {
             const mapping = '/games/' + this.state.game.gameId.toString();
 
             const response = await api.put(mapping, {params: params});
-            window.alert('You lost');
 
         } catch (error) {
             console.error(error)

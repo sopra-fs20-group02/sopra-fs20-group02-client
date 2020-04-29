@@ -31,9 +31,10 @@ class Waiting extends React.Component {
             this.setState({quote: response.data.contents.quotes[0].quote})
         }
         catch(error) {
-            alert(`Something went wrong during the quote fetching: \n${
-                handleError(error)
-            }`);
+            const info = handleError(error);
+            if (info !== 'Too Many Requests') {
+                alert(`Something went wrong during the quote fetching: \n${info}`);
+            }
         }
     }
 

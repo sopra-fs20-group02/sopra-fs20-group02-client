@@ -27,7 +27,6 @@ class GameEnded extends React.Component {
             console.log(response);
         }
         catch(error) {
-
             const info = handleError(error);
             if (info !== 'Too Many Requests') {
                 alert(`Something went wrong during the quote fetching: \n${info}`);
