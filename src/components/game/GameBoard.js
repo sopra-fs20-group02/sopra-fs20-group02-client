@@ -26,7 +26,7 @@ class GameBoard extends React.Component {
             selectedPiece: null,
             userId: localStorage.getItem('userId'),
             isWatching: null,
-            isPlayerWhite: null
+            isPlayerWhite: null,
         };
         this.tileCallback = this.tileCallback.bind(this);
     }
@@ -45,7 +45,10 @@ class GameBoard extends React.Component {
                     isPlayerWhite: Number(localStorage.getItem('userId')) === gameStatusObject.data.playerWhite.userId
                 });
                 if (this.state.game.gameStatus !== 'FULL'){
-                    this.endGame();
+                    if (!(gameStatusObject.data.gameStatus === 'WHITE_IN_CHECK' ||
+                        gameStatusObject.data.gameStatus === 'BLACK_IN_CHECK')) {
+                        this.endGame();
+                    }
                 }
             }
         }, 1000);
@@ -134,15 +137,17 @@ class GameBoard extends React.Component {
     }
 
     // allows player to offer draw
-    // TODO: implement this using the correct request
+    // TODO: test implementation
     async offerDraw() {
         try {
             const params = JSON.stringify({
-                token: localStorage.getItem('token'),
+                userId: this.state.userId
             });
             const mapping = '/games/' + this.state.game.gameId.toString();
 
-            const response = await api.put(mapping, {params: params});
+            const response = await api.post(mapping, {params: params});
+            console.log(response);
+            this.endGame();
 
         } catch (error) {
             console.error(error)
@@ -153,9 +158,9 @@ class GameBoard extends React.Component {
     getOpponentName(game) {
         if (game.playerWhite && game.playerBlack) {
             if (game.playerWhite.userId === Number(this.state.userId)) {
-                return game.playerWhite.username;
-            } else {
                 return game.playerBlack.username;
+            } else {
+                return game.playerWhite.username;
             }
         } else {
             return '';
@@ -231,12 +236,14 @@ class GameBoard extends React.Component {
         else {
             this.setState({displayMoves: false});
             this.setState({possibleMoves: null});
-            for (let i = 0; i < this.state.possibleMoves.length; i++){
-                if (
-                    x === this.state.possibleMoves[i].x &&
-                    y === this.state.possibleMoves[i].y
-                ){
-                    this.moveSelectedPiece(x,y)
+            if (this.state.possibleMoves) {
+                for (let i = 0; i < this.state.possibleMoves.length; i++){
+                    if (
+                        x === this.state.possibleMoves[i].x &&
+                        y === this.state.possibleMoves[i].y
+                    ){
+                        this.moveSelectedPiece(x,y)
+                    }
                 }
             }
         }
