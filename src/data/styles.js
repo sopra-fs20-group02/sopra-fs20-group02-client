@@ -3,13 +3,16 @@ export const gridStyle = {
 }
 
 export const lobbyStyle = {
-    height: '100%',
+    height: '100vh',
+    width: '100vw',
+    margin: '0',
     background: 'linear-gradient(#FF6464, #FF5A86)'
 }
 
 export const gameStyle = {
     height: '100vh',
     width: '100vw',
+    align: 'bottom',
     margin: '0',
     background: 'linear-gradient(#FF6464, #FF5A86)'
 }
@@ -158,7 +161,13 @@ export const gameFooterStyle = {
 }
 
 export const lobbyFooterStyle = {
-    background: 'white'
+    height: '80px',
+    background: 'white',
+    position: 'absolute',
+    bottom: '0',
+    borderTopLeftRadius: '5px',
+    borderTopRightRadius: '5px'
+
 }
 
 export const quoteStyle = {

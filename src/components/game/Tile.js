@@ -45,19 +45,17 @@ export default class Tile extends React.Component {
 
         return(
             <div style={{
-                alignContent: 'center',
                 background: this.color,
                 height: '40px',
-                width: '40px'
+                width: '40px',
             }} onClick={this.handleClick}>
                 {
                     this.pieceType &&
                     <Icon
                         style={{
                             position: 'relative',
-                            left: '50%',
-                            top: '50%',
-                            transform: 'translate(-50%, -50%)',
+                            top: '8px',
+                            left: '2px',
                             color: this.selected ? '#0BD1FF' : (this.isWhite ? 'white' : 'black'),
                             textShadow: (this.isWhite && !this.selected) ?  '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' : ' '
                         }}
@@ -70,10 +68,8 @@ export default class Tile extends React.Component {
                     <Icon
                         style={{
                             position: 'relative',
-                            left: '50%',
-                            top: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            align: 'center',
+                            top: '9px',
+                            left: '2px',
                             color: '#0BD1FF',
                         }}
                         name='circle'
