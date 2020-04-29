@@ -96,7 +96,6 @@ class GameBoard extends React.Component {
                     x : x,
                     y : y
                 });
-                console.log(requestBody);
                 const mapping = '/games/' + this.state.game.gameId + '/' +
                     this.state.selectedPiece.toString();
                 const response = await api.put(mapping, requestBody);
@@ -106,8 +105,6 @@ class GameBoard extends React.Component {
                     selectedPiece: null,
                     blueDots: false,
                 });
-
-
             } catch (error) {
                 console.error(error)
             }
@@ -223,7 +220,7 @@ class GameBoard extends React.Component {
                                 '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' : ''
                         }}
                         name={'chess ' + piece.toLowerCase()}
-                        size='large'
+
                     />)
                 })}
             </Grid.Row>

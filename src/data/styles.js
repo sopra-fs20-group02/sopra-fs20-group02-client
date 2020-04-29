@@ -8,7 +8,9 @@ export const lobbyStyle = {
 }
 
 export const gameStyle = {
-    height: '100%',
+    height: '100vh',
+    width: '100vw',
+    margin: '0',
     background: 'linear-gradient(#FF6464, #FF5A86)'
 }
 
@@ -108,6 +110,7 @@ export const gameButtonStyle = {
     marginBottom: '30px',
     marginTop: '25px',
     color: 'black',
+    maxWidth: '200px'
 }
 
 export const playersListStyle = {
@@ -125,13 +128,12 @@ export const logoutIconStyle = {
 }
 
 export const chessBoardStyle = {
-    width: '95%',
-    marginTop: '0px',
-    marginBottom: '0px',
+    width: '340px',
+    height: '340px',
+    margin: '0px',
     background: '#FF8998',
-    paddingTop: '10px',
-    paddingBottom: '10px',
-    borderRadius: '5px',
+    padding: '10px',
+    borderRadius: '3px',
 }
 
 export const boardRankStyle = {
@@ -141,8 +143,7 @@ export const boardRankStyle = {
 
 export const capturedPiecesStyle = {
     margin: '0px',
-    padding: '10px',
-    backgroundColor: '#DCDCDC'
+    padding: '10px'
 }
 
 export const chessPieceStyle = {
