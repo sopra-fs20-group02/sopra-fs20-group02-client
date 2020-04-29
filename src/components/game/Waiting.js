@@ -5,8 +5,6 @@ import { Grid, Button, Header, Icon } from "semantic-ui-react";
 import {quoteStyle, waitingPageStyle} from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
 
-// TODO: use state or functional component instead of localStorage !
-
 class Waiting extends React.Component {
     constructor() {
         super();
@@ -33,9 +31,10 @@ class Waiting extends React.Component {
             this.setState({quote: response.data.contents.quotes[0].quote})
         }
         catch(error) {
-            alert(`Something went wrong during the quote fetching: \n${
-                handleError(error)
-            }`);
+            const info = handleError(error);
+            if (info !== 'Too Many Requests') {
+                alert(`Something went wrong during the quote fetching: \n${info}`);
+            }
         }
     }
 
@@ -54,9 +53,7 @@ class Waiting extends React.Component {
                     state: { gameId: gameStatusObject.data.gameId }
                 });
             }
-
-            // TODO: make smaller intervals
-        }, 1000);
+        }, 1000); // TODO: maybe make smaller intervals
 
     }
 

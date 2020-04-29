@@ -12,6 +12,7 @@ export default class Tile extends React.Component {
     }
 
     render(){
+
         if (this.props.x % 2 === 0 && this.props.y % 2 === 0 ||
             this.props.x % 2 === 1 && this.props.y % 2 === 1
         ){
@@ -23,6 +24,7 @@ export default class Tile extends React.Component {
 
         this.pieceType = undefined;
         this.selected = false;
+        this.isInCheck = false;
 
         for (let i  = 0; i < this.props.game.pieces.length; i ++){
             const piece = this.props.game.pieces[i];
@@ -31,6 +33,13 @@ export default class Tile extends React.Component {
                 this.pieceType = 'chess ' + piece.pieceType.toLowerCase();
                 this.isWhite = piece.color === "WHITE";
                 this.id = piece.pieceId;
+            }
+        }
+
+        if (this.pieceType === 'chess king') {
+            if ((this.props.game.gameStatus === 'BLACK_IN_CHECK' && !this.isWhite) ||
+                (this.props.game.gameStatus === 'WHITE_IN_CHECK' && this.isWhite)) {
+                this.isInCheck = true;
             }
         }
 
@@ -56,7 +65,7 @@ export default class Tile extends React.Component {
                             position: 'relative',
                             top: '8px',
                             left: '2px',
-                            color: this.selected ? '#0BD1FF' : (this.isWhite ? 'white' : 'black'),
+                            color: this.selected ? '#0BD1FF' : (this.isInCheck ? 'red' : (this.isWhite ? 'white' : 'black')),
                             textShadow: (this.isWhite && !this.selected) ?  '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' : ' '
                         }}
                         name={this.pieceType}

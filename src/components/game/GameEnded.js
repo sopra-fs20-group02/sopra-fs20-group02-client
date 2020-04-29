@@ -5,8 +5,6 @@ import { Grid, Button, Header, Icon } from "semantic-ui-react";
 import {gameButtonStyle, gameFooterStyle, quoteStyle, waitingPageStyle} from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
 
-// TODO: use state or functional component instead of localStorage !
-
 class GameEnded extends React.Component {
     constructor() {
         super();
@@ -26,15 +24,28 @@ class GameEnded extends React.Component {
         try {
             const response = await api.get('https://quotes.rest/qod.json');
             this.setState({quote: response.data.contents.quotes[0].quote})
+            console.log(response);
         }
         catch(error) {
-            alert(`Something went wrong during the quote fetching: \n${
-                handleError(error)
-            }`);
+            const info = handleError(error);
+            if (info !== 'Too Many Requests') {
+                alert(`Something went wrong during the quote fetching: \n${info}`);
+            }
+        }
+    }
+
+    getEndMessage() {
+        if (this.state.game) {
+            if (this.state.game.winner === Number(localStorage.getItem('userId'))) {
+                return 'You won!';
+            } else {
+                return 'You lost!';
+            }
         }
     }
 
     render() {
+        console.log(this.state.game);
         return (
         <Grid style={waitingPageStyle} centered>
             <Grid.Row>
@@ -43,9 +54,8 @@ class GameEnded extends React.Component {
                 </Header>
             </Grid.Row>
             <Grid.Row>
-
-                <Header as='h4' style={quoteStyle}>
-                    game finished
+                <Header as='h1' style={quoteStyle}>
+                    {this.getEndMessage()}
                 </Header>
             </Grid.Row>
             <Grid.Row columns={2} style={gameFooterStyle}>

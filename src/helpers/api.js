@@ -16,6 +16,11 @@ export const handleError = error => {
     info += `\nerror message: ${error.response.data.message}`;
 
     console.log('The request was made and answered but was unsuccessful.', error.response);
+
+    if (error.response.statusText === 'Too Many Requests') {
+      return 'Too Many Requests';
+    }
+
     return info;
   } else {
     if (error.message.match(/Network Error/)) {
