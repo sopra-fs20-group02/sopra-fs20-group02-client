@@ -48,6 +48,11 @@ class GamesStats extends React.Component {
   render() {
     const gamesStats = this.state.gamesStats;
     if (gamesStats) {
+      let time = gamesStats.totalTimePlayed;
+      const hours = ~~Math.floor(time / 3600);
+      const minutes = ~~((time % 3600) / 60);
+      const seconds = ~~time % 60;
+
       return (
         <Grid style={gamesStatsStyle} centered>
           <Grid.Row style={gamesStatsHeaderStyle}>
@@ -67,7 +72,7 @@ class GamesStats extends React.Component {
                 {'Number of draws: ' + this.state.gamesStats.numberOfDraws}
               </List.Item>
               <List.Item style={statsItemStyle}>
-                {'Total time played: ' + this.state.gamesStats.totalTimePlayed}
+                {'Total time played: ' + hours + 'h, ' + minutes + 'm, ' + seconds + 's'}
               </List.Item>
             </List>
           </Grid.Row>
