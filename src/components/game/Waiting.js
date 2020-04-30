@@ -2,7 +2,7 @@ import React from "react";
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, Button, Header, Icon } from "semantic-ui-react";
-import {quoteStyle, waitingPageStyle} from "../../data/styles";
+import {waitingButtonStyle, gameFooterStyle, quoteStyle, waitingPageStyle} from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
 
 class Waiting extends React.Component {
@@ -10,7 +10,8 @@ class Waiting extends React.Component {
         super();
         this.state = {
             quote: null,
-            gameId: null
+            gameId: null,
+            gameDeleted: false
         };
     }
 
@@ -33,8 +34,26 @@ class Waiting extends React.Component {
         catch(error) {
             const info = handleError(error);
             if (info !== 'Too Many Requests') {
-                alert(`Something went wrong during the quote fetching: \n${info}`);
+                console.log(info);
             }
+        }
+    }
+
+    // redirects to lobby
+    lobby() {
+        this.props.history.push({
+            pathname: `/lobby`
+        });
+    }
+
+    async deleteGame() {
+        try {
+            const response = await api.delete('/games/' + this.state.gameId);
+            console.log(response);
+            this.setState({ gameDeleted: true })
+        }
+        catch(error) {
+            console.log(error);
         }
     }
 
@@ -42,19 +61,20 @@ class Waiting extends React.Component {
         let status = 'WAITING';
 
         this.interval = setInterval(async () => {
-            const  gameStatusObject = await fetchGameStatus(localStorage.getItem('userId'), this.state.gameId);
-            if (gameStatusObject.data){
-                status = gameStatusObject.data.gameStatus
-            }
+            if (!this.state.gameDeleted) {
+                const gameStatusObject = await fetchGameStatus(localStorage.getItem('userId'), this.state.gameId);
+                if (gameStatusObject.data){
+                    status = gameStatusObject.data.gameStatus
+                }
 
-            if (status === 'FULL') {
-                this.props.history.push({
-                    pathname: '/game',
-                    state: { gameId: gameStatusObject.data.gameId }
-                });
+                if (status === 'FULL') {
+                    this.props.history.push({
+                        pathname: '/game',
+                        state: { gameId: gameStatusObject.data.gameId }
+                    });
+                }
             }
         }, 1000); // TODO: maybe make smaller intervals
-
     }
 
     render() {
@@ -67,8 +87,24 @@ class Waiting extends React.Component {
             </Grid.Row>
             <Grid.Row>
                 <Header as='h4' style={quoteStyle}>
-                    Waiting...
+                    {this.state.gameDeleted ? 'Game was deleted' : 'Waiting...'}
                 </Header>
+            </Grid.Row>
+            <Grid.Row columns={2} style={gameFooterStyle}>
+                <Grid.Column textAlign='center'>
+                    <Button
+                        style={waitingButtonStyle}
+                        onClick={() => {
+                            if (this.state.gameDeleted) {
+                                this.lobby();
+                            } else {
+                                this.deleteGame();
+                            }
+                        }}
+                    >
+                        {this.state.gameDeleted ? 'Lobby' : 'Delete Game'}
+                    </Button>
+                </Grid.Column>
             </Grid.Row>
         </Grid>
         );

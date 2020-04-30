@@ -25,7 +25,7 @@ class GamesStats extends React.Component {
       const response = await api.put('/logout', requestBody);
 
     } catch(error) {
-      alert(`Something went wrong during the logout: \n${handleError(error)}`);
+      console.log(`Something went wrong during the logout: \n${handleError(error)}`);
     }
     localStorage.clear();
     this.props.history.push('/login');

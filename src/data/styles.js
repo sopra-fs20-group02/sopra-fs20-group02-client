@@ -180,6 +180,16 @@ export const waitingPageStyle = {
     background: 'linear-gradient(#FF6464, #FF5A86)'
 }
 
+export const waitingButtonStyle = {
+    background: 'white',
+    width: '95%',
+    borderRadius: '20px',
+    marginBottom: '30px',
+    marginTop: '25px',
+    color: 'black',
+    maxWidth: '200px'
+}
+
 
 // styles for game page
 export const gameStyle = {

@@ -13,6 +13,6 @@ export const fetchGameStatus = async (userId, gameId) => {
     return gameStatus;
 
   } catch (error) {
-      alert(`Something went wrong while trying to get the game status: \n${handleError(error)}`);
+      console.log(error);
   }
 };
