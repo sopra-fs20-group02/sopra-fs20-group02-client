@@ -41,6 +41,25 @@ class Lobby extends React.Component {
     this.props.history.push('/login');
   }
 
+
+  // goes to user stats page
+  async gamesStats() {
+    try {
+      const requestBody = JSON.stringify({
+        userId: localStorage.getItem('userId')
+      });
+      const response = await api.get('/users/' + localStorage.getItem('userId'));
+      const gamesStats = response.data.userStats;
+      this.props.history.push({
+        pathname: '/gamesStats',
+        state: { gamesStats: gamesStats }
+      })
+
+    } catch (error) {
+      alert(`Something went wrong while fetching the user stats: \n${handleError(error)}`);
+    }
+  }
+
   // creates game with user and chosen opponent
   async createGame() {
     try {
@@ -109,11 +128,8 @@ class Lobby extends React.Component {
   }
 
   render() {
-    console.log(this.state.games);
     return (
         <Grid style={lobbyStyle} centered>
-          <Grid.Row>
-          </Grid.Row>
           <Grid.Row style={lobbyHeaderStyle}>
             <Button
                 onClick={() => {
@@ -170,7 +186,6 @@ class Lobby extends React.Component {
 
               })}
             </List>
-
           </Grid.Row>
           <Grid.Row style={lobbyFooterStyle} columns={2}>
             <Grid.Column textAlign='center'>
@@ -188,9 +203,12 @@ class Lobby extends React.Component {
             <Grid.Column style={{alignContent: 'left'}}>
             <Icon
                 style={{align: 'left', margin: '20px'}}
-                name='user circle outline'
+                name='chart bar'
                 size='large'
                 color='#FF3377'
+                onClick={() => {
+                  this.gamesStats();
+                }}
               />
             </Grid.Column>
           </Grid.Row>
