@@ -15,7 +15,10 @@ class GameEnded extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({game: this.props.location.state.game});
+        this.setState({
+            game: this.props.location.state.game,
+            isWatching: this.props.location.state.isWatching
+        });
         this.getRandomQuote();
     }
 
@@ -38,6 +41,12 @@ class GameEnded extends React.Component {
         if (this.state.game) {
             if (this.state.game.winner === Number(localStorage.getItem('userId'))) {
                 return 'You won!';
+            } else if (this.state.isWatching) {
+                if (this.state.game.winner === this.state.game.playerBlack.userId) {
+                    return this.state.game.playerBlack.username + ' won';
+                } else {
+                    return this.state.game.playerWhite.username + ' won';
+                }
             } else {
                 return 'You lost!';
             }
