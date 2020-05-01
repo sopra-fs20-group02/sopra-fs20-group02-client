@@ -5,8 +5,17 @@ import { IntlProvider } from 'react-intl';
 import messages from "./data/messages.js";
 import './index.css';
 
+const meta = {
+    name: "viewport",
+    content: "width=device-width",
+    initialScale: 1.0,
+    maximumScale: 1.0,
+    userScalable: 'no'
+}
+
 ReactDOM.render(
     <IntlProvider messages={messages}>
-        <App/>
+        <App {...meta} />
     </IntlProvider>,
-    document.getElementById("root"));
+    document.getElementById("root")
+);
