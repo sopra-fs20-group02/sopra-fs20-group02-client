@@ -147,7 +147,7 @@ class GameBoard extends React.Component {
             });
             const mapping = '/games/' + this.state.game.gameId.toString();
 
-            const response = await api.post(mapping, {params: params});
+            const response = await api.post(mapping, params);
             console.log(response);
             // this.endGame();
 
