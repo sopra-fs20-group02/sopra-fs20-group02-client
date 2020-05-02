@@ -206,6 +206,12 @@ export const gameHeaderStyle = {
     color: 'white'
 }
 
+export const drawOfferStyle = {
+    marginTop: '0px',
+    marginBottom: '0px',
+    color: 'white'
+}
+
 export const gameButtonStyle = {
     background: 'white',
     width: '80%',
