@@ -39,6 +39,9 @@ class GameEnded extends React.Component {
 
     getEndMessage() {
         if (this.state.game) {
+            if (this.state.game.gameStatus === 'DRAW') {
+                return "It's a draw!";
+            }
             if (this.state.game.winner === Number(localStorage.getItem('userId'))) {
                 return 'You won!';
             } else if (this.state.isWatching) {

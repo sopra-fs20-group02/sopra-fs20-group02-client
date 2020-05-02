@@ -4,8 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { Grid, Header, Icon } from "semantic-ui-react";
 import Tile from './Tile';
 import {
-    gameStyle, gameHeaderStyle,
-    chessBoardStyle, boardRankStyle,
+    gameStyle, gameHeaderStyle, drawOfferStyle, chessBoardStyle, boardRankStyle,
     capturedPiecesStyle, gameButtonStyle, gameFooterStyle
 } from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
@@ -27,6 +26,7 @@ class GameBoard extends React.Component {
             userId: localStorage.getItem('userId'),
             isWatching: null,
             isPlayerWhite: null,
+            deniesDraw: false
         };
         this.tileCallback = this.tileCallback.bind(this);
     }
@@ -139,7 +139,6 @@ class GameBoard extends React.Component {
     }
 
     // allows player to offer draw
-    // TODO: test implementation
     async offerDraw() {
         try {
             const params = JSON.stringify({
@@ -148,11 +147,21 @@ class GameBoard extends React.Component {
             const mapping = '/games/' + this.state.game.gameId.toString();
 
             const response = await api.post(mapping, params);
-            console.log(response);
-            // this.endGame();
 
         } catch (error) {
             console.error(error)
+        }
+    }
+
+    // returns true if the opponent is offering draw and the offer is not denied
+    opponentIsOfferingDraw(game) {
+        if (!this.state.deniesDraw) {
+            if ((game.playerWhite.userId === Number(this.state.userId) && game.blackOffersDraw) ||
+                (game.playerBlack.userId === Number(this.state.userId) && game.whiteOffersDraw)) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -198,10 +207,16 @@ class GameBoard extends React.Component {
         let pieceColors;
         if (player === 'opponent') {
             if (this.state.game.playerWhite.userId === Number(this.state.userId)) {
-                pieceColors = 'WHITE'; } else { pieceColors = 'BLACK'; }
+                pieceColors = 'WHITE';
+            } else {
+                pieceColors = 'BLACK';
+            }
         } else {
             if (this.state.game.playerWhite.userId === Number(this.state.userId)) {
-                pieceColors = 'BLACK'; } else { pieceColors = 'WHITE'; }
+                pieceColors = 'BLACK';
+            } else {
+                pieceColors = 'WHITE';
+            }
         }
 
         let capturedPieces = [];
@@ -294,16 +309,23 @@ class GameBoard extends React.Component {
                     {this.getCapturedPieces('opponent')}
                     {this.renderBoard()}
                     {this.getCapturedPieces('own')}
+                    <Header as='h4' style={drawOfferStyle}>
+                        {this.opponentIsOfferingDraw(game) ? (this.getOpponentName(this.state.game) + ' is offering draw!') : ''}
+                    </Header>
                     {!this.state.isWatching &&
                         <Grid.Row columns={2} style={gameFooterStyle}>
                             <Grid.Column textAlign='center'>
                                 <Button
                                     style={gameButtonStyle}
                                     onClick={() => {
-                                        this.resign();
+                                        if (this.opponentIsOfferingDraw(game)) {
+                                            this.setState({deniesDraw: true});
+                                        } else {
+                                            this.resign();
+                                        }
                                     }}
                                 >
-                                    Resign
+                                    {this.opponentIsOfferingDraw(game) ? 'Deny' : 'Resign'}
                                 </Button>
                             </Grid.Column>
                             <Grid.Column textAlign='center'>
@@ -313,7 +335,7 @@ class GameBoard extends React.Component {
                                         this.offerDraw();
                                     }}
                                 >
-                                    Offer draw
+                                    {this.opponentIsOfferingDraw(game) ? 'Accept' : 'Offer draw'}
                                 </Button>
                             </Grid.Column>
                         </Grid.Row>
