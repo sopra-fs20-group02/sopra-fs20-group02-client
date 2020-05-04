@@ -45,9 +45,6 @@ class Lobby extends React.Component {
   // goes to user stats page
   async gamesStats() {
     try {
-      const requestBody = JSON.stringify({
-        userId: localStorage.getItem('userId')
-      });
       const response = await api.get('/users/' + localStorage.getItem('userId'));
       const gamesStats = response.data.userStats;
       this.props.history.push({
@@ -57,6 +54,21 @@ class Lobby extends React.Component {
 
     } catch (error) {
       alert(`Something went wrong while fetching the user stats: \n${handleError(error)}`);
+    }
+  }
+
+  // goes to scoreboard page
+  async scoreBoard() {
+    try {
+      const response = await api.get('/users');
+      const users = response.data;
+      this.props.history.push({
+        pathname: '/scoreBoard',
+        state: { users: users }
+      })
+
+    } catch (error) {
+      alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
     }
   }
 
@@ -187,7 +199,7 @@ class Lobby extends React.Component {
               })}
             </List>
           </Grid.Row>
-          <Grid.Row style={lobbyFooterStyle} columns={2}>
+          <Grid.Row style={lobbyFooterStyle} columns={3}>
             <Grid.Column textAlign='center'>
               <Icon
                   style={logoutIconStyle}
@@ -201,14 +213,25 @@ class Lobby extends React.Component {
               />
             </Grid.Column>
             <Grid.Column style={{alignContent: 'left'}}>
-            <Icon
-                style={{align: 'left', margin: '20px'}}
-                name='chart bar'
-                size='large'
-                color='#FF3377'
-                onClick={() => {
-                  this.gamesStats();
-                }}
+              <Icon
+                  style={{align: 'left', margin: '20px'}}
+                  name='chart bar'
+                  size='large'
+                  color='#FF3377'
+                  onClick={() => {
+                    this.gamesStats();
+                  }}
+              />
+            </Grid.Column>
+            <Grid.Column style={{alignContent: 'left'}}>
+              <Icon
+                  style={{align: 'left', margin: '20px'}}
+                  name='winner'
+                  size='large'
+                  color='#FF3377'
+                  onClick={() => {
+                    this.scoreBoard();
+                  }}
               />
             </Grid.Column>
           </Grid.Row>
