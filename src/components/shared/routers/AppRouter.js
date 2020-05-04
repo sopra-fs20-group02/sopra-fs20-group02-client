@@ -10,6 +10,7 @@ import Waiting from "../../game/Waiting";
 import Lobby from "../../game/Lobby";
 import GameEnded from "../../game/GameEnded";
 import GamesStats from "../../profile/GamesStats";
+import ScoreBoard from "../../profile/ScoreBoard";
 
 class AppRouter extends React.Component {
     render() {
@@ -42,6 +43,12 @@ class AppRouter extends React.Component {
                             path="/gamesStats"
                             render={() => (
                                 <GamesStats />
+                            )}
+                        />
+                        <Route
+                            path="/scoreBoard"
+                            render={() => (
+                                <ScoreBoard />
                             )}
                         />
                         <Route
