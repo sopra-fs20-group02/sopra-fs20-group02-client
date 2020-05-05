@@ -75,7 +75,7 @@ export default class Tile extends React.Component {
                             position: 'relative',
                             top: '8px',
                             left: '2px',
-                            color: this.selected ? '#0BD1FF' : (this.isInCheck ? '#0BD1FF' : (this.isWhite ? 'white' : 'black')),
+                            color: this.selected ? '#0BD1FF' : (this.isInCheck ? '#ff1e6f' : (this.isWhite ? 'white' : 'black')),
                             textShadow: (this.isWhite && !this.selected && !this.isInCheck) ?  '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' : ' '
                         }}
                         name={this.pieceType}
@@ -89,8 +89,7 @@ export default class Tile extends React.Component {
                             position: 'relative',
                             top: '8px',
                             left: '2px',
-                            color: 'rgba(11, 209, 255, 0.3)',
-
+                            color: 'rgba(11, 209, 255, 0.5)'
                         }}
                         name={this.prevPieceType}
                         size='large'

@@ -4,7 +4,7 @@ import { Grid, List, Header, Icon} from "semantic-ui-react";
 import {
   gamesStatsStyle, gamesStatsHeaderStyle, logoutIconStyle,
   gamesStatsFooterStyle, statsListStyle, statsItemStyle,
-  statsTextStyle, statsStyle, statsHeaderStyle, formStyle, inputFieldStyle
+  statsTextStyle, statsStyle, statsHeaderStyle, formStyle, inputFieldStyle, controlButtonStyle
 } from "../../data/styles";
 import {api, handleError} from "../../helpers/api";
 import Footer from "../game/Footer";
@@ -50,7 +50,7 @@ class ScoreBoard extends React.Component {
       draws.push(user.userStats.numberOfDraws);
     });
 
-    const weightedWins = wins.map(function(x) {
+    const weightedWins = wins.map(function (x) {
       return x * 3;
     });
 
@@ -58,53 +58,15 @@ class ScoreBoard extends React.Component {
       return wins + draws[index];
     });
 
-    const names_scores = Array.prototype.map.call( userNames, function(e, i){
+    const names_scores = Array.prototype.map.call(userNames, function (e, i) {
       return [e, scores[i]];
     })
 
-    const ranking = names_scores.sort(function(i, j) {
+    const ranking = names_scores.sort(function (i, j) {
       return j[1] - i[1];
     })
 
     return ranking;
-  }
-
-  getRankingHeader() {
-    return (
-      <Grid>
-        <Grid.Row columns={2}>
-          <Grid.Column>
-            <Header as='h4' style={statsTextStyle}>
-              Username
-            </Header>
-          </Grid.Column>
-          <Grid.Column>
-            <Header as='h4' style={statsTextStyle}>
-              Score
-            </Header>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-    );
-  }
-
-  getUser(user) {
-    return (
-      <Grid>
-        <Grid.Row columns={2}>
-          <Grid.Column>
-            <Header as='h4' style={statsTextStyle}>
-              {user[0]}
-            </Header>
-          </Grid.Column>
-          <Grid.Column>
-            <Header as='h4' style={statsTextStyle}>
-              {user[1]}
-            </Header>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-    );
   }
 
   componentDidMount() {
@@ -112,6 +74,42 @@ class ScoreBoard extends React.Component {
   }
 
   componentWillUnmount() {
+  }
+
+  getTable(){
+    let entries = [];
+    const users = this.getRanking();
+    for (let i = 0; i< users.length; i++){
+      entries.push(
+          <tr>
+            <td data-label="Username">{users[i][0]}</td>
+            <td data-label="Username">{users[i][1]}</td>
+          </tr>
+      )
+      console.log(users[i]);
+    }
+
+    let table = [];
+
+    table.push(
+        <table class="ui celled table unstackable" style={{width:'80%', backgroundColor:'rgba(255,255,255,0.8)'}}>
+          <thead>
+            <tr>
+              <th>
+                Username
+              </th>
+              <th>
+                Score
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+          {entries}
+          </tbody>
+        </table>
+    )
+
+    return table;
   }
 
   render() {
@@ -125,12 +123,7 @@ class ScoreBoard extends React.Component {
             </Header>
           </Grid.Row>
           <Grid.Row columns={2}>
-            <List style={statsListStyle}>
-              {this.getRankingHeader()}
-              {this.getRanking().map((user) => (
-                  this.getUser(user)
-              ))}
-            </List>
+            {this.getTable()}
           </Grid.Row>
           <Footer from={'scores'}/>
         </Grid>

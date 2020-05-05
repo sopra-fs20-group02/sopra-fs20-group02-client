@@ -56,6 +56,7 @@ class GameBoard extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.interval);
+        this.resign();
     }
 
     // gets all possible moves for the selected piece
