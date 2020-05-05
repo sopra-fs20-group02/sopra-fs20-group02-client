@@ -1,6 +1,6 @@
 import React from "react";
 import {Icon} from "semantic-ui-react";
-import {lobbyFooterStyle} from "../../data/styles";
+import {IconStyle, lobbyFooterStyle} from "../../data/styles";
 import {useHistory, withRouter} from "react-router-dom";
 import {api, handleError} from "../../helpers/api";
 
@@ -15,6 +15,12 @@ export class Footer extends React.Component {
         this.gamesStats = this.gamesStats.bind(this);
         this.scoreBoard = this.scoreBoard.bind(this);
     }
+
+    async lobby(){
+        this.props.history.push({
+            pathname: `/lobby`
+        });
+    }
     // logs out user
     async logout() {
         console.log(this.context)
@@ -25,7 +31,7 @@ export class Footer extends React.Component {
             const response = await api.put('/logout', requestBody);
 
         } catch(error) {
-            alert(`Something went wrong during the logout: \n${handleError(error)}`);
+            console.error(error.messages)
         }
         localStorage.clear();
         this.props.history.push('/login');
@@ -64,7 +70,7 @@ export class Footer extends React.Component {
 
     render() {
         return(
-            <div className="ui three column grid" style={lobbyFooterStyle}>
+            <div className="ui four column grid" style={lobbyFooterStyle}>
                 <div className="column">
                     <Icon
                         name='log out'
@@ -77,7 +83,21 @@ export class Footer extends React.Component {
                     />
                 </div>
                 <div className="column">
-                    <Icon
+                    <Icon style={{
+                        color: this.props.from === 'lobby' ? '#0BD1FF' : 'black',
+                    }}
+                        name='chess'
+                        size='large'
+                        color='#FF3377'
+                        onClick={() => {
+                            this.lobby();
+                        }}
+                    />
+                </div>
+                <div className="column">
+                    <Icon style={{
+                        color: this.props.from === 'stats' ? '#0BD1FF' : 'black',
+                    }}
                         name='chart bar'
                         size='large'
                         color='#FF3377'
@@ -87,7 +107,9 @@ export class Footer extends React.Component {
                     />
                 </div>
                 <div className="column">
-                    <Icon
+                    <Icon style={{
+                        color: this.props.from === 'scores' ? '#0BD1FF' : 'black',
+                    }}
                         name='winner'
                         size='large'
                         color='#FF3377'

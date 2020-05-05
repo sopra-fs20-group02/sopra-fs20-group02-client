@@ -7,6 +7,7 @@ import {
   statsTextStyle, statsStyle, statsHeaderStyle, formStyle, inputFieldStyle
 } from "../../data/styles";
 import {api, handleError} from "../../helpers/api";
+import Footer from "../game/Footer";
 
 class ScoreBoard extends React.Component {
   constructor() {
@@ -131,31 +132,7 @@ class ScoreBoard extends React.Component {
               ))}
             </List>
           </Grid.Row>
-          <Grid.Row style={gamesStatsFooterStyle} columns={2}>
-            <Grid.Column textAlign='center'>
-              <Icon
-                  style={logoutIconStyle}
-                  name='log out'
-                  size='large'
-                  color='#FF3377'
-                  flipped='horizontally'
-                  onClick={() => {
-                    this.logout();
-                  }}
-              />
-            </Grid.Column>
-            <Grid.Column style={{alignContent: 'left'}}>
-              <Icon
-                  style={{align: 'left', margin: '20px'}}
-                  name='chess'
-                  size='large'
-                  color='#FF3377'
-                  onClick={() => {
-                    this.lobby();
-                  }}
-                />
-            </Grid.Column>
-          </Grid.Row>
+          <Footer from={'scores'}/>
         </Grid>
       );
     } else {

@@ -154,7 +154,7 @@ class Lobby extends React.Component {
               })}
             </List>
           </Grid.Row>
-          <Footer/>
+          <Footer from={'lobby'}/>
         </Grid>
     );
   }
