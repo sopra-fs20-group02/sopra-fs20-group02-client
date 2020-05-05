@@ -71,6 +71,8 @@ export const LobbyUserTextStyle = {
 
 export const lobbyFooterStyle = {
     height: '80px',
+    width: '100%',
+    textAlign: 'center',
     background: 'white',
     position: 'absolute',
     bottom: '0',
