@@ -22,6 +22,16 @@ export default class Tile extends React.Component {
             this.color = this.props.isPlayerWhite ? "#FF8998" : "white"
         }
 
+        this.prevPieceType = this.pieceType ? this.pieceType : this.prevPieceType;
+
+        if (this.prevPieceType){
+            setInterval(
+                () => {
+                    this.prevPieceType = undefined
+                }, 5000
+            )
+        }
+
         this.pieceType = undefined;
         this.selected = false;
         this.isInCheck = false;
@@ -30,6 +40,7 @@ export default class Tile extends React.Component {
             const piece = this.props.game.pieces[i];
 
             if (Number(piece.xcord) === this.props.x && Number(piece.ycord) === this.props.y){
+                this.prevPieceType = this.pieceType;
                 this.pieceType = 'chess ' + piece.pieceType.toLowerCase();
                 this.isWhite = piece.color === "WHITE";
                 this.id = piece.pieceId;
@@ -51,7 +62,6 @@ export default class Tile extends React.Component {
             }
         }
 
-
         return(
             <div style={{
                 background: this.color,
@@ -65,10 +75,24 @@ export default class Tile extends React.Component {
                             position: 'relative',
                             top: '8px',
                             left: '2px',
-                            color: this.selected ? '#0BD1FF' : (this.isInCheck ? 'red' : (this.isWhite ? 'white' : 'black')),
-                            textShadow: (this.isWhite && !this.selected) ?  '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' : ' '
+                            color: this.selected ? '#0BD1FF' : (this.isInCheck ? '#0BD1FF' : (this.isWhite ? 'white' : 'black')),
+                            textShadow: (this.isWhite && !this.selected && !this.isInCheck) ?  '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' : ' '
                         }}
                         name={this.pieceType}
+                        size='large'
+                    />
+                }
+                {
+                    this.prevPieceType && !this.pieceType &&
+                    <Icon
+                        style={{
+                            position: 'relative',
+                            top: '8px',
+                            left: '2px',
+                            color: 'rgba(11, 209, 255, 0.3)',
+
+                        }}
+                        name={this.prevPieceType}
                         size='large'
                     />
                 }

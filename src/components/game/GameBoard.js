@@ -36,7 +36,6 @@ class GameBoard extends React.Component {
         this.interval = setInterval(async () => {
             if (this.state.gameId){
                 const gameStatusObject = await fetchGameStatus(localStorage.getItem('userId'), this.state.gameId);
-                console.log(gameStatusObject);
                 this.setState({game: gameStatusObject.data});
                 this.setState({
                     isWatching: ( Number(this.state.userId) !== this.state.game.playerWhite.userId
