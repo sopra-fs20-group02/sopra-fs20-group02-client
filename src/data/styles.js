@@ -116,9 +116,10 @@ export const userItemStyle = {
 
 // styles for games statistics page
 export const gamesStatsStyle = {
-    height: '100vh',
+    height: '90vh',
     width: '100vw',
     margin: '0',
+    color: 'white',
     background: 'linear-gradient(#FF6464, #FF5A86)'
 }
 

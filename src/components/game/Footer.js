@@ -72,7 +72,9 @@ export class Footer extends React.Component {
         return(
             <div className="ui four column grid" style={lobbyFooterStyle}>
                 <div className="column">
-                    <Icon
+                    <Icon style={{
+                        color: 'black',
+                    }}
                         name='log out'
                         size='large'
                         color='#FF3377'
