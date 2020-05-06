@@ -50,7 +50,7 @@ class Lobby extends React.Component {
       const game = response.data;
       this.navigateToGame(game)
     } catch (error) {
-      alert(`Something went wrong while creating the game: \n${handleError(error)}`);
+      alert(`No games available`);
     }
   }
 

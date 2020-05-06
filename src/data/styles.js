@@ -116,7 +116,7 @@ export const userItemStyle = {
 
 // styles for games statistics page
 export const gamesStatsStyle = {
-    height: '90vh',
+    height: '93vh',
     width: '100vw',
     margin: '0',
     color: 'white',

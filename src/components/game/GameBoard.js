@@ -1,7 +1,7 @@
 import React from "react";
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
-import { Grid, Header, Icon } from "semantic-ui-react";
+import { Grid, Header, Icon, Confirm } from "semantic-ui-react";
 import Tile from './Tile';
 import {
     gameStyle, gameHeaderStyle, drawOfferStyle, chessBoardStyle, boardRankStyle,
@@ -26,9 +26,12 @@ class GameBoard extends React.Component {
             userId: localStorage.getItem('userId'),
             isWatching: null,
             isPlayerWhite: null,
-            deniesDraw: false
+            deniesDraw: false,
+            open: false
         };
         this.tileCallback = this.tileCallback.bind(this);
+        this.offerDraw = this.offerDraw.bind(this);
+        this.cancel = this.cancel.bind(this);
     }
 
     async componentDidMount() {
@@ -50,6 +53,7 @@ class GameBoard extends React.Component {
                         this.endGame();
                     }
                 }
+                this.opponentIsOfferingDraw();
             }
         }, 1000);
     }
@@ -70,13 +74,13 @@ class GameBoard extends React.Component {
                 this.state.game.playerBlack.userId === Number(this.state.userId)
             )) {
                 try {
-                    this.setState({displayMoves: true});
                     const requestBody = JSON.stringify({
                         userId: Number(this.state.userId)
                     });
                     const mapping = '/games/' + this.state.game.gameId + '/' + pieceId.toString();
                     const response = await api.get(mapping, requestBody);
                     this.setState({
+                        isplayMoves: true,
                         possibleMoves: response.data,
                         selectedPiece: pieceId,
                         blueDots: true
@@ -156,11 +160,9 @@ class GameBoard extends React.Component {
     // returns true if the opponent is offering draw and the offer is not denied
     opponentIsOfferingDraw(game) {
         if (!this.state.deniesDraw) {
-            if ((game.playerWhite.userId === Number(this.state.userId) && game.blackOffersDraw) ||
-                (game.playerBlack.userId === Number(this.state.userId) && game.whiteOffersDraw)) {
-                return true;
-            } else {
-                return false;
+            if ((this.state.game.playerWhite.userId === Number(this.state.userId) && this.state.game.blackOffersDraw) ||
+                (this.state.game.playerBlack.userId === Number(this.state.userId) && this.state.game.whiteOffersDraw)) {
+                this.setState({open: true})
             }
         }
     }
@@ -176,6 +178,13 @@ class GameBoard extends React.Component {
         } else {
             return '';
         }
+    }
+
+    cancel(){
+        this.setState({
+            open: false,
+            deniesDraw: true
+        });
     }
 
     isMyTurn(){
@@ -255,8 +264,10 @@ class GameBoard extends React.Component {
             await this.getPossibleMoves(id,isWhiteTile);
         }
         else {
-            this.setState({displayMoves: false});
-            this.setState({possibleMoves: null});
+            this.setState(
+                {displayMoves: false,
+                    possibleMoves: null
+            });
             if (this.state.possibleMoves) {
                 for (let i = 0; i < this.state.possibleMoves.length; i++){
                     if (
@@ -321,23 +332,24 @@ class GameBoard extends React.Component {
                     {this.getCapturedPieces('opponent')}
                     {this.renderBoard()}
                     {this.getCapturedPieces('own')}
-                    <Header as='h4' style={drawOfferStyle}>
-                        {this.opponentIsOfferingDraw(game) ? (this.getOpponentName(this.state.game) + ' is offering draw!') : ''}
-                    </Header>
-                    {!this.state.isWatching &&
+                    <Confirm
+                        open={this.state.open}
+                        cancelButton='deny'
+                        confirmButton="accept"
+                        content='Accept draw offer?'
+                        onCancel={this.cancel}
+                        onConfirm={this.offerDraw}
+                    />
+                        {!this.state.isWatching &&
                         <Grid.Row columns={2} style={gameFooterStyle}>
                             <Grid.Column textAlign='center'>
                                 <Button
                                     style={gameButtonStyle}
                                     onClick={() => {
-                                        if (this.opponentIsOfferingDraw(game)) {
-                                            this.setState({deniesDraw: true});
-                                        } else {
-                                            this.resign();
-                                        }
+                                        this.resign();
                                     }}
                                 >
-                                    {this.opponentIsOfferingDraw(game) ? 'Deny' : 'Resign'}
+                                   Resign
                                 </Button>
                             </Grid.Column>
                             <Grid.Column textAlign='center'>
@@ -347,7 +359,7 @@ class GameBoard extends React.Component {
                                         this.offerDraw();
                                     }}
                                 >
-                                    {this.opponentIsOfferingDraw(game) ? 'Accept' : 'Offer draw'}
+                                     Offer draw
                                 </Button>
                             </Grid.Column>
                         </Grid.Row>
