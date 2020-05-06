@@ -71,7 +71,8 @@ export const LobbyUserTextStyle = {
 
 export const lobbyFooterStyle = {
     height: '80px',
-    width: '100%',
+    margin: '0',
+    width: '100vw',
     textAlign: 'center',
     background: 'white',
     position: 'absolute',
@@ -109,7 +110,7 @@ export const playersListStyle = {
 }
 
 export const userItemStyle = {
-    margin: '4px',
+    margin: '10px',
     color: 'white'
 }
 

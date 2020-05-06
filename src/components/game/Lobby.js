@@ -125,27 +125,20 @@ class Lobby extends React.Component {
                     <div>
                       { (game.gameStatus === "WAITING" || game.gameStatus === "FULL") &&
                       <List.Item style={userItemStyle}>
-                        {game.playerWhite ? game.playerWhite.username : '-'}
-                        {' vs. '}
-                        {game.playerBlack ? game.playerBlack.username : '-'}
+                        <div style={{margin: '5px'}}>
+                          {game.playerWhite ? game.playerWhite.username : '-'}
+                          {' vs. '}
+                          {game.playerBlack ? game.playerBlack.username : '-'}
+                        </div>
                         {(game.playerWhite == null || game.playerBlack == null) &&
-                        <Button
-                            onClick={() => {
-                              this.joinSpecificGame(game);
-                            }}
-                            style={playerButtonStyle}
-                        >
-                          play
-                        </Button>
+                        <button className="small ui inverted button"  onClick={() => {
+                          this.joinSpecificGame(game);
+                        }}>play</button>
+
                         }
-                        <Button
-                            onClick={() => {
-                              this.watchGame(game);
-                            }}
-                            style={playerButtonStyle}
-                        >
-                          watch
-                        </Button>
+                        <button className="small ui inverted button"  onClick={() => {
+                          this.watchGame(game);
+                        }}>watch</button>
                       </List.Item>
                       }
                     </div>
