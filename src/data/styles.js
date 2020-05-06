@@ -97,6 +97,18 @@ export const lobbyFooterStyle = {
     borderTopRightRadius: '5px'
 }
 
+export const gameStatsFooterStyle = {
+    height: '80px',
+    margin: '0',
+    width: '100vw',
+    textAlign: 'center',
+    background: 'white',
+    position: 'sticky',
+    bottom: '0',
+    borderTopLeftRadius: '5px',
+    borderTopRightRadius: '5px'
+}
+
 export const controlButtonStyle = {
     background: 'white',
     width: '150px',
