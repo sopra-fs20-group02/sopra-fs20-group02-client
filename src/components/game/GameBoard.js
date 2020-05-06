@@ -178,13 +178,17 @@ class GameBoard extends React.Component {
         }
     }
 
+    isMyTurn(){
+        return ((this.state.game.isWhiteTurn && this.state.game.playerWhite.userId === Number(this.state.userId)) ||
+            (!this.state.game.isWhiteTurn && this.state.game.playerBlack.userId === Number(this.state.userId)));
+    }
+
     // return information on whose turn it is and the opponents name
     getHeader(game) {
         const opponent = this.getOpponentName(game);
         let header;
         if (!this.state.isWatching){
-            if ((game.isWhiteTurn && game.playerWhite.userId === Number(this.state.userId)) ||
-                (!game.isWhiteTurn && game.playerBlack.userId === Number(this.state.userId))) {
+            if (this.isMyTurn()) {
                 header = 'Your turn';
             } else {
                 header = opponent + "'s turn";
@@ -294,7 +298,15 @@ class GameBoard extends React.Component {
         }
 
         return(
-            <Grid style={chessBoardStyle} >
+            <Grid style={{
+                width: '340px',
+                height: '340px',
+                margin: '0px',
+                background: '#FF8998',
+                boxShadow: this.isMyTurn() ? '0px 80px 100px -100px #0ff' : '0px -80px 100px -100px #0ff',
+                padding: '10px',
+                borderRadius: '3px',
+            }} >
                 {board}
             </Grid>
         )

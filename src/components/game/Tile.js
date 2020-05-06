@@ -28,7 +28,7 @@ export default class Tile extends React.Component {
             setInterval(
                 () => {
                     this.prevPieceType = undefined
-                }, 5000
+                }, 8000
             )
         }
 

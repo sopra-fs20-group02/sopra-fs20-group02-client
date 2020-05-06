@@ -230,6 +230,7 @@ export const chessBoardStyle = {
     height: '340px',
     margin: '0px',
     background: '#FF8998',
+    boxShadow: '0px 80px 100px -100px #0ff',
     padding: '10px',
     borderRadius: '3px',
 }
