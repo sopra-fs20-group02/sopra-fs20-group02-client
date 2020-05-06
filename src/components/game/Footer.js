@@ -42,11 +42,19 @@ export class Footer extends React.Component {
     // goes to user stats page
     async gamesStats() {
         try {
-            const response = await api.get('/users/' + localStorage.getItem('userId'));
-            const gamesStats = response.data.userStats;
+            const requestBody = JSON.stringify({
+                userId: localStorage.getItem('userId')
+            });
+            const response1 = await api.get('/users/' + localStorage.getItem('userId') + '/gameHistory');
+            const response2 = await api.get('/users/' + localStorage.getItem('userId'));
+            const gamesStats = response2.data.userStats;
+            const gameHistory = response1.data;
             this.props.history.push({
                 pathname: '/gamesStats',
-                state: { gamesStats: gamesStats }
+                state: {
+                    gamesStats: gamesStats,
+                    gameHistory: gameHistory
+                }
             })
 
         } catch (error) {
