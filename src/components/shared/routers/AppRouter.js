@@ -17,70 +17,77 @@ class AppRouter extends React.Component {
         return (
             <BrowserRouter>
                 <Switch>
-                    <div>
-                        <Route
-                            path="/lobby"
-                            render={() => (
-                                <GameGuard>
-                                    <Lobby/>
-
-                                </GameGuard>
-                            )}
-                        />
-                        <Route
-                            path="/game"
-                            render={() => (
+                    <Route
+                        path="/lobby"
+                        render={() => (
+                            <GameGuard>
+                                <Lobby/>
+                            </GameGuard>
+                        )}
+                    />
+                    <Route
+                        path="/game"
+                        render={() => (
+                            <GameGuard>
                                 <Game />
-                            )}
-                        />
-                        <Route
-                            path="/waiting"
-                            render={() => (
+                            </GameGuard>
+                        )}
+                    />
+                    <Route
+                        path="/waiting"
+                        render={() => (
+                            <GameGuard>
                                 <Waiting />
-                            )}
-                        />
-                        <Route
-                            path="/gamesStats"
-                            render={() => (
+                            </GameGuard>
+                        )}
+                    />
+                    <Route
+                        path="/gamesStats"
+                        render={() => (
+                            <GameGuard>
                                 <GamesStats />
-                            )}
-                        />
-                        <Route
-                            path="/scoreBoard"
-                            render={() => (
+                            </GameGuard>
+                        )}
+                    />
+                    <Route
+                        path="/scoreBoard"
+                        render={() => (
+                            <GameGuard>
                                 <ScoreBoard />
+                            </GameGuard>
+                        )}
+                    />
+                    <Route
+                        path="/ended"
+                        render={() => (
+                            <GameGuard>
+                            <GameEnded />
+                            </GameGuard>
+                        )}
+                    />
+                    <Route
+                        path="/login"
+                        exact
+                        render={() => (
+                            <LoginGuard>
+                                <Login />
+                            </LoginGuard>
+                        )}
+                    />
+                    <Route
+                        path="/registration"
+                        exact
+                        render={() => (
+                            <Registration />
+                        )}
+                    />
+                    <Route
+                        path="/"
+                        exact
+                        render={() => (
+                            <Redirect to={"/login"} />
                             )}
-                        />
-                        <Route
-                            path="/ended"
-                            render={() => (
-                                <GameEnded />
-                            )}
-                        />
-                        <Route
-                            path="/login"
-                            exact
-                            render={() => (
-                                <LoginGuard>
-                                    <Login />
-                                </LoginGuard>
-                            )}
-                        />
-                        <Route
-                            path="/registration"
-                            exact
-                            render={() => (
-                                <Registration />
-                            )}
-                        />
-                        <Route
-                            path="/"
-                            exact
-                            render={() => (
-                                <Redirect to={"/login"} />
-                                )}
-                        />
-                    </div>
+                    />
                 </Switch>
             </BrowserRouter>
         );

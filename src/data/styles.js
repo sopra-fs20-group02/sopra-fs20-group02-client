@@ -71,6 +71,9 @@ export const LobbyUserTextStyle = {
 
 export const lobbyFooterStyle = {
     height: '80px',
+    margin: '0',
+    width: '100vw',
+    textAlign: 'center',
     background: 'white',
     position: 'absolute',
     bottom: '0',
@@ -107,16 +110,17 @@ export const playersListStyle = {
 }
 
 export const userItemStyle = {
-    margin: '4px',
+    margin: '10px',
     color: 'white'
 }
 
 
 // styles for games statistics page
 export const gamesStatsStyle = {
-    height: '100vh',
+    height: '93vh',
     width: '100vw',
     margin: '0',
+    color: 'white',
     background: 'linear-gradient(#FF6464, #FF5A86)'
 }
 
@@ -227,6 +231,7 @@ export const chessBoardStyle = {
     height: '340px',
     margin: '0px',
     background: '#FF8998',
+    boxShadow: '0px 80px 100px -100px #0ff',
     padding: '10px',
     borderRadius: '3px',
 }

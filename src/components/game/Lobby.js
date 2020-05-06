@@ -7,10 +7,11 @@ import {
   lobbyFooterStyle, playersListStyle, userItemStyle, lobbyTextStyle, controlButtonStyle, LobbyUserTextStyle
 } from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
+import Footer from "./Footer";
 
 class Lobby extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       games: null,
     };
@@ -24,52 +25,6 @@ class Lobby extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.interval);
-  }
-
-  // logs out user
-  async logout() {
-    try {
-      const requestBody = JSON.stringify({
-        userId: localStorage.getItem('userId')
-      });
-      const response = await api.put('/logout', requestBody);
-
-    } catch(error) {
-        alert(`Something went wrong during the logout: \n${handleError(error)}`);
-    }
-    localStorage.clear();
-    this.props.history.push('/login');
-  }
-
-
-  // goes to user stats page
-  async gamesStats() {
-    try {
-      const response = await api.get('/users/' + localStorage.getItem('userId'));
-      const gamesStats = response.data.userStats;
-      this.props.history.push({
-        pathname: '/gamesStats',
-        state: { gamesStats: gamesStats }
-      })
-
-    } catch (error) {
-      alert(`Something went wrong while fetching the user stats: \n${handleError(error)}`);
-    }
-  }
-
-  // goes to scoreboard page
-  async scoreBoard() {
-    try {
-      const response = await api.get('/users');
-      const users = response.data;
-      this.props.history.push({
-        pathname: '/scoreBoard',
-        state: { users: users }
-      })
-
-    } catch (error) {
-      alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
-    }
   }
 
   // creates game with user and chosen opponent
@@ -95,7 +50,7 @@ class Lobby extends React.Component {
       const game = response.data;
       this.navigateToGame(game)
     } catch (error) {
-      alert(`Something went wrong while creating the game: \n${handleError(error)}`);
+      alert(`No games available`);
     }
   }
 
@@ -170,27 +125,20 @@ class Lobby extends React.Component {
                     <div>
                       { (game.gameStatus === "WAITING" || game.gameStatus === "FULL") &&
                       <List.Item style={userItemStyle}>
-                        {game.playerWhite ? game.playerWhite.username : '-'}
-                        {' vs. '}
-                        {game.playerBlack ? game.playerBlack.username : '-'}
+                        <div style={{margin: '5px'}}>
+                          {game.playerWhite ? game.playerWhite.username : '-'}
+                          {' vs. '}
+                          {game.playerBlack ? game.playerBlack.username : '-'}
+                        </div>
                         {(game.playerWhite == null || game.playerBlack == null) &&
-                        <Button
-                            onClick={() => {
-                              this.joinSpecificGame(game);
-                            }}
-                            style={playerButtonStyle}
-                        >
-                          play
-                        </Button>
+                        <button className="small ui inverted button"  onClick={() => {
+                          this.joinSpecificGame(game);
+                        }}>play</button>
+
                         }
-                        <Button
-                            onClick={() => {
-                              this.watchGame(game);
-                            }}
-                            style={playerButtonStyle}
-                        >
-                          watch
-                        </Button>
+                        <button className="small ui inverted button"  onClick={() => {
+                          this.watchGame(game);
+                        }}>watch</button>
                       </List.Item>
                       }
                     </div>
@@ -199,42 +147,7 @@ class Lobby extends React.Component {
               })}
             </List>
           </Grid.Row>
-          <Grid.Row style={lobbyFooterStyle} columns={3}>
-            <Grid.Column textAlign='center'>
-              <Icon
-                  style={logoutIconStyle}
-                  name='log out'
-                  size='large'
-                  color='#FF3377'
-                  flipped='horizontally'
-                  onClick={() => {
-                    this.logout();
-                  }}
-              />
-            </Grid.Column>
-            <Grid.Column style={{alignContent: 'left'}}>
-              <Icon
-                  style={{align: 'left', margin: '20px'}}
-                  name='chart bar'
-                  size='large'
-                  color='#FF3377'
-                  onClick={() => {
-                    this.gamesStats();
-                  }}
-              />
-            </Grid.Column>
-            <Grid.Column style={{alignContent: 'left'}}>
-              <Icon
-                  style={{align: 'left', margin: '20px'}}
-                  name='winner'
-                  size='large'
-                  color='#FF3377'
-                  onClick={() => {
-                    this.scoreBoard();
-                  }}
-              />
-            </Grid.Column>
-          </Grid.Row>
+          <Footer from={'lobby'}/>
         </Grid>
     );
   }

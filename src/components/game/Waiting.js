@@ -86,6 +86,9 @@ class Waiting extends React.Component {
                 </Header>
             </Grid.Row>
             <Grid.Row>
+                <div className="ui active inverted loader"></div>
+            </Grid.Row>
+            <Grid.Row>
                 <Header as='h4' style={quoteStyle}>
                     {this.state.gameDeleted ? 'Game was deleted' : 'Waiting...'}
                 </Header>
