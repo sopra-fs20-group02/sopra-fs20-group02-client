@@ -75,11 +75,19 @@ class GamesStats extends React.Component {
   }
 
   getAverageOpponentPiecesCaptured(gameHistory) {
-    return this.getTotalOpponentPiecesCaptured(gameHistory) / gameHistory.length;
+    if (gameHistory.length != 0) {
+      return this.getTotalOpponentPiecesCaptured(gameHistory) / gameHistory.length;
+    } else {
+      return '-';
+    }
   }
 
   getAverageOwnPiecesCaptured(gameHistory) {
-    return this.getTotalOwnPiecesCaptured(gameHistory) / gameHistory.length;
+    if (gameHistory.length != 0) {
+      return this.getTotalOwnPiecesCaptured(gameHistory) / gameHistory.length;
+    } else {
+      return '-';
+    }
   }
 
   getTotalTimePlayed(gamesStats) {
@@ -91,10 +99,13 @@ class GamesStats extends React.Component {
   }
 
   getAveragePlayTime(gameHistory) {
+
     let totalHoursPlayed = 0;
     let totalMinutesPlayed = 0;
     let totalSecondsPlayed = 0;
 
+    // one could just use the total time played from the gamesStats
+    // but we might want to e.g. plot the individual game times
     for (let i = 0; i < gameHistory.length; i++) {
       const endTime = gameHistory[i].endTime;
       const startTime = gameHistory[i].startTime;
@@ -204,7 +215,8 @@ class GamesStats extends React.Component {
                   Average game time:
                 </div>
                 <div className="value">
-                  { averagePlayTime[0] + 'h, ' + averagePlayTime[1] + 'm, ' + averagePlayTime[2] + 's'}
+                  {(gameHistory.length != 0) ?
+                      averagePlayTime[0] + 'h, ' +averagePlayTime[1] + 'm, ' + averagePlayTime[2] + 's' : '-'}
                 </div>
               </div>
             </Grid.Row>

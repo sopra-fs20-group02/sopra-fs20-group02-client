@@ -1,6 +1,6 @@
 import React from "react";
 import {Icon} from "semantic-ui-react";
-import {IconStyle, lobbyFooterStyle} from "../../data/styles";
+import {gameStatsFooterStyle, IconStyle, lobbyFooterStyle} from "../../data/styles";
 import {useHistory, withRouter} from "react-router-dom";
 import {api, handleError} from "../../helpers/api";
 import { motion } from "framer-motion"
@@ -10,7 +10,7 @@ export class Footer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            pathname: props.location.pathname
         };
         this.logout = this.logout.bind(this);
         this.gamesStats = this.gamesStats.bind(this);
@@ -79,7 +79,9 @@ export class Footer extends React.Component {
 
     render() {
         return(
-            <div className="ui four column grid" style={lobbyFooterStyle}>
+            <div className="ui four column grid" style={
+                this.state.pathname === '/gamesStats' ? gameStatsFooterStyle : lobbyFooterStyle
+            }>
                 <div className="column">
                     <motion.div whileHover={{ scale: 1.1 }} >
                         <Icon style={{
