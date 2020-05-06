@@ -80,7 +80,7 @@ class GameBoard extends React.Component {
                     const mapping = '/games/' + this.state.game.gameId + '/' + pieceId.toString();
                     const response = await api.get(mapping, requestBody);
                     this.setState({
-                        isplayMoves: true,
+                        displayMoves: true,
                         possibleMoves: response.data,
                         selectedPiece: pieceId,
                         blueDots: true
