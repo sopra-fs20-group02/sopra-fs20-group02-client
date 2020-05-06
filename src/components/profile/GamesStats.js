@@ -14,6 +14,7 @@ class GamesStats extends React.Component {
     super();
     this.state = {
       gamesStats: null,
+      gameHistory: null
     };
   }
 
@@ -39,6 +40,10 @@ class GamesStats extends React.Component {
     });
   }
 
+  getNumberOfGames(gamesStats) {
+    return gamesStats.numberOfWinnings + gamesStats.numberOfLosses + gamesStats.numberOfDraws;
+  }
+
   getTotalOpponentPiecesCaptured(gameHistory) {
     const userId = localStorage.getItem('userId');
     let totalOpponentPiecesCaptured = 0;
@@ -52,6 +57,69 @@ class GamesStats extends React.Component {
       }
     }
     return totalOpponentPiecesCaptured;
+  }
+
+  getTotalOwnPiecesCaptured(gameHistory) {
+    const userId = localStorage.getItem('userId');
+    let totalOwnPiecesCaptured = 0;
+    for (let i = 0; i < gameHistory.length; i++) {
+      const color = gameHistory[i].playerWhite.userId == userId ? 'WHITE' : 'BLACK';
+      for (let j = 0; j < gameHistory[i].pieces.length; j++) {
+        if (gameHistory[i].pieces[j].captured &&
+            gameHistory[i].pieces[j].color == color) {
+          totalOwnPiecesCaptured = totalOwnPiecesCaptured + 1
+        }
+      }
+    }
+    return totalOwnPiecesCaptured;
+  }
+
+  getAverageOpponentPiecesCaptured(gameHistory) {
+    return this.getTotalOpponentPiecesCaptured(gameHistory) / gameHistory.length;
+  }
+
+  getAverageOwnPiecesCaptured(gameHistory) {
+    return this.getTotalOwnPiecesCaptured(gameHistory) / gameHistory.length;
+  }
+
+  getTotalTimePlayed(gamesStats) {
+    let time = gamesStats.totalTimePlayed;
+    const hours = ~~Math.floor(time / 3600);
+    const minutes = ~~((time % 3600) / 60);
+    const seconds = ~~time % 60;
+    return [hours, minutes, seconds];
+  }
+
+  getAveragePlayTime(gameHistory) {
+    let totalHoursPlayed = 0;
+    let totalMinutesPlayed = 0;
+    let totalSecondsPlayed = 0;
+
+    for (let i = 0; i < gameHistory.length; i++) {
+      const endTime = gameHistory[i].endTime;
+      const startTime = gameHistory[i].startTime;
+      const endDate = new Date(endTime.substring(0, endTime.length - 4) + 'Z');
+      const startDate = new Date(startTime.substring(0, startTime.length - 4) + 'Z');
+
+      let hoursDifference = endDate.getHours() - startDate.getHours();
+      let minutesDifference = endDate.getMinutes() - startDate.getMinutes();
+      let secondsDifference = endDate.getSeconds() - startDate.getSeconds();
+
+      totalHoursPlayed = totalHoursPlayed + hoursDifference;
+      totalMinutesPlayed = totalMinutesPlayed + minutesDifference;
+      totalSecondsPlayed = totalSecondsPlayed + secondsDifference;
+
+    }
+
+    const numberOfGamesPlayed = gameHistory.length;
+    const totalPlayTime = totalSecondsPlayed + totalMinutesPlayed * 60 + totalHoursPlayed * 60 ** 2;
+    const averagePlayTime = totalPlayTime / numberOfGamesPlayed;
+
+    const averageHours = ~~Math.floor(averagePlayTime / 3600);
+    const averageMinutes = ~~((averagePlayTime % 3600) / 60);
+    const averageSeconds = ~~averagePlayTime % 60;
+
+    return [averageHours, averageMinutes, averageSeconds];
   }
 
   componentDidMount() {
@@ -70,19 +138,28 @@ class GamesStats extends React.Component {
     if (gamesStats && gameHistory) {
 
       const totalOpponentPiecesCaptured = this.getTotalOpponentPiecesCaptured(gameHistory);
-
-      console.log(this.state.gameHistory);
-
-      let time = gamesStats.totalTimePlayed;
-      const hours = ~~Math.floor(time / 3600);
-      const minutes = ~~((time % 3600) / 60);
-      const seconds = ~~time % 60;
+      const totalOwnPiecesCaptured = this.getTotalOwnPiecesCaptured(gameHistory);
+      const averageOpponentPiecesCaptures = this.getAverageOpponentPiecesCaptured(gameHistory);
+      const averageOwnPiecesCaptures = this.getAverageOwnPiecesCaptured(gameHistory);
+      const totalTimePlayed = this.getTotalTimePlayed(gamesStats);
+      const averagePlayTime = this.getAveragePlayTime(gameHistory);
+      const numberOfGames = this.getNumberOfGames(gamesStats);
 
       return (
         <div style={{background}}>
           <Grid centered>
             <Grid.Row>
               <div className="ui inverted statistic" style={{marginTop:'25px'}}>
+                <div className="label">
+                  Number of games:
+                </div>
+                <div className="value">
+                  {numberOfGames}
+                </div>
+              </div>
+            </Grid.Row>
+            <Grid.Row>
+              <div className="ui inverted statistic">
                 <div className="label">
                   Number of wins:
                 </div>
@@ -114,20 +191,60 @@ class GamesStats extends React.Component {
             <Grid.Row>
               <div className="ui inverted statistic">
                 <div className="label">
-                  time played:
+                  Total time played:
                 </div>
                 <div className="value">
-                  { hours + 'h, ' + minutes + 'm, ' + seconds + 's'}
+                  { totalTimePlayed[0] + 'h, ' + totalTimePlayed[1] + 'm, ' + totalTimePlayed[2] + 's'}
                 </div>
               </div>
             </Grid.Row>
             <Grid.Row>
               <div className="ui inverted statistic">
                 <div className="label">
-                  Number of pieces captured:
+                  Average game time:
+                </div>
+                <div className="value">
+                  { averagePlayTime[0] + 'h, ' + averagePlayTime[1] + 'm, ' + averagePlayTime[2] + 's'}
+                </div>
+              </div>
+            </Grid.Row>
+            <Grid.Row>
+              <div className="ui inverted statistic">
+                <div className="label">
+                  Total opponent pieces captured:
                 </div>
                 <div className="value">
                   {totalOpponentPiecesCaptured}
+                </div>
+              </div>
+            </Grid.Row>
+            <Grid.Row>
+              <div className="ui inverted statistic">
+                <div className="label">
+                  Total own pieces captured:
+                </div>
+                <div className="value">
+                  {totalOwnPiecesCaptured}
+                </div>
+              </div>
+            </Grid.Row>
+            <Grid.Row>
+              <div className="ui inverted statistic">
+                <div className="label">
+                  Average opponent pieces captured:
+                </div>
+                <div className="value">
+                  {averageOpponentPiecesCaptures}
+                </div>
+              </div>
+            </Grid.Row>
+            <Grid.Row>
+              <div className="ui inverted statistic">
+                <div className="label">
+                  Average own pieces captured:
+                </div>
+                <div className="value">
+                  {averageOwnPiecesCaptures}
                 </div>
               </div>
             </Grid.Row>
