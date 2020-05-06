@@ -2,7 +2,14 @@ import React from "react";
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, Button, Header, Icon } from "semantic-ui-react";
-import {gameButtonStyle, gameFooterStyle, quoteStyle, waitingPageStyle} from "../../data/styles";
+import {
+    background,
+    buttonStyle,
+    gameButtonStyle,
+    gameFooterStyle,
+    quoteStyle,
+    waitingPageStyle
+} from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
 
 class GameEnded extends React.Component {
@@ -59,32 +66,33 @@ class GameEnded extends React.Component {
     render() {
         console.log(this.state.game);
         return (
-        <Grid style={waitingPageStyle} centered>
-            <Grid.Row>
-                <Header as='h4' style={quoteStyle}>
-                    {this.state.quote}
-                </Header>
-            </Grid.Row>
-            <Grid.Row>
-                <Header as='h1' style={quoteStyle}>
-                    {this.getEndMessage()}
-                </Header>
-            </Grid.Row>
-            <Grid.Row columns={2} style={gameFooterStyle}>
-                <Grid.Column textAlign='center'>
-                    <Button
-                        style={gameButtonStyle}
-                        onClick={() => {
-                            this.props.history.push({
-                                pathname: '/lobby',
-                            })
-                        }}
-                    >
-                        Lobby
-                    </Button>
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
+            <div style={background}>
+                <Grid centered>
+                    <Grid.Row>
+                        <Header as='h4' style={quoteStyle}>
+                            {this.state.quote}
+                        </Header>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Header as='h1' style={quoteStyle}>
+                            {this.getEndMessage()}
+                        </Header>
+                    </Grid.Row>
+                    <Grid.Row columns={2} style={gameFooterStyle}>
+                        <Grid.Column textAlign='center'>
+                            <button className="ui inverted button" style={buttonStyle}
+                                onClick={() => {
+                                    this.props.history.push({
+                                        pathname: '/lobby',
+                                    })
+                                }}
+                            >
+                                Lobby
+                            </button>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </div>
         );
     }
 }

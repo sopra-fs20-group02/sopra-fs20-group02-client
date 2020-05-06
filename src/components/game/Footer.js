@@ -3,6 +3,7 @@ import {Icon} from "semantic-ui-react";
 import {IconStyle, lobbyFooterStyle} from "../../data/styles";
 import {useHistory, withRouter} from "react-router-dom";
 import {api, handleError} from "../../helpers/api";
+import { motion } from "framer-motion"
 
 export class Footer extends React.Component {
 
@@ -72,53 +73,61 @@ export class Footer extends React.Component {
         return(
             <div className="ui four column grid" style={lobbyFooterStyle}>
                 <div className="column">
-                    <Icon style={{
-                        color: 'black',
-                    }}
-                        name='log out'
-                        size='large'
-                        color='#FF3377'
-                        flipped='horizontally'
-                        onClick={() => {
-                            this.logout();
+                    <motion.div whileHover={{ scale: 1.1 }} >
+                        <Icon style={{
+                            color: 'black',
                         }}
-                    />
+                            name='log out'
+                            size='large'
+                            color='#FF3377'
+                            flipped='horizontally'
+                            onClick={() => {
+                                this.logout();
+                            }}
+                        />
+                    </motion.div>
                 </div>
                 <div className="column">
-                    <Icon style={{
-                        color: this.props.from === 'lobby' ? '#0BD1FF' : 'black',
-                    }}
-                        name='chess'
-                        size='large'
-                        color='#FF3377'
-                        onClick={() => {
-                            this.lobby();
+                    <motion.div whileHover={{ scale: 1.1 }} >
+                        <Icon style={{
+                            color: this.props.from === 'lobby' ? '#ff5e00' : 'black',
                         }}
-                    />
+                            name='chess'
+                            size='large'
+                            color='#FF3377'
+                            onClick={() => {
+                                this.lobby();
+                            }}
+                        />
+                    </motion.div>
                 </div>
                 <div className="column">
-                    <Icon style={{
-                        color: this.props.from === 'stats' ? '#0BD1FF' : 'black',
-                    }}
-                        name='chart bar'
-                        size='large'
-                        color='#FF3377'
-                        onClick={() => {
-                            this.gamesStats();
+                    <motion.div whileHover={{ scale: 1.1 }} >
+                        <Icon style={{
+                            color: this.props.from === 'stats' ? '#ff5e00' : 'black',
                         }}
-                    />
+                            name='chart bar'
+                            size='large'
+                            color='#FF3377'
+                            onClick={() => {
+                                this.gamesStats();
+                            }}
+                        />
+                    </motion.div>
                 </div>
                 <div className="column">
-                    <Icon style={{
-                        color: this.props.from === 'scores' ? '#0BD1FF' : 'black',
-                    }}
-                        name='winner'
-                        size='large'
-                        color='#FF3377'
-                        onClick={() => {
-                            this.scoreBoard();
+                    <motion.div whileHover={{ scale: 1.1 }} >
+                        <Icon style={{
+                            color: this.props.from === 'scores' ? '#ff5e00' : 'black',
                         }}
-                    />
+                            name='winner'
+                            size='large'
+                            color='#FF3377'
+                            onClick={() => {
+                                this.scoreBoard();
+                            }}
+                        />
+                    </motion.div>
                 </div>
             </div>
         )

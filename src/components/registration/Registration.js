@@ -6,7 +6,7 @@ import { Grid, Header, Form, Button } from 'semantic-ui-react';
 import { FormattedMessage } from 'react-intl';
 import {
     headerStyle, inputFieldStyle, gridStyle,
-    formStyle, registerButtonStyle
+    formStyle, registerButtonStyle, buttonStyle, background
 } from "../../data/styles";
 
 
@@ -53,54 +53,52 @@ class Registration extends React.Component {
 
     render() {
         return (
-            <Grid style={gridStyle} centered>
-                <Grid.Row>
-                    <Header style={headerStyle}>
-                        Register
-                    </Header>
-                </Grid.Row>
-                {this.state.fields.map((field) => (
+            <div style={background}>
+                <Grid centered>
                     <Grid.Row>
-                        <Grid.Column width={12}>
-                            <Form
-                                style={formStyle}
-                                onChange={e => {this.handleInputChange(field, e.target.value);}}
-                            >
-                                <Form.Input>
-                                    <input
-                                        style={inputFieldStyle}
-                                        placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-                                    />
-                                </Form.Input>
-                            </Form>
-                        </Grid.Column>
-                    </Grid.Row>
-                    )
-                )}
-                <Grid.Row>
-                    {(this.state.username && this.state.name && this.state.password) && (
-                        <Button
-                            onClick={() => {
-                                this.registration();
-                            }}
-                            style={registerButtonStyle}
-                        >
+                        <Header style={headerStyle}>
                             Register
-                        </Button>
+                        </Header>
+                    </Grid.Row>
+                    {this.state.fields.map((field) => (
+                            <Grid.Row>
+                                <Grid.Column width={8} height={0}>
+                                    <Form inverted
+                                          onChange={e => {this.handleInputChange(field, e.target.value);}}
+                                    >
+                                        <Form.Input>
+                                            <input
+                                                placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                                            />
+                                        </Form.Input>
+                                    </Form>
+                                </Grid.Column>
+                            </Grid.Row>
+                        )
                     )}
-                </Grid.Row>
-                <Grid.Row>
-                    <FormattedMessage id="switchToLogin" />
-                    <button
-                        style={{textDecoration: 'underline'}}
-                        onClick={() => {
-                            this.props.history.push('/login');;
-                        }}
-                    >
-                        Login
-                    </button>
-                </Grid.Row>
-            </Grid>
+                    <Grid.Row>
+                        {(this.state.username && this.state.name && this.state.password) && (
+                            <Button inverted onClick={() => {
+                                this.registration();
+                            }} style={buttonStyle}>
+                                Register
+                            </Button>
+                        )}
+                        {(!this.state.username || !this.state.name || !this.state.password) && (
+                            <Button inverted disabled onClick={() => {
+                                this.registration();
+                            }} style={buttonStyle}>
+                                Register
+                            </Button>
+                        )}
+                        <Button inverted onClick={() => {
+                            this.props.history.push('/login');
+                        }} style={buttonStyle}>
+                            Login
+                        </Button>
+                    </Grid.Row>
+                </Grid>
+            </div>
         );
     }
 }

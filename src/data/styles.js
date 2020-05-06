@@ -1,10 +1,26 @@
 // general styles
 
 export const gridStyle = {
-    background: 'white'
+    background: 'black',
+    height: '100vh',
+    margin: '0'
+}
+
+export const background = {
+    position: 'absolute',
+    background: 'black',
+    width: '100vw',
+    height: '100vh',
+    margin: '0',
+    padding: '0'
+}
+
+export const buttonStyle = {
+    maxHeight: '50px'
 }
 
 export const headerStyle = {
+    color: 'white',
     marginTop: '70px',
     marginBottom: '50px'
 }

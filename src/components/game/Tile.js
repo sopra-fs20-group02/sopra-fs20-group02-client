@@ -1,5 +1,6 @@
 import React from "react";
 import {Icon} from "semantic-ui-react";
+import { motion } from "framer-motion"
 
 export default class Tile extends React.Component {
     constructor(props) {
@@ -16,10 +17,10 @@ export default class Tile extends React.Component {
         if (this.props.x % 2 === 0 && this.props.y % 2 === 0 ||
             this.props.x % 2 === 1 && this.props.y % 2 === 1
         ){
-            this.color = this.props.isPlayerWhite ? "white" : "#FF8998"
+            this.color = this.props.isPlayerWhite ? "white" : "#4f4f4f"
         }
         else{
-            this.color = this.props.isPlayerWhite ? "#FF8998" : "white"
+            this.color = this.props.isPlayerWhite ? "#4f4f4f" : "white"
         }
 
         this.prevPieceType = this.pieceType ? this.pieceType : this.prevPieceType;
@@ -70,17 +71,21 @@ export default class Tile extends React.Component {
             }} onClick={this.handleClick}>
                 {
                     this.pieceType &&
-                    <Icon
-                        style={{
-                            position: 'relative',
-                            top: '8px',
-                            left: '2px',
-                            color: this.selected ? '#0BD1FF' : (this.isInCheck ? '#ff1e6f' : (this.isWhite ? 'white' : 'black')),
-                            textShadow: (this.isWhite && !this.selected && !this.isInCheck) ?  '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' : ' '
-                        }}
-                        name={this.pieceType}
-                        size='large'
-                    />
+                    <motion.div whileHover={{ scale: 1.1 }} >
+                        <Icon
+                            style={{
+                                position: 'relative',
+                                top: '8px',
+                                left: '2px',
+                                color: this.selected ? '#ff5e00' : (this.isInCheck ? '#ff0039' : (this.isWhite ? 'white' : 'black')),
+                                textShadow: (this.isWhite && !this.selected && !this.isInCheck) ?
+                                    '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' :
+                                    ''
+                            }}
+                            name={this.pieceType}
+                            size='large'
+                        />
+                    </motion.div>
                 }
                 {
                     this.prevPieceType && !this.pieceType &&
@@ -89,7 +94,7 @@ export default class Tile extends React.Component {
                             position: 'relative',
                             top: '8px',
                             left: '2px',
-                            color: 'rgba(11, 209, 255, 0.5)'
+                            color: 'rgba(255,94,0,0.5)'
                         }}
                         name={this.prevPieceType}
                         size='large'
@@ -102,7 +107,7 @@ export default class Tile extends React.Component {
                             position: 'relative',
                             top: '9px',
                             left: '2px',
-                            color: '#0BD1FF',
+                            color: '#ff5e00',
                         }}
                         name='circle'
                         size='mini'

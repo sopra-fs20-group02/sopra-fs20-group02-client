@@ -5,10 +5,11 @@ import { Grid, Header, Icon, Confirm } from "semantic-ui-react";
 import Tile from './Tile';
 import {
     gameStyle, gameHeaderStyle, drawOfferStyle, chessBoardStyle, boardRankStyle,
-    capturedPiecesStyle, gameButtonStyle, gameFooterStyle
+    capturedPiecesStyle, gameButtonStyle, gameFooterStyle, background, buttonStyle
 } from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
 import {Button} from "../../views/design/Button";
+import { motion } from "framer-motion"
 
 class GameBoard extends React.Component {
     constructor() {
@@ -313,8 +314,8 @@ class GameBoard extends React.Component {
                 width: '340px',
                 height: '340px',
                 margin: '0px',
-                background: '#FF8998',
-                boxShadow: this.isMyTurn() ? '0px 80px 100px -100px #0ff' : '0px -80px 100px -100px #0ff',
+                background: '#ffffff',
+                boxShadow: this.isMyTurn() ? '0px 40px 70px -50px #ff5e00, 0px 90px 100px -50px #A50200' : '0px -40px 70px -50px #ff5e00, 0px -90px 100px -50px #A50200',
                 padding: '10px',
                 borderRadius: '3px',
             }} >
@@ -327,44 +328,37 @@ class GameBoard extends React.Component {
         const game = this.state.game;
         if (game){
             return (
-                <Grid style={gameStyle} centered>
-                    {this.getHeader(game)}
-                    {this.getCapturedPieces('opponent')}
-                    {this.renderBoard()}
-                    {this.getCapturedPieces('own')}
-                    <Confirm
-                        open={this.state.open}
-                        cancelButton='deny'
-                        confirmButton="accept"
-                        content='Accept draw offer?'
-                        onCancel={this.cancel}
-                        onConfirm={this.offerDraw}
-                    />
+                <div style={background}>
+                    <Grid centered>
+                        {this.getHeader(game)}
+                        {this.getCapturedPieces('opponent')}
+                        {this.renderBoard()}
+                        {this.getCapturedPieces('own')}
+                        <Confirm
+                            open={this.state.open}
+                            cancelButton='deny'
+                            confirmButton="accept"
+                            content='Accept draw offer?'
+                            onCancel={this.cancel}
+                            onConfirm={this.offerDraw}
+                        />
                         {!this.state.isWatching &&
                         <Grid.Row columns={2} style={gameFooterStyle}>
                             <Grid.Column textAlign='center'>
-                                <Button
-                                    style={gameButtonStyle}
-                                    onClick={() => {
-                                        this.resign();
-                                    }}
-                                >
-                                   Resign
-                                </Button>
-                            </Grid.Column>
-                            <Grid.Column textAlign='center'>
-                                <Button
-                                    style={gameButtonStyle}
-                                    onClick={() => {
-                                        this.offerDraw();
-                                    }}
-                                >
-                                     Offer draw
-                                </Button>
+                                <button className="ui inverted button" style={buttonStyle} onClick={() => {
+                                    this.resign();
+                                }}>
+                                    Resign
+                                </button>
+                                <button className="ui inverted button" style={buttonStyle} onClick={() => {
+                                    this.offerDraw();
+                                }}>
+                                    Offer draw
+                                </button>
                             </Grid.Column>
                         </Grid.Row>
-                    }
-                    {this.state.isWatching &&
+                        }
+                        {this.state.isWatching &&
                         <Grid.Row columns={2} style={gameFooterStyle}>
                             <Grid.Column textAlign='center'>
                                 <Button
@@ -377,22 +371,25 @@ class GameBoard extends React.Component {
                                 </Button>
                             </Grid.Column>
                         </Grid.Row>
-                    }
-                </Grid>
+                        }
+                    </Grid>
+                </div>
                 );
         }
         else{
             return (
-                <Grid style={gameStyle} centered>
-                    <Grid.Row style={{
-                        marginBottom: '270px',
-                        marginTop: '270px'
-                    }}>
-                        <Header as='h3' style={gameHeaderStyle}>
-                            saddling horses...
-                        </Header>
-                    </Grid.Row>
-                </Grid>
+                <div style={background}>
+                    <Grid centered>
+                        <Grid.Row style={{
+                            marginBottom: '270px',
+                            marginTop: '270px'
+                        }}>
+                            <Header as='h3' style={gameHeaderStyle}>
+                                saddling horses...
+                            </Header>
+                        </Grid.Row>
+                    </Grid>
+                </div>
             )
         }
     }

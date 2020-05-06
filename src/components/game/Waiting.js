@@ -2,7 +2,14 @@ import React from "react";
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, Button, Header, Icon } from "semantic-ui-react";
-import {waitingButtonStyle, gameFooterStyle, quoteStyle, waitingPageStyle} from "../../data/styles";
+import {
+    waitingButtonStyle,
+    gameFooterStyle,
+    quoteStyle,
+    waitingPageStyle,
+    background,
+    buttonStyle
+} from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
 
 class Waiting extends React.Component {
@@ -79,37 +86,37 @@ class Waiting extends React.Component {
 
     render() {
         return (
-        <Grid style={waitingPageStyle} centered>
-            <Grid.Row>
-                <Header as='h4' style={quoteStyle}>
-                    {this.state.quote}
-                </Header>
-            </Grid.Row>
-            <Grid.Row>
-                <div className="ui active inverted loader"></div>
-            </Grid.Row>
-            <Grid.Row>
-                <Header as='h4' style={quoteStyle}>
-                    {this.state.gameDeleted ? 'Game was deleted' : 'Waiting...'}
-                </Header>
-            </Grid.Row>
-            <Grid.Row columns={2} style={gameFooterStyle}>
-                <Grid.Column textAlign='center'>
-                    <Button
-                        style={waitingButtonStyle}
-                        onClick={() => {
-                            if (this.state.gameDeleted) {
-                                this.lobby();
-                            } else {
-                                this.deleteGame();
-                            }
-                        }}
-                    >
-                        {this.state.gameDeleted ? 'Lobby' : 'Delete Game'}
-                    </Button>
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
+            <div style={background}>
+                <Grid centered>
+                    <Grid.Row>
+                        <Header as='h4' style={quoteStyle}>
+                            {this.state.quote}
+                        </Header>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <div className="ui active inverted loader"></div>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Header as='h4' style={quoteStyle}>
+                            {this.state.gameDeleted ? 'Game was deleted' : 'Waiting...'}
+                        </Header>
+                    </Grid.Row>
+                    <Grid.Row columns={2} style={gameFooterStyle}>
+                        <Grid.Column textAlign='center'>
+
+                            <button className="ui inverted button" style={buttonStyle} onClick={() => {
+                                if (this.state.gameDeleted) {
+                                    this.lobby();
+                                } else {
+                                    this.deleteGame();
+                                }
+                            }}>
+                                {this.state.gameDeleted ? 'Lobby' : 'Delete Game'}
+                            </button>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </div>
         );
     }
 }

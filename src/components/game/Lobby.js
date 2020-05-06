@@ -3,8 +3,18 @@ import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, List, Button, Header, Icon} from "semantic-ui-react";
 import {
-  lobbyStyle, playerButtonStyle, lobbyHeaderStyle, logoutIconStyle,
-  lobbyFooterStyle, playersListStyle, userItemStyle, lobbyTextStyle, controlButtonStyle, LobbyUserTextStyle
+  lobbyStyle,
+  playerButtonStyle,
+  lobbyHeaderStyle,
+  logoutIconStyle,
+  lobbyFooterStyle,
+  playersListStyle,
+  userItemStyle,
+  lobbyTextStyle,
+  controlButtonStyle,
+  LobbyUserTextStyle,
+  background,
+  buttonStyle
 } from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
 import Footer from "./Footer";
@@ -96,59 +106,55 @@ class Lobby extends React.Component {
 
   render() {
     return (
-        <Grid style={lobbyStyle} centered>
-          <Grid.Row style={lobbyHeaderStyle}>
-            <Button
-                onClick={() => {
-                  this.createGame();
-                }}
-                style={controlButtonStyle}
-            >
-              Create game
-            </Button>
-            <Button
-                onClick={() => {
-                  this.joinRandomGame();
-                }}
-                style={controlButtonStyle}
-            >
-              Join random game
-            </Button>
-          </Grid.Row>
-          <Header as='h3' style={lobbyTextStyle}>
-            play or watch game:
-          </Header>
-          <Grid.Row>
-            <List style={playersListStyle}>
-              {this.state.games && this.state.games.map(game => {
-                return (
-                    <div>
-                      { (game.gameStatus === "WAITING" || game.gameStatus === "FULL") &&
-                      <List.Item style={userItemStyle}>
-                        <div style={{margin: '5px'}}>
-                          {game.playerWhite ? game.playerWhite.username : '-'}
-                          {' vs. '}
-                          {game.playerBlack ? game.playerBlack.username : '-'}
-                        </div>
-                        {(game.playerWhite == null || game.playerBlack == null) &&
-                        <button className="small ui inverted button"  onClick={() => {
-                          this.joinSpecificGame(game);
-                        }}>play</button>
+        <div style={background}>
+          <Grid centered>
+            <Grid.Row style={lobbyHeaderStyle}>
+              <button className="ui inverted button" style={buttonStyle} onClick={() => {
+                this.createGame();
+              }}>
+                Create game
+              </button>
+              <button className="ui inverted button" style={buttonStyle} onClick={() => {
+                this.joinRandomGame();
+              }}>
+                Join random game
+              </button>
+            </Grid.Row>
+            <Header as='h3' style={lobbyTextStyle}>
+              play or watch game:
+            </Header>
+            <Grid.Row>
+              <List style={playersListStyle}>
+                {this.state.games && this.state.games.map(game => {
+                  return (
+                      <div>
+                        { (game.gameStatus === "WAITING" || game.gameStatus === "FULL") &&
+                        <List.Item style={userItemStyle}>
+                          <div style={{margin: '5px'}}>
+                            {game.playerWhite ? game.playerWhite.username : '-'}
+                            {' vs. '}
+                            {game.playerBlack ? game.playerBlack.username : '-'}
+                          </div>
+                          {(game.playerWhite == null || game.playerBlack == null) &&
+                          <button className="small ui inverted button"  onClick={() => {
+                            this.joinSpecificGame(game);
+                          }}>play</button>
 
+                          }
+                          <button className="small ui inverted button"  onClick={() => {
+                            this.watchGame(game);
+                          }}>watch</button>
+                        </List.Item>
                         }
-                        <button className="small ui inverted button"  onClick={() => {
-                          this.watchGame(game);
-                        }}>watch</button>
-                      </List.Item>
-                      }
-                    </div>
-                );
+                      </div>
+                  );
 
-              })}
-            </List>
-          </Grid.Row>
-          <Footer from={'lobby'}/>
-        </Grid>
+                })}
+              </List>
+            </Grid.Row>
+            <Footer from={'lobby'}/>
+          </Grid>
+        </div>
     );
   }
 }

@@ -4,7 +4,7 @@ import { Grid, List, Header, Icon} from "semantic-ui-react";
 import {
   gamesStatsStyle, gamesStatsHeaderStyle, logoutIconStyle,
   gamesStatsFooterStyle, statsListStyle, statsItemStyle,
-  statsTextStyle, statsStyle, statsHeaderStyle, formStyle, inputFieldStyle, controlButtonStyle
+  statsTextStyle, statsStyle, statsHeaderStyle, formStyle, inputFieldStyle, controlButtonStyle, background
 } from "../../data/styles";
 import {api, handleError} from "../../helpers/api";
 import Footer from "../game/Footer";
@@ -92,8 +92,13 @@ class ScoreBoard extends React.Component {
     let table = [];
 
     table.push(
-        <table class="ui celled table unstackable" style={{width:'80%', backgroundColor:'rgba(255,255,255,0.8)'}}>
-          <thead>
+        <div style={{
+          height: '80%',
+          overflowY: 'scroll'
+        }}>
+          <table className="ui celled table unstackable"
+                 style={{width: '100%', maxWidth: '600px', backgroundColor: 'rgba(43,43,43,0.8)', color: 'white'}}>
+            <thead>
             <tr>
               <th>
                 Username
@@ -102,11 +107,13 @@ class ScoreBoard extends React.Component {
                 Score
               </th>
             </tr>
-          </thead>
-          <tbody>
-          {entries}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+            {entries}
+            </tbody>
+          </table>
+        </div>
+
     )
 
     return table;
@@ -116,17 +123,19 @@ class ScoreBoard extends React.Component {
     const users = this.state.users;
     if (users) {
       return (
-        <Grid style={gamesStatsStyle} centered>
-          <Grid.Row style={gamesStatsHeaderStyle}>
-            <Header as='h3' style={statsTextStyle}>
-              Score Board
-            </Header>
-          </Grid.Row>
-          <Grid.Row columns={2}>
-            {this.getTable()}
-          </Grid.Row>
-          <Footer from={'scores'}/>
-        </Grid>
+          <div style={background}>
+            <Grid centered>
+              <Grid.Row style={gamesStatsHeaderStyle}>
+                <Header as='h3' style={statsTextStyle}>
+                  Score Board
+                </Header>
+              </Grid.Row>
+              <Grid.Row columns={2}>
+                {this.getTable()}
+              </Grid.Row>
+              <Footer from={'scores'}/>
+            </Grid>
+          </div>
       );
     } else {
       return (
