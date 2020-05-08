@@ -163,31 +163,31 @@ class GamesStats extends React.Component {
       return (
         <div style={{background}}>
           <div style={{maxWidth: '1000px', margin: '0 auto'}}>
-            <Grid centered columns='equal' inverted padded>
+            <Grid centered columns='equal' inverted padded  divided='vertically'>
               <Grid.Row>
-                <Grid.Column>
-                  <div style={{width:'150px', height:'150px', margin:'0 auto'} }>
+                <Grid.Column width={12}>
+                  <div style={{width:'400px', height:'300px', margin:'0 auto'} }>
                     <XYPlot
                         xDomain={[0, 1]}
                         yDomain={[0, 1]}
-                        width={150}
-                        height={150}
+                        width={400}
+                        height={300}
                     >
                       <ArcSeries
                           animation
                           radiusType={'literal'}
                           center={{x: 0.5, y: 0.5}}
                           data={[
-                            {angle0: 0, angle: 2*PI*this.state.gamesStats.numberOfWinnings / (numberOfGames + 0.00001), opacity: 1, radius: 50, radius0: 40, color: "#e5ff3a"},
+                            {angle0: 0, angle: 2*PI*this.state.gamesStats.numberOfWinnings / (numberOfGames + 0.00001), opacity: 1, radius: 100, radius0: 40, color: "#e5ff3a"},
                             {
                               angle0: 2*PI*this.state.gamesStats.numberOfWinnings / (numberOfGames + 0.001),
                               angle: 2*PI* (this.state.gamesStats.numberOfWinnings  + this.state.gamesStats.numberOfDraws )/ (numberOfGames + 0.00001),
-                              opacity: 1, radius: 50, radius0:  40, color: "#009aff"
+                              opacity: 1, radius: 100, radius0:  40, color: "#009aff"
                             },
                             {
                               angle0: 2*PI* (this.state.gamesStats.numberOfWinnings  + this.state.gamesStats.numberOfDraws )/ (numberOfGames + 0.00001),
                               angle: 2*PI,
-                              opacity: 1, radius: 50, radius0:  40, color: "#ff0044"
+                              opacity: 1, radius: 100, radius0:  40, color: "#ff0044"
                             }
                           ]}
                           colorType={'literal'}/>
@@ -199,37 +199,6 @@ class GamesStats extends React.Component {
                       orientation="horizontal"
                       style={{color:"white"}}
                       items={[{title: "Games won", color:"#e5ff3a"},{title: "draw", color:"#009aff"},{title: "Games lost", color:"#ff0044"}]}>
-                  </DiscreteColorLegend>
-                </Grid.Column>
-                <Grid.Column>
-                  <div style={{width:'150px', height:'150px', margin:'0 auto'} }>
-                    <XYPlot
-                        xDomain={[0, 1]}
-                        yDomain={[0, 1]}
-                        width={150}
-                        height={150}
-                    >
-                      <ArcSeries
-                          animation
-                          radiusType={'literal'}
-                          center={{x: 0.5, y: 0.5}}
-                          data={[
-                            {angle0: 0, angle: 2*PI*totalOpponentPiecesCaptured / (totalOpponentPiecesCaptured + totalOwnPiecesCaptured + 0.001), opacity: 1, radius: 50, radius0: 40, color: "#e5ff3a"},
-                            {
-                              angle0: 2*PI*totalOpponentPiecesCaptured / (totalOpponentPiecesCaptured + totalOwnPiecesCaptured + 0.001),
-                              angle: 2*PI,
-                              opacity: 1, radius: 50, radius0:  40, color: "#ff0044"
-                            },
-                          ]}
-                          colorType={'literal'}/>
-                    </XYPlot>
-                  </div>
-                </Grid.Column>
-                <Grid.Column>
-                  <DiscreteColorLegend
-                      orientation="horizontal"
-                      style={{color:"white"}}
-                      items={[{title: "Pieces won", color:"#e5ff3a"},{title: "Pieces lost", color:"#ff0044"}]}>
                   </DiscreteColorLegend>
                 </Grid.Column>
               </Grid.Row>
@@ -301,44 +270,81 @@ class GamesStats extends React.Component {
 
               </Grid.Row>
               <Grid.Row>
-                <div className="ui inverted statistic">
-                  <div className="label">
-                    Total opponent pieces captured:
+                <Grid.Column>
+                  <DiscreteColorLegend
+                      orientation="horizontal"
+                      style={{color:"white"}}
+                      items={[{title: "Pieces won", color:"#e5ff3a"},{title: "Pieces lost", color:"#ff0044"}]}>
+                  </DiscreteColorLegend>
+                </Grid.Column>
+                <Grid.Column width={12}>
+                  <div style={{width:'400px', height:'300px', margin:'0 auto'} }>
+                    <XYPlot
+                        xDomain={[0, 1]}
+                        yDomain={[0, 1]}
+                        width={400}
+                        height={300}
+                    >
+                      <ArcSeries
+                          animation
+                          radiusType={'literal'}
+                          center={{x: 0.5, y: 0.5}}
+                          data={[
+                            {angle0: 0, angle: 2*PI*totalOpponentPiecesCaptured / (totalOpponentPiecesCaptured + totalOwnPiecesCaptured + 0.001), opacity: 1, radius: 100, radius0: 40, color: "#e5ff3a"},
+                            {
+                              angle0: 2*PI*totalOpponentPiecesCaptured / (totalOpponentPiecesCaptured + totalOwnPiecesCaptured + 0.001),
+                              angle: 2*PI,
+                              opacity: 1, radius: 100, radius0:  40, color: "#ff0044"
+                            },
+                          ]}
+                          colorType={'literal'}/>
+                    </XYPlot>
                   </div>
-                  <div className="value">
-                    {totalOpponentPiecesCaptured}
-                  </div>
-                </div>
+                </Grid.Column>
               </Grid.Row>
               <Grid.Row>
-                <div className="ui inverted statistic">
-                  <div className="label">
-                    Total own pieces captured:
+                <Grid.Column>
+                  <div className="ui inverted statistic">
+                    <div className="label">
+                      Total opponent pieces captured:
+                    </div>
+                    <div className="value">
+                      {totalOpponentPiecesCaptured}
+                    </div>
                   </div>
-                  <div className="value">
-                    {totalOwnPiecesCaptured}
+                </Grid.Column>
+                <Grid.Column>
+                  <div className="ui inverted statistic">
+                    <div className="label">
+                      Average opponent pieces captured:
+                    </div>
+                    <div className="value">
+                      {averageOpponentPiecesCaptures.toFixed(1)}
+                    </div>
                   </div>
-                </div>
-              </Grid.Row>
-              <Grid.Row>
-                <div className="ui inverted statistic">
-                  <div className="label">
-                    Average opponent pieces captured:
+                </Grid.Column>
+                <Grid.Column>
+                  <div className="ui inverted statistic">
+                    <div className="label">
+                      Average own pieces captured:
+                    </div>
+                    <div className="value">
+                      {averageOwnPiecesCaptures.toFixed(1)}
+                    </div>
                   </div>
-                  <div className="value">
-                    {averageOpponentPiecesCaptures}
-                  </div>
-                </div>
-              </Grid.Row>
-              <Grid.Row>
-                <div className="ui inverted statistic">
-                  <div className="label">
-                    Average own pieces captured:
-                  </div>
-                  <div className="value">
-                    {averageOwnPiecesCaptures}
-                  </div>
-                </div>
+                </Grid.Column>
+                <Grid.Column>
+                  <Grid.Row>
+                    <div className="ui inverted statistic">
+                      <div className="label">
+                        Total own pieces captured:
+                      </div>
+                      <div className="value">
+                        {totalOwnPiecesCaptured}
+                      </div>
+                    </div>
+                  </Grid.Row>
+                </Grid.Column>
               </Grid.Row>
             </Grid>
           </div>
