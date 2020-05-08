@@ -11,3 +11,21 @@ body {
 root, html {
   height: 100%;
 }
+
+.rcw-conversation-container > .rcw-header {
+  background-color: #ff5e00;
+
+}
+
+.rcw-conversation-container{
+  box-shadow: none;
+}
+
+.rcw-message-container{
+  background-color: black;
+}
+
+.rcw-message > .rcw-response {
+  background-color: black;
+  color: white;
+}

@@ -15,6 +15,7 @@ import ScoreBoard from "../../profile/ScoreBoard";
 class AppRouter extends React.Component {
     render() {
         return (
+
             <BrowserRouter>
                 <Switch>
                     <Route

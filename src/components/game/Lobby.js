@@ -3,20 +3,13 @@ import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, List, Button, Header, Icon} from "semantic-ui-react";
 import {
-  lobbyStyle,
-  playerButtonStyle,
   lobbyHeaderStyle,
-  logoutIconStyle,
-  lobbyFooterStyle,
   playersListStyle,
   userItemStyle,
   lobbyTextStyle,
-  controlButtonStyle,
-  LobbyUserTextStyle,
   background,
   buttonStyle
 } from "../../data/styles";
-import {fetchGameStatus} from "../requests/fetchGameStatus";
 import Footer from "./Footer";
 
 class Lobby extends React.Component {

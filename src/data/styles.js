@@ -1,5 +1,5 @@
 // general styles
-
+import 'react-chat-widget/lib/styles.css';
 export const gridStyle = {
     background: 'black',
     height: '100vh',
@@ -278,3 +278,4 @@ export const gameFooterStyle = {
     paddingTop: '25px',
     paddingBottom: '30px'
 }
+
