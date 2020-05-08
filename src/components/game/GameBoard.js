@@ -27,7 +27,6 @@ class GameBoard extends React.Component {
             userId: localStorage.getItem('userId'),
             isWatching: null,
             isPlayerWhite: null,
-            deniesDraw: false,
             open: false
         };
         this.tileCallback = this.tileCallback.bind(this);
@@ -149,7 +148,7 @@ class GameBoard extends React.Component {
             const params = JSON.stringify({
                 userId: this.state.userId
             });
-            const mapping = '/games/' + this.state.game.gameId.toString();
+            const mapping = '/games/' + this.state.game.gameId.toString() + '/draw';
 
             const response = await api.post(mapping, params);
 
@@ -160,12 +159,12 @@ class GameBoard extends React.Component {
 
     // returns true if the opponent is offering draw and the offer is not denied
     opponentIsOfferingDraw(game) {
-        if (!this.state.deniesDraw) {
-            if ((this.state.game.playerWhite.userId === Number(this.state.userId) && this.state.game.blackOffersDraw) ||
-                (this.state.game.playerBlack.userId === Number(this.state.userId) && this.state.game.whiteOffersDraw)) {
-                this.setState({open: true})
-            }
+
+        if ((this.state.game.playerWhite.userId === Number(this.state.userId) && this.state.game.blackOffersDraw) ||
+            (this.state.game.playerBlack.userId === Number(this.state.userId) && this.state.game.whiteOffersDraw)) {
+            this.setState({open: true})
         }
+
     }
 
     // returns opponent name
@@ -181,11 +180,21 @@ class GameBoard extends React.Component {
         }
     }
 
-    cancel(){
+    async cancel(){
         this.setState({
-            open: false,
-            deniesDraw: true
+            open: false
         });
+        try {
+            const params = JSON.stringify({
+                userId: this.state.userId
+            });
+            const mapping = '/games/' + this.state.game.gameId.toString() + '/draw';
+
+            const response = await api.put(mapping, params);
+
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     isMyTurn(){
