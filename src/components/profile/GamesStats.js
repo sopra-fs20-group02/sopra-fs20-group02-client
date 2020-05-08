@@ -1,14 +1,13 @@
 import React from "react";
 import { withRouter } from 'react-router-dom';
-import { Grid, List, Header, Icon} from "semantic-ui-react";
-import {
-  gamesStatsStyle, gamesStatsHeaderStyle, logoutIconStyle,
-  gamesStatsFooterStyle, statsListStyle, statsItemStyle,
-  statsTextStyle, statsStyle, statsHeaderStyle, background
-} from "../../data/styles";
+import { Grid, Header} from "semantic-ui-react";
+import {statsHeaderStyle, background} from "../../data/styles";
 import {api, handleError} from "../../helpers/api";
 import Footer from "../game/Footer";
+import {XYPlot, LineSeries, ArcSeries} from 'react-vis';
+import DiscreteColorLegend from "react-vis/es/legends/discrete-color-legend";
 
+const PI = 3.14159265359;
 class GamesStats extends React.Component {
   constructor() {
     super();
@@ -156,18 +155,103 @@ class GamesStats extends React.Component {
       const averagePlayTime = this.getAveragePlayTime(gameHistory);
       const numberOfGames = this.getNumberOfGames(gamesStats);
 
+      console.log(2*PI*this.state.gamesStats.numberOfWinnings / numberOfGames);
+
       return (
         <div style={{background}}>
-          <Grid centered>
+          <Grid columns={2} divided inverted padded centered>
             <Grid.Row>
-              <div className="ui inverted statistic" style={{marginTop:'25px'}}>
-                <div className="label">
-                  Number of games:
+              <Grid.Column>
+                <div style={{width:'150px', height:'150px', margin:'0 auto'} }>
+                  <XYPlot
+                      xDomain={[0, 1]}
+                      yDomain={[0, 1]}
+                      width={150}
+                      height={150}
+                  >
+                    <ArcSeries
+                        animation
+                        radiusType={'literal'}
+                        center={{x: 0.5, y: 0.5}}
+                        data={[
+                          {angle0: 0, angle: 2*PI*this.state.gamesStats.numberOfWinnings / (numberOfGames + 0.00001), opacity: 1, radius: 50, radius0: 40, color: "#e5ff3a"},
+                          {
+                            angle0: 2*PI*this.state.gamesStats.numberOfWinnings / (numberOfGames + 0.001),
+                            angle: 2*PI* (this.state.gamesStats.numberOfWinnings  + this.state.gamesStats.numberOfDraws )/ (numberOfGames + 0.00001),
+                            opacity: 1, radius: 50, radius0:  40, color: "#009aff"
+                          },
+                          {
+                            angle0: 2*PI* (this.state.gamesStats.numberOfWinnings  + this.state.gamesStats.numberOfDraws )/ (numberOfGames + 0.00001),
+                            angle: 2*PI,
+                            opacity: 1, radius: 50, radius0:  40, color: "#ff0044"
+                          }
+                        ]}
+                        colorType={'literal'}/>
+                  </XYPlot>
                 </div>
-                <div className="value">
-                  {numberOfGames}
+              </Grid.Column>
+              <Grid.Column>
+                <div style={{width:'150px', height:'150px', margin:'0 auto'} }>
+                  <XYPlot
+                      xDomain={[0, 1]}
+                      yDomain={[0, 1]}
+                      width={150}
+                      height={150}
+                  >
+                    <ArcSeries
+                        animation
+                        radiusType={'literal'}
+                        center={{x: 0.5, y: 0.5}}
+                        data={[
+                          {angle0: 0, angle: 2*PI*totalOpponentPiecesCaptured / (totalOpponentPiecesCaptured + totalOwnPiecesCaptured + 0.001), opacity: 1, radius: 50, radius0: 40, color: "#e5ff3a"},
+                          {
+                            angle0: 2*PI*totalOpponentPiecesCaptured / (totalOpponentPiecesCaptured + totalOwnPiecesCaptured + 0.001),
+                            angle: 2*PI,
+                            opacity: 1, radius: 50, radius0:  40, color: "#ff0044"
+                          },
+                        ]}
+                        colorType={'literal'}/>
+                  </XYPlot>
                 </div>
-              </div>
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row centered>
+              <Grid.Column>
+                <DiscreteColorLegend
+                    orientation="horizontal"
+                    style={{color:"white"}}
+                    items={[{title: "won", color:"#e5ff3a"},{title: "draw", color:"#009aff"},{title: "lost", color:"#ff0044"}]}>
+                </DiscreteColorLegend>
+              </Grid.Column>
+              <Grid.Column>
+                <DiscreteColorLegend
+                    orientation="horizontal"
+                    style={{color:"white"}}
+                    items={[{title: "Pieces won", color:"#e5ff3a"},{title: "Pieces lost", color:"#009aff"}]}>
+                </DiscreteColorLegend>
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+              <Grid.Column>
+                <div className="ui inverted statistic" style={{marginTop:'25px'}}>
+                  <div className="label">
+                    Number of games:
+                  </div>
+                  <div className="value">
+                    {numberOfGames}
+                  </div>
+                </div>
+              </Grid.Column>
+              <Grid.Column>
+                <div className="ui inverted statistic">
+                  <div className="label">
+                    Number of wins:
+                  </div>
+                  <div className="value">
+                    {this.state.gamesStats.numberOfWinnings}
+                  </div>
+                </div>
+              </Grid.Column>
             </Grid.Row>
             <Grid.Row>
               <div className="ui inverted statistic">
