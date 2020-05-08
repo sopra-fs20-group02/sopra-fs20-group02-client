@@ -79,7 +79,7 @@ export class Footer extends React.Component {
 
     render() {
         return(
-            <div className="ui four column grid" style={
+            <div className="ui four column grid " style={
                 this.state.pathname === '/gamesStats' ? gameStatsFooterStyle : lobbyFooterStyle
             }>
                 <div className="column">
