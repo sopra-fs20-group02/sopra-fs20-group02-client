@@ -29,14 +29,14 @@ class Lobby extends React.Component {
   }
 
   // creates game with user and chosen opponent
-  async createGame() {
+  async createGame(blitz) {
     try {
       const requestBody = JSON.stringify({
         userId: localStorage.getItem('userId')
       });
       const response = await api.post('/games', requestBody);
       const game = response.data;
-      this.navigateToGame(game)
+      this.navigateToGame(game, blitz)
     } catch (error) {
       alert(`Something went wrong while creating the game: \n${handleError(error)}`);
     }
@@ -78,11 +78,14 @@ class Lobby extends React.Component {
     }
   }
 
-  async navigateToGame(game){
+  async navigateToGame(game, blitz){
     const status = game.gameStatus;
     this.props.history.push({
       pathname: '/game/wait',
-      state: { gameId: game.gameId }
+      state: {
+        gameId: game.gameId,
+        blitzMode: blitz
+      }
     })
   }
 
@@ -102,14 +105,19 @@ class Lobby extends React.Component {
           <Grid centered>
             <Grid.Row style={lobbyHeaderStyle}>
               <button className="ui inverted button" style={buttonStyle} onClick={() => {
-                this.createGame();
+                this.createGame(false);
               }}>
-                Create game
+                Create
+              </button>
+              <button className="ui inverted button" style={buttonStyle} onClick={() => {
+                this.createGame(true);
+              }}>
+                Blitz
               </button>
               <button className="ui inverted button" style={buttonStyle} onClick={() => {
                 this.joinRandomGame();
               }}>
-                Join random game
+                Random
               </button>
             </Grid.Row>
             <Header as='h3' style={lobbyTextStyle}>

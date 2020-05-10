@@ -26,7 +26,9 @@ class GameBoard extends React.Component {
             userId: localStorage.getItem('userId'),
             isWatching: null,
             isPlayerWhite: null,
-            open: false
+            open: false,
+            blitzMode: null,
+            remainingTime: 300
         };
         this.tileCallback = this.tileCallback.bind(this);
         this.offerDraw = this.offerDraw.bind(this);
@@ -34,7 +36,10 @@ class GameBoard extends React.Component {
     }
 
     async componentDidMount() {
-        this.setState({gameId: this.props.location.state.gameId});
+        this.setState({
+            gameId: this.props.location.state.gameId,
+            blitzMode: this.props.location.state.blitzMode
+        });
         this.interval = setInterval(async () => {
             if (this.state.gameId){
                 const gameStatusObject = await fetchGameStatus(localStorage.getItem('userId'), this.state.gameId);
@@ -46,6 +51,13 @@ class GameBoard extends React.Component {
                 this.setState({
                     isPlayerWhite: Number(localStorage.getItem('userId')) === gameStatusObject.data.playerWhite.userId
                 });
+                if (this.state.blitzMode && this.isMyTurn()) {
+                    console.log('test');
+                    this.setState({ remainingTime : this.state.remainingTime - 1})
+                }
+                if (this.state.remainingTime < 1) {
+                    this.resign();
+                }
                 if (this.state.game.gameStatus !== 'FULL'){
                     if (!(gameStatusObject.data.gameStatus === 'WHITE_IN_CHECK' ||
                         gameStatusObject.data.gameStatus === 'BLACK_IN_CHECK')) {
@@ -217,12 +229,26 @@ class GameBoard extends React.Component {
         }
 
         return (
-            <Grid.Row style={{marginBottom: '0px'}}>
-                <Header as='h3' style={gameHeaderStyle}>
-                    {header}
-                </Header>
-            </Grid.Row>
+            <Header as='h3' style={gameHeaderStyle}>
+                {header}
+            </Header>
         );
+    }
+
+    getBlitzInfo() {
+        if (this.state.blitzMode) {
+            const minutes = '0' + String(Math.floor(this.state.remainingTime / 60));
+            let seconds = this.state.remainingTime - minutes * 60;
+            seconds = seconds < 10 ? '0' + String(seconds) : String(seconds);
+            const remainingTime =  (this.state.blitzMode ? ' ' + minutes + ':' + seconds : '')
+            return (
+                <Header as='h3' style={gameHeaderStyle}>
+                    {' Remaining Time: ' + remainingTime}
+                </Header>
+            );
+        } else {
+            return null;
+        }
     }
 
     getCapturedPieces(player) {
@@ -335,10 +361,13 @@ class GameBoard extends React.Component {
     render() {
         const game = this.state.game;
         if (game){
+            console.log('blitz?');
+            console.log(this.state.blitzMode);
             return (
                 <div style={background}>
                     <Grid centered>
                         {this.getHeader(game)}
+                        {this.getBlitzInfo()}
                         {this.getCapturedPieces('opponent')}
                         {this.renderBoard()}
                         {this.getCapturedPieces('own')}
