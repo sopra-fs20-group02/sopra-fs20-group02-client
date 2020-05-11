@@ -1,7 +1,7 @@
 import React from "react";
 import {Icon} from "semantic-ui-react";
-import {gameStatsFooterStyle, IconStyle, lobbyFooterStyle} from "../../data/styles";
-import {useHistory, withRouter} from "react-router-dom";
+import {FooterStyle} from "../../data/styles";
+import {withRouter} from "react-router-dom";
 import {api, handleError} from "../../helpers/api";
 import { motion } from "framer-motion"
 
@@ -19,7 +19,7 @@ export class Footer extends React.Component {
 
     async lobby(){
         this.props.history.push({
-            pathname: `/lobby`
+            pathname: `/lobby/main`
         });
     }
     // logs out user
@@ -50,7 +50,7 @@ export class Footer extends React.Component {
             const gamesStats = response2.data.userStats;
             const gameHistory = response1.data;
             this.props.history.push({
-                pathname: '/gamesStats',
+                pathname: '/lobby/stats',
                 state: {
                     gamesStats: gamesStats,
                     gameHistory: gameHistory
@@ -68,7 +68,7 @@ export class Footer extends React.Component {
             const response = await api.get('/users');
             const users = response.data;
             this.props.history.push({
-                pathname: '/scoreBoard',
+                pathname: '/lobby/scores',
                 state: { users: users }
             })
 
@@ -79,65 +79,65 @@ export class Footer extends React.Component {
 
     render() {
         return(
-            <div className="ui four column grid " style={
-                this.state.pathname === '/gamesStats' ? gameStatsFooterStyle : lobbyFooterStyle
-            }>
-                <div className="column">
-                    <motion.div whileHover={{ scale: 1.1 }} >
-                        <Icon style={{
-                            color: 'black',
-                        }}
-                            name='log out'
-                            size='large'
-                            color='#FF3377'
-                            flipped='horizontally'
-                            onClick={() => {
-                                this.logout();
+            <div style={FooterStyle}>
+                <div className="ui four column grid " >
+                    <div className="column">
+                        <motion.div whileHover={{ scale: 1.1 }} >
+                            <Icon style={{
+                                color: 'black',
                             }}
-                        />
-                    </motion.div>
-                </div>
-                <div className="column">
-                    <motion.div whileHover={{ scale: 1.1 }} >
-                        <Icon style={{
-                            color: this.props.from === 'lobby' ? '#ff5e00' : 'black',
-                        }}
-                            name='chess'
-                            size='large'
-                            color='#FF3377'
-                            onClick={() => {
-                                this.lobby();
+                                  name='log out'
+                                  size='large'
+                                  color='#FF3377'
+                                  flipped='horizontally'
+                                  onClick={() => {
+                                      this.logout();
+                                  }}
+                            />
+                        </motion.div>
+                    </div>
+                    <div className="column">
+                        <motion.div whileHover={{ scale: 1.1 }} >
+                            <Icon style={{
+                                color: window.location.href.includes('lobby/main') ? '#ff5e00' : 'black',
                             }}
-                        />
-                    </motion.div>
-                </div>
-                <div className="column">
-                    <motion.div whileHover={{ scale: 1.1 }} >
-                        <Icon style={{
-                            color: this.props.from === 'stats' ? '#ff5e00' : 'black',
-                        }}
-                            name='chart bar'
-                            size='large'
-                            color='#FF3377'
-                            onClick={() => {
-                                this.gamesStats();
+                                  name='chess'
+                                  size='large'
+                                  color='#FF3377'
+                                  onClick={() => {
+                                      this.lobby();
+                                  }}
+                            />
+                        </motion.div>
+                    </div>
+                    <div className="column">
+                        <motion.div whileHover={{ scale: 1.1 }} >
+                            <Icon style={{
+                                color: window.location.href.includes('lobby/stats') ? '#ff5e00' : 'black',
                             }}
-                        />
-                    </motion.div>
-                </div>
-                <div className="column">
-                    <motion.div whileHover={{ scale: 1.1 }} >
-                        <Icon style={{
-                            color: this.props.from === 'scores' ? '#ff5e00' : 'black',
-                        }}
-                            name='winner'
-                            size='large'
-                            color='#FF3377'
-                            onClick={() => {
-                                this.scoreBoard();
+                                  name='chart bar'
+                                  size='large'
+                                  color='#FF3377'
+                                  onClick={() => {
+                                      this.gamesStats();
+                                  }}
+                            />
+                        </motion.div>
+                    </div>
+                    <div className="column">
+                        <motion.div whileHover={{ scale: 1.1 }} >
+                            <Icon style={{
+                                color: window.location.href.includes('lobby/scores') ? '#ff5e00' : 'black',
                             }}
-                        />
-                    </motion.div>
+                                  name='winner'
+                                  size='large'
+                                  color='#FF3377'
+                                  onClick={() => {
+                                      this.scoreBoard();
+                                  }}
+                            />
+                        </motion.div>
+                    </div>
                 </div>
             </div>
         )

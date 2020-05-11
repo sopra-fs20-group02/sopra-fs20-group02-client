@@ -1,13 +1,10 @@
 import React from "react";
 import { withRouter } from 'react-router-dom';
-import { Grid, List, Header, Icon} from "semantic-ui-react";
+import { Grid, Header} from "semantic-ui-react";
 import {
-  gamesStatsStyle, gamesStatsHeaderStyle, logoutIconStyle,
-  gamesStatsFooterStyle, statsListStyle, statsItemStyle,
-  statsTextStyle, statsStyle, statsHeaderStyle, formStyle, inputFieldStyle, controlButtonStyle, background
+  gamesStatsHeaderStyle,
+  statsTextStyle, statsStyle, statsHeaderStyle, backgroundStats, background
 } from "../../data/styles";
-import {api, handleError} from "../../helpers/api";
-import Footer from "../game/Footer";
 
 class ScoreBoard extends React.Component {
   constructor() {
@@ -15,21 +12,6 @@ class ScoreBoard extends React.Component {
     this.state = {
       users: null,
     };
-  }
-
-  // logs out user
-  async logout() {
-    try {
-      const requestBody = JSON.stringify({
-        userId: localStorage.getItem('userId')
-      });
-      const response = await api.put('/logout', requestBody);
-
-    } catch(error) {
-      console.log(`Something went wrong during the logout: \n${handleError(error)}`);
-    }
-    localStorage.clear();
-    this.props.history.push('/login');
   }
 
   // redirects to lobby
@@ -93,7 +75,6 @@ class ScoreBoard extends React.Component {
 
     table.push(
         <div style={{
-          height: '80%',
           overflowY: 'scroll'
         }}>
           <table className="ui celled table unstackable"
@@ -124,18 +105,20 @@ class ScoreBoard extends React.Component {
     if (users) {
       return (
           <div style={background}>
-            <Grid centered>
-              <Grid.Row style={gamesStatsHeaderStyle}>
-                <Header as='h3' style={statsTextStyle}>
-                  Score Board
-                </Header>
-              </Grid.Row>
-              <Grid.Row columns={2}>
-                {this.getTable()}
-              </Grid.Row>
-              <Footer from={'scores'}/>
-            </Grid>
+            <div style={{height: '50vh'}}>
+              <Grid centered>
+                <Grid.Row style={gamesStatsHeaderStyle}>
+                  <Header as='h3' style={statsTextStyle}>
+                    Score Board
+                  </Header>
+                </Grid.Row>
+                <Grid.Row columns={2}>
+                  {this.getTable()}
+                </Grid.Row>
+              </Grid>
+            </div>
           </div>
+
       );
     } else {
       return (

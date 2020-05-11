@@ -11,18 +11,18 @@ import Lobby from "../../game/Lobby";
 import GameEnded from "../../game/GameEnded";
 import GamesStats from "../../profile/GamesStats";
 import ScoreBoard from "../../profile/ScoreBoard";
+import LobbyRouter from "./LobbyRouter";
 
 class AppRouter extends React.Component {
     render() {
         return (
-
             <BrowserRouter>
                 <Switch>
                     <Route
                         path="/lobby"
                         render={() => (
                             <GameGuard>
-                                <Lobby/>
+                                <LobbyRouter />
                             </GameGuard>
                         )}
                     />
@@ -30,39 +30,7 @@ class AppRouter extends React.Component {
                         path="/game"
                         render={() => (
                             <GameGuard>
-                                <Game />
-                            </GameGuard>
-                        )}
-                    />
-                    <Route
-                        path="/waiting"
-                        render={() => (
-                            <GameGuard>
-                                <Waiting />
-                            </GameGuard>
-                        )}
-                    />
-                    <Route
-                        path="/gamesStats"
-                        render={() => (
-                            <GameGuard>
-                                <GamesStats />
-                            </GameGuard>
-                        )}
-                    />
-                    <Route
-                        path="/scoreBoard"
-                        render={() => (
-                            <GameGuard>
-                                <ScoreBoard />
-                            </GameGuard>
-                        )}
-                    />
-                    <Route
-                        path="/ended"
-                        render={() => (
-                            <GameGuard>
-                            <GameEnded />
+                                <GameRouter />
                             </GameGuard>
                         )}
                     />

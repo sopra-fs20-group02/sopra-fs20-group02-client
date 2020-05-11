@@ -2,10 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { BaseContainer } from '../../helpers/layout';
 import { api, handleError } from '../../helpers/api';
-import User from '../shared/models/User';
 import { withRouter } from 'react-router-dom';
 import { Button } from '../../views/design/Button';
-import { Spinner } from '../../views/design/Spinner';
 import {EditProfile} from '../profile/EditProfile';
 
 const Bold = styled.span`
@@ -129,7 +127,7 @@ class Profile extends React.Component {
           <Button
             width="150px"
             onClick={() => {
-              this.props.history.push('/lobby');
+              this.props.history.push('/lobby/main');
             }}
           >
             Back

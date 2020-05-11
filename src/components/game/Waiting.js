@@ -1,12 +1,10 @@
 import React from "react";
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
-import { Grid, Button, Header, Icon } from "semantic-ui-react";
+import { Grid, Header } from "semantic-ui-react";
 import {
-    waitingButtonStyle,
     gameFooterStyle,
     quoteStyle,
-    waitingPageStyle,
     background,
     buttonStyle
 } from "../../data/styles";
@@ -49,7 +47,7 @@ class Waiting extends React.Component {
     // redirects to lobby
     lobby() {
         this.props.history.push({
-            pathname: `/lobby`
+            pathname: `/lobby/main`
         });
     }
 
@@ -76,7 +74,7 @@ class Waiting extends React.Component {
 
                 if (status === 'FULL') {
                     this.props.history.push({
-                        pathname: '/game',
+                        pathname: '/game/play',
                         state: { gameId: gameStatusObject.data.gameId }
                     });
                 }

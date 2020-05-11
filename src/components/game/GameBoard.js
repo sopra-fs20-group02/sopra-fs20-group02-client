@@ -4,12 +4,11 @@ import { withRouter } from 'react-router-dom';
 import { Grid, Header, Icon, Confirm } from "semantic-ui-react";
 import Tile from './Tile';
 import {
-    gameStyle, gameHeaderStyle, drawOfferStyle, chessBoardStyle, boardRankStyle,
+    gameHeaderStyle, boardRankStyle,
     capturedPiecesStyle, gameButtonStyle, gameFooterStyle, background, buttonStyle
 } from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
 import {Button} from "../../views/design/Button";
-import { motion } from "framer-motion"
 
 class GameBoard extends React.Component {
     constructor() {
@@ -134,7 +133,7 @@ class GameBoard extends React.Component {
 
     async endGame() {
         this.props.history.push({
-            pathname: '/ended',
+            pathname: '/game/end',
             state: {
                 game: this.state.game,
                 isWatching: this.state.isWatching

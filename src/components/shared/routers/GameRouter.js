@@ -1,9 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { Redirect, Route } from "react-router-dom";
+import {Redirect, Route, Switch} from "react-router-dom";
 import Game from "../../game/Lobby";
 import Profile from "../../profile/Profile";
 import Waiting from "../../game/Waiting";
+import {GameGuard} from "../routeProtectors/GameGuard";
+import GameEnded from "../../game/GameEnded";
+import GameBoard from "../../game/GameBoard";
 
 const Container = styled.div`
   display: flex;
@@ -17,29 +20,37 @@ class GameRouter extends React.Component {
      */
     return (
       <Container>
-        <Route
-          exact
-          path={`${this.props.base}/profile/:id`}
-          render={() => <Profile />}
-        />
-
-        <Route
-          exact
-          path={`${this.props.base}/dashboard`}
-          render={() => <Game />}
-        />
-
-        <Route
-            exact
-            path={`${this.props.base}/quote`}
-            render={() => <Waiting />}
-        />
-
-        <Route
-          exact
-          path={`${this.props.base}`}
-          render={() => <Redirect to={`${this.props.base}/dashboard`} />}
-        />
+          <Route
+              path="/game/wait"
+              render={() => (
+                  <GameGuard>
+                      <Waiting />
+                  </GameGuard>
+              )}
+          />
+          <Route
+              path="/game/play"
+              render={() => (
+                  <GameGuard>
+                      <GameBoard/>
+                  </GameGuard>
+              )}
+          />
+          <Route
+              path="/game/end"
+              render={() => (
+                  <GameGuard>
+                      <GameEnded />
+                  </GameGuard>
+              )}
+          />
+          <Route
+              path="/game"
+              exact
+              render={() => (
+                  <Redirect to={"/game/wait"} />
+              )}
+          />
       </Container>
     );
   }

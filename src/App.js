@@ -8,10 +8,6 @@ class App extends Component {
     return (
         <div className="App">
           <AppRouter />
-          <Widget
-              title="Chat w/ other players"
-              subtitle=""
-          />
         </div>
     );
   }

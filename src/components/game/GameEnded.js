@@ -1,16 +1,13 @@
 import React from "react";
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
-import { Grid, Button, Header, Icon } from "semantic-ui-react";
+import { Grid, Header } from "semantic-ui-react";
 import {
     background,
     buttonStyle,
-    gameButtonStyle,
     gameFooterStyle,
     quoteStyle,
-    waitingPageStyle
 } from "../../data/styles";
-import {fetchGameStatus} from "../requests/fetchGameStatus";
 
 class GameEnded extends React.Component {
     constructor() {
@@ -83,7 +80,7 @@ class GameEnded extends React.Component {
                             <button className="ui inverted button" style={buttonStyle}
                                 onClick={() => {
                                     this.props.history.push({
-                                        pathname: '/lobby',
+                                        pathname: '/lobby/main',
                                     })
                                 }}
                             >

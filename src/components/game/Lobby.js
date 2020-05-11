@@ -1,16 +1,14 @@
 import React from "react";
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
-import { Grid, List, Button, Header, Icon} from "semantic-ui-react";
+import { Grid, List, Header} from "semantic-ui-react";
 import {
   lobbyHeaderStyle,
   playersListStyle,
   userItemStyle,
   lobbyTextStyle,
-  background,
-  buttonStyle
+  buttonStyle, backgroundStats
 } from "../../data/styles";
-import Footer from "./Footer";
 
 class Lobby extends React.Component {
   constructor(props) {
@@ -83,7 +81,7 @@ class Lobby extends React.Component {
   async navigateToGame(game){
     const status = game.gameStatus;
     this.props.history.push({
-      pathname: '/waiting',
+      pathname: '/game/wait',
       state: { gameId: game.gameId }
     })
   }
@@ -99,7 +97,8 @@ class Lobby extends React.Component {
 
   render() {
     return (
-        <div style={background}>
+        <div style={backgroundStats}>
+
           <Grid centered>
             <Grid.Row style={lobbyHeaderStyle}>
               <button className="ui inverted button" style={buttonStyle} onClick={() => {
@@ -145,7 +144,6 @@ class Lobby extends React.Component {
                 })}
               </List>
             </Grid.Row>
-            <Footer from={'lobby'}/>
           </Grid>
         </div>
     );

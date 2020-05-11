@@ -1,12 +1,9 @@
 import React from "react";
 import { withRouter } from 'react-router-dom';
 import { Grid, Header} from "semantic-ui-react";
-import {statsHeaderStyle, background} from "../../data/styles";
-import {api, handleError} from "../../helpers/api";
-import Footer from "../game/Footer";
-import {XYPlot, LineSeries, ArcSeries} from 'react-vis';
+import {statsHeaderStyle, background, backgroundStats} from "../../data/styles";
+import {XYPlot, ArcSeries} from 'react-vis';
 import DiscreteColorLegend from "react-vis/es/legends/discrete-color-legend";
-import ChartLabel from "react-vis/es/plot/chart-label";
 
 const PI = 3.14159265359;
 class GamesStats extends React.Component {
@@ -18,25 +15,10 @@ class GamesStats extends React.Component {
     };
   }
 
-  // logs out user
-  async logout() {
-    try {
-      const requestBody = JSON.stringify({
-        userId: localStorage.getItem('userId')
-      });
-      const response = await api.put('/logout', requestBody);
-
-    } catch(error) {
-      console.log(`Something went wrong during the logout: \n${handleError(error)}`);
-    }
-    localStorage.clear();
-    this.props.history.push('/login');
-  }
-
   // redirects to lobby
   lobby() {
     this.props.history.push({
-      pathname: `/lobby`
+      pathname: `/main/lobby`
     });
   }
 
@@ -150,20 +132,33 @@ class GamesStats extends React.Component {
     console.log(gameHistory);
     if (gamesStats && gameHistory) {
 
-      const totalOpponentPiecesCaptured = this.getTotalOpponentPiecesCaptured(gameHistory);
-      const totalOwnPiecesCaptured = this.getTotalOwnPiecesCaptured(gameHistory);
-      const averageOpponentPiecesCaptures = this.getAverageOpponentPiecesCaptured(gameHistory);
-      const averageOwnPiecesCaptures = this.getAverageOwnPiecesCaptured(gameHistory);
-      const totalTimePlayed = this.getTotalTimePlayed(gamesStats);
-      const averagePlayTime = this.getAveragePlayTime(gameHistory);
-      const numberOfGames = this.getNumberOfGames(gamesStats);
+      let totalOpponentPiecesCaptured = 0;
+      let totalOwnPiecesCaptured = 0;
+      let averageOpponentPiecesCaptures = 0;
+      let averageOwnPiecesCaptures = 0;
+      let totalTimePlayed = 0;
+      let averagePlayTime = 0;
+      let numberOfGames = 0;
+      try{
+        totalOpponentPiecesCaptured = this.getTotalOpponentPiecesCaptured(gameHistory);
+        totalOwnPiecesCaptured = this.getTotalOwnPiecesCaptured(gameHistory);
+        averageOpponentPiecesCaptures = this.getAverageOpponentPiecesCaptured(gameHistory);
+        averageOwnPiecesCaptures = this.getAverageOwnPiecesCaptured(gameHistory);
+        totalTimePlayed = this.getTotalTimePlayed(gamesStats);
+        averagePlayTime = this.getAveragePlayTime(gameHistory);
+        numberOfGames = this.getNumberOfGames(gamesStats);
+      }
+      catch (e) {
+        console.error(e);
+      }
+
 
       console.log(averageOpponentPiecesCaptures)
 
       console.log(2*PI*this.state.gamesStats.numberOfWinnings / numberOfGames);
 
       return (
-        <div style={{background}}>
+          <div style={backgroundStats}>
           <div style={{maxWidth: '1000px', margin: '0 auto'}}>
             <Grid centered columns='equal' inverted padded  divided='vertically'>
               <Grid.Row>
@@ -350,8 +345,7 @@ class GamesStats extends React.Component {
               </Grid.Row>
             </Grid>
           </div>
-          <Footer from={'stats'}/>
-        </div>
+          </div>
       );
     } else {
       return (

@@ -1,10 +1,7 @@
 import React from "react";
 import {withRouter} from "react-router-dom";
-import {BaseContainer} from "../../helpers/layout";
 import styled from "styled-components";
-import {Button} from "../../views/design/Button";
 import {api, handleError} from "../../helpers/api";
-import  { Redirect } from 'react-router-dom'
 
 const Container = styled.div`
   text-align: center;

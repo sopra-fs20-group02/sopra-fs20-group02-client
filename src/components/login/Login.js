@@ -3,10 +3,8 @@ import { api, handleError } from '../../helpers/api';
 import User from '../shared/models/User';
 import { withRouter } from 'react-router-dom';
 import { Grid, Header, Form, Button } from 'semantic-ui-react';
-import { FormattedMessage } from 'react-intl';
 import {
-  headerStyle, inputFieldStyle, gridStyle,
-  formStyle, loginButtonStyle, registerButtonStyle, buttonStyle, background
+  headerStyle, buttonStyle, background
 } from "../../data/styles";
 
 class Login extends React.Component {
@@ -39,7 +37,7 @@ class Login extends React.Component {
 
       // Login successfully worked --> navigate to the route /lobby in the GameRouter
       this.props.history.push({
-          pathname: `/lobby`
+          pathname: `/lobby/main`
       });
     } catch (error) {
       if (error.response.status === 401){
