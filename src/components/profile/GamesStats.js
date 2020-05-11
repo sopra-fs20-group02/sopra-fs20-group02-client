@@ -78,7 +78,7 @@ class GamesStats extends React.Component {
     if (gameHistory.length != 0) {
       return this.getTotalOpponentPiecesCaptured(gameHistory) / gameHistory.length;
     } else {
-      return '-';
+      return 0;
     }
   }
 
@@ -86,7 +86,7 @@ class GamesStats extends React.Component {
     if (gameHistory.length != 0) {
       return this.getTotalOwnPiecesCaptured(gameHistory) / gameHistory.length;
     } else {
-      return '-';
+      return 0;
     }
   }
 
@@ -157,6 +157,8 @@ class GamesStats extends React.Component {
       const totalTimePlayed = this.getTotalTimePlayed(gamesStats);
       const averagePlayTime = this.getAveragePlayTime(gameHistory);
       const numberOfGames = this.getNumberOfGames(gamesStats);
+
+      console.log(averageOpponentPiecesCaptures)
 
       console.log(2*PI*this.state.gamesStats.numberOfWinnings / numberOfGames);
 
