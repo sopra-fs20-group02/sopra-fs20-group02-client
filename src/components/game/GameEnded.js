@@ -14,14 +14,16 @@ class GameEnded extends React.Component {
         super();
         this.state = {
             quote: null,
-            game: null
+            game: null,
+            ranOutOfTime: false
         };
     }
 
     componentDidMount() {
         this.setState({
             game: this.props.location.state.game,
-            isWatching: this.props.location.state.isWatching
+            isWatching: this.props.location.state.isWatching,
+            ranOutOfTime: this.props.location.state.ranOutOfTime
         });
         this.getRandomQuote();
     }
@@ -42,22 +44,27 @@ class GameEnded extends React.Component {
     }
 
     getEndMessage() {
+        let endMessage;
         if (this.state.game) {
             if (this.state.game.gameStatus === 'DRAW') {
-                return "It's a draw!";
+                endMessage = "It's a draw!";
             }
             if (this.state.game.winner === Number(localStorage.getItem('userId'))) {
-                return 'You won!';
+                endMessage = 'You won!';
             } else if (this.state.isWatching) {
                 if (this.state.game.winner === this.state.game.playerBlack.userId) {
-                    return this.state.game.playerBlack.username + ' won';
+                    endMessage = this.state.game.playerBlack.username + ' won';
                 } else {
-                    return this.state.game.playerWhite.username + ' won';
+                    endMessage =  this.state.game.playerWhite.username + ' won';
                 }
             } else {
-                return 'You lost!';
+                endMessage =  'You lost!';
+                if (this.state.ranOutOfTime) {
+                    endMessage = 'You ran out of time. ' + endMessage;
+                }
             }
         }
+        return endMessage;
     }
 
     render() {

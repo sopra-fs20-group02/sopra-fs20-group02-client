@@ -32,11 +32,12 @@ class Lobby extends React.Component {
   async createGame(blitz) {
     try {
       const requestBody = JSON.stringify({
-        userId: localStorage.getItem('userId')
+        userId: localStorage.getItem('userId'),
+        gameMode: blitz ? 'BLITZ' : 'CLASSIC'
       });
       const response = await api.post('/games', requestBody);
       const game = response.data;
-      this.navigateToGame(game, blitz)
+      this.navigateToGame(game)
     } catch (error) {
       alert(`Something went wrong while creating the game: \n${handleError(error)}`);
     }
@@ -78,13 +79,11 @@ class Lobby extends React.Component {
     }
   }
 
-  async navigateToGame(game, blitz){
-    const status = game.gameStatus;
+  async navigateToGame(game){
     this.props.history.push({
       pathname: '/game/wait',
       state: {
-        gameId: game.gameId,
-        blitzMode: blitz
+        gameId: game.gameId
       }
     })
   }

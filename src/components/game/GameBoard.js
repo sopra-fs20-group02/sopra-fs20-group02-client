@@ -27,7 +27,6 @@ class GameBoard extends React.Component {
             isWatching: null,
             isPlayerWhite: null,
             open: false,
-            blitzMode: null,
             remainingTime: 300
         };
         this.tileCallback = this.tileCallback.bind(this);
@@ -37,8 +36,7 @@ class GameBoard extends React.Component {
 
     async componentDidMount() {
         this.setState({
-            gameId: this.props.location.state.gameId,
-            blitzMode: this.props.location.state.blitzMode
+            gameId: this.props.location.state.gameId
         });
         this.interval = setInterval(async () => {
             if (this.state.gameId){
@@ -51,17 +49,16 @@ class GameBoard extends React.Component {
                 this.setState({
                     isPlayerWhite: Number(localStorage.getItem('userId')) === gameStatusObject.data.playerWhite.userId
                 });
-                if (this.state.blitzMode && this.isMyTurn()) {
-                    console.log('test');
+                if (this.state.game.gameMode == 'BLITZ' && this.isMyTurn()) {
                     this.setState({ remainingTime : this.state.remainingTime - 1})
                 }
                 if (this.state.remainingTime < 1) {
-                    this.resign();
+                    this.resign(true);
                 }
                 if (this.state.game.gameStatus !== 'FULL'){
                     if (!(gameStatusObject.data.gameStatus === 'WHITE_IN_CHECK' ||
                         gameStatusObject.data.gameStatus === 'BLACK_IN_CHECK')) {
-                        this.endGame();
+                        this.endGame(false);
                     }
                 }
                 this.opponentIsOfferingDraw();
@@ -71,7 +68,7 @@ class GameBoard extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.interval);
-        this.resign();
+        this.resign(false);
     }
 
     // gets all possible moves for the selected piece
@@ -128,7 +125,7 @@ class GameBoard extends React.Component {
     }
 
     // allows player to resign from game
-    async resign() {
+    async resign(ranOutOfTime) {
         try {
             const requestBody = JSON.stringify({
                 userId: this.state.userId
@@ -136,19 +133,20 @@ class GameBoard extends React.Component {
             const mapping = '/games/' + this.state.game.gameId.toString();
 
             const response = await api.put(mapping, requestBody);
-            this.endGame();
+            this.endGame(ranOutOfTime);
 
         } catch (error) {
             console.error(error)
         }
     }
 
-    async endGame() {
+    async endGame(ranOutOfTime) {
         this.props.history.push({
             pathname: '/game/end',
             state: {
                 game: this.state.game,
-                isWatching: this.state.isWatching
+                isWatching: this.state.isWatching,
+                ranOutOfTime: ranOutOfTime
             }
         })
     }
@@ -236,11 +234,11 @@ class GameBoard extends React.Component {
     }
 
     getBlitzInfo() {
-        if (this.state.blitzMode) {
+        if (this.state.game.gameMode == 'BLITZ') {
             const minutes = '0' + String(Math.floor(this.state.remainingTime / 60));
             let seconds = this.state.remainingTime - minutes * 60;
             seconds = seconds < 10 ? '0' + String(seconds) : String(seconds);
-            const remainingTime =  (this.state.blitzMode ? ' ' + minutes + ':' + seconds : '')
+            const remainingTime =  (' ' + minutes + ':' + seconds)
             return (
                 <Header as='h3' style={gameHeaderStyle}>
                     {' Remaining Time: ' + remainingTime}
@@ -361,8 +359,6 @@ class GameBoard extends React.Component {
     render() {
         const game = this.state.game;
         if (game){
-            console.log('blitz?');
-            console.log(this.state.blitzMode);
             return (
                 <div style={background}>
                     <Grid centered>
@@ -383,7 +379,7 @@ class GameBoard extends React.Component {
                         <Grid.Row columns={2} style={gameFooterStyle}>
                             <Grid.Column textAlign='center'>
                                 <button className="ui inverted button" style={buttonStyle} onClick={() => {
-                                    this.resign();
+                                    this.resign(false);
                                 }}>
                                     Resign
                                 </button>
@@ -401,7 +397,7 @@ class GameBoard extends React.Component {
                                 <Button
                                     style={gameButtonStyle}
                                     onClick={() => {
-                                        this.endGame();
+                                        this.endGame(false);
                                     }}
                                 >
                                     Lobby
