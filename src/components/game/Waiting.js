@@ -16,15 +16,13 @@ class Waiting extends React.Component {
         this.state = {
             quote: null,
             gameId: null,
-            gameDeleted: false,
-            blitzMode: null
+            gameDeleted: false
         };
     }
 
     componentDidMount() {
         this.setState({
-            gameId: this.props.location.state.gameId,
-            blitzMode: this.props.location.state.blitzMode
+            gameId: this.props.location.state.gameId
         });
         this.getRandomQuote();
         this.handleWaiting();
@@ -80,8 +78,7 @@ class Waiting extends React.Component {
                     this.props.history.push({
                         pathname: '/game/play',
                         state: {
-                            gameId: gameStatusObject.data.gameId,
-                            blitzMode: this.state.blitzMode
+                            gameId: gameStatusObject.data.gameId
                         }
                     });
                 }
