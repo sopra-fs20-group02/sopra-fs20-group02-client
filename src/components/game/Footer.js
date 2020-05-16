@@ -30,11 +30,11 @@ export class Footer extends React.Component {
                 userId: localStorage.getItem('userId')
             });
             const response = await api.put('/logout', requestBody);
-
         } catch(error) {
             console.error(error.messages)
         }
         localStorage.clear();
+        this.props.userStateCallback();
         this.props.history.push('/login');
     }
 

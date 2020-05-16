@@ -13,19 +13,43 @@ root, html {
 }
 
 .rcw-conversation-container > .rcw-header {
-  background-color: #ff5e00;
+  background-color: #505050;
 
+}
+
+rcw-widget-container{
+  bottom: 80px;
+  margin: 0 60px 60px 0;
 }
 
 .rcw-conversation-container{
   box-shadow: none;
 }
+.rcw-conversation-container.hidden{
+  box-shadow: none;
+  position:relative;
+  z-index: 1;
+}
+
+.rcw-conversation-container.active{
+  position:relative;
+  z-index: 20;
+}
 
 .rcw-message-container{
-  background-color: black;
+  background: black;
+}
+
+.rcw-launcher{
+  box-shadow: none;
+  background-color: #484848;
+  position:relative;
+  margin: 0 0 60px 0;
+  z-index: 1;
 }
 
 .rcw-message > .rcw-response {
   background-color: black;
   color: white;
 }
+

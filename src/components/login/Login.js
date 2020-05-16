@@ -39,6 +39,7 @@ class Login extends React.Component {
       this.props.history.push({
           pathname: `/lobby/main`
       });
+      this.props.userStateCallback();
     } catch (error) {
       if (error.response.status === 401){
         alert(error.response.data);

@@ -50,7 +50,7 @@ class LobbyRouter extends React.Component {
                     <Redirect to={"/lobby/main"} />
                 )}
             />
-            <Footer from={'lobby'}/>
+            <Footer from={'lobby'} userStateCallback={this.props.userStateCallback}/>
 
         </Container>
     );

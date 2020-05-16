@@ -12,53 +12,71 @@ import GameEnded from "../../game/GameEnded";
 import GamesStats from "../../profile/GamesStats";
 import ScoreBoard from "../../profile/ScoreBoard";
 import LobbyRouter from "./LobbyRouter";
+import Chat from "../../chat/Chat";
 
 class AppRouter extends React.Component {
+
+    constructor(){
+        super();
+        this.onLoginOrLogout = this.onLoginOrLogout.bind(this);
+    }
+
+    componentWillUnmount() {
+        localStorage.clear();
+    }
+
+    onLoginOrLogout(){
+        this.forceUpdate();
+    }
+
     render() {
         return (
-            <BrowserRouter>
-                <Switch>
-                    <Route
-                        path="/lobby"
-                        render={() => (
-                            <GameGuard>
-                                <LobbyRouter />
-                            </GameGuard>
-                        )}
-                    />
-                    <Route
-                        path="/game"
-                        render={() => (
-                            <GameGuard>
-                                <GameRouter />
-                            </GameGuard>
-                        )}
-                    />
-                    <Route
-                        path="/login"
-                        exact
-                        render={() => (
-                            <LoginGuard>
-                                <Login />
-                            </LoginGuard>
-                        )}
-                    />
-                    <Route
-                        path="/registration"
-                        exact
-                        render={() => (
-                            <Registration />
-                        )}
-                    />
-                    <Route
-                        path="/"
-                        exact
-                        render={() => (
-                            <Redirect to={"/login"} />
+            <div>
+                <Chat/>
+                <BrowserRouter>
+                    <Switch>
+                        <Route
+                            path="/lobby"
+                            render={() => (
+                                <GameGuard>
+                                    <LobbyRouter userStateCallback={this.onLoginOrLogout}/>
+                                </GameGuard>
                             )}
-                    />
-                </Switch>
-            </BrowserRouter>
+                        />
+                        <Route
+                            path="/game"
+                            render={() => (
+                                <GameGuard>
+                                    <GameRouter />
+                                </GameGuard>
+                            )}
+                        />
+                        <Route
+                            path="/login"
+                            exact
+                            render={() => (
+                                <LoginGuard>
+                                    <Login userStateCallback={this.onLoginOrLogout}/>
+                                </LoginGuard>
+                            )}
+                        />
+                        <Route
+                            path="/registration"
+                            exact
+                            render={() => (
+                                <Registration />
+                            )}
+                        />
+                        <Route
+                            path="/"
+                            exact
+                            render={() => (
+                                <Redirect to={"/login"} />
+                            )}
+                        />
+                    </Switch>
+                </BrowserRouter>
+            </div>
         );
     }
 }

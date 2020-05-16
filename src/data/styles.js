@@ -25,7 +25,9 @@ export const backgroundStats = {
 };
 
 export const buttonStyle = {
-    maxHeight: '50px'
+    maxHeight: '50px',
+    zIndex: 5,
+    position: 'relative'
 }
 
 export const headerStyle = {
@@ -53,6 +55,7 @@ export const FooterStyle = {
     verticalAlign: 'center',
     background: 'white',
     position: 'fixed',
+    zIndex: 5,
     bottom: '0',
     borderTopLeftRadius: '5px',
     borderTopRightRadius: '5px',
