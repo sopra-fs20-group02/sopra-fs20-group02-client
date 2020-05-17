@@ -8,6 +8,12 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stomp-websocket';
 
 class Chat extends Component {
+
+    constructor(props) {
+        super(props);
+        this.handleNewUserMessage = this.handleNewUserMessage.bind(this);
+    }
+
     componentDidMount() {
         try{
 
@@ -25,15 +31,31 @@ class Chat extends Component {
         catch (e) {
             console.error("Chat Error:" + e.toString());
         }
+    }
+
+    onMessageReceived () {
 
     }
+
+    handleNewUserMessage(newMessage) {
+        console.log(`New message incoming! ${newMessage}`);
+        // Now send the message throught the backend
+        var chatMessage = {
+            sender: localStorage.getItem('userId'),
+            content: newMessage,
+            type: 'CHAT'
+        };
+        this.stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+        //this.stompClient.send(newMessage);
+    };
 
     render() {
         if (localStorage.getItem("token")) {
             return (
                 <Widget
                     title="Chat"
-                    subtitle=""/>
+                    subtitle=""
+                handleNewUserMessage = {this.handleNewUserMessage}/>
             );
         }
         else{
