@@ -28,7 +28,7 @@ class Registration extends React.Component {
             const response = await api.post('/users', requestBody);
 
             // Get the returned user and update a new object.
-            const user = new User(response.data);
+            //const user = new User(response.data);
 
             // Login successfully worked --> navigate to /login
             this.props.history.push(`/login`);

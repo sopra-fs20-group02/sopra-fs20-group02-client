@@ -110,17 +110,17 @@ class Lobby extends React.Component {
                 <button className="ui inverted button" style={buttonStyle} onClick={() => {
                   this.createGame(false);
                 }}>
-                  Classical Chess
+                  Classic
                 </button>
                 <button className="ui inverted button" style={buttonStyle} onClick={() => {
                   this.createGame(true);
                 }}>
-                  Blitz mode
+                  Blitz
                 </button>
                 <button className="ui inverted button" style={buttonStyle} onClick={() => {
                   this.joinRandomGame();
                 }}>
-                  Random Join
+                  Join
                 </button>
               </div>
             </Grid.Row>
@@ -145,9 +145,12 @@ class Lobby extends React.Component {
                           }}>play</button>
 
                           }
+                          {game.gameStatus === "FULL" &&
                           <button className="small ui inverted button"  onClick={() => {
                             this.watchGame(game);
                           }}>watch</button>
+
+                          }
                         </List.Item>
                         }
                       </div>
