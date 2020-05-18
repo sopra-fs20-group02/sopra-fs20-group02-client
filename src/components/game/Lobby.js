@@ -103,21 +103,26 @@ class Lobby extends React.Component {
 
           <Grid centered>
             <Grid.Row style={lobbyHeaderStyle}>
-              <button className="ui inverted button" style={buttonStyle} onClick={() => {
-                this.createGame(false);
-              }}>
-                Create
-              </button>
-              <button className="ui inverted button" style={buttonStyle} onClick={() => {
-                this.createGame(true);
-              }}>
-                Blitz
-              </button>
-              <button className="ui inverted button" style={buttonStyle} onClick={() => {
-                this.joinRandomGame();
-              }}>
-                Random
-              </button>
+              <h1>Hi {localStorage.getItem('userName')} {localStorage.getItem('emoji')}</h1>
+            </Grid.Row>
+            <Grid.Row style={lobbyTextStyle}>
+              <div>
+                <button className="ui inverted button" style={buttonStyle} onClick={() => {
+                  this.createGame(false);
+                }}>
+                  Classical Chess
+                </button>
+                <button className="ui inverted button" style={buttonStyle} onClick={() => {
+                  this.createGame(true);
+                }}>
+                  Blitz mode
+                </button>
+                <button className="ui inverted button" style={buttonStyle} onClick={() => {
+                  this.joinRandomGame();
+                }}>
+                  Random Join
+                </button>
+              </div>
             </Grid.Row>
             <Header as='h3' style={lobbyTextStyle}>
               play or watch game:

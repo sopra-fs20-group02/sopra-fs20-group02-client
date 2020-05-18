@@ -20,8 +20,8 @@ export const backgroundStats = {
     /*background: '#272727',
     width: '100vw',
     height: '100vw',*/
-    margin: '0',
-    padding: '20px 10px 80px 10px'
+    margin: '0 10px 0 10px',
+    padding: '20px 0 80px 0'
 };
 
 export const buttonStyle = {

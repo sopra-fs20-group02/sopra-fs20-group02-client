@@ -15,7 +15,7 @@ class Registration extends React.Component {
             username: null,
             name: null,
             password: null,
-            fields: ['username', 'name', 'password']
+            fields: ['username', 'password']
         };
     }
 
@@ -23,7 +23,6 @@ class Registration extends React.Component {
         try {
             const requestBody = JSON.stringify({
                 username: this.state.username,
-                name: this.state.name,
                 password: this.state.password
             });
             const response = await api.post('/users', requestBody);
@@ -75,14 +74,14 @@ class Registration extends React.Component {
                         )
                     )}
                     <Grid.Row>
-                        {(this.state.username && this.state.name && this.state.password) && (
+                        {(this.state.username && this.state.password) && (
                             <Button inverted onClick={() => {
                                 this.registration();
                             }} style={buttonStyle}>
                                 Register
                             </Button>
                         )}
-                        {(!this.state.username || !this.state.name || !this.state.password) && (
+                        {(!this.state.username || !this.state.password) && (
                             <Button inverted disabled onClick={() => {
                                 this.registration();
                             }} style={buttonStyle}>
