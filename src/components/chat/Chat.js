@@ -138,7 +138,7 @@ class Chat extends Component {
                                 <Form.TextArea id="comment" style={{
                                     height: '50px'
                                 }}/>
-                                <Button icon labelPosition='left' inverted onClick={this.sendMessage}>
+                                <Button icon labelPosition='left' inverted onClick={this.sendMessage} >
                                     <Icon name='paper plane' />
                                     Send
                                 </Button>
