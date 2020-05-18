@@ -376,7 +376,7 @@ class GameBoard extends React.Component {
                             onConfirm={this.offerDraw}
                         />
                         {!this.state.isWatching &&
-                        <Grid.Row columns={2} style={gameFooterStyle}>
+                        <Grid.Row columns={1} style={gameFooterStyle}>
                             <Grid.Column textAlign='center'>
                                 <button className="ui inverted button" style={buttonStyle} onClick={() => {
                                     this.resign(false);

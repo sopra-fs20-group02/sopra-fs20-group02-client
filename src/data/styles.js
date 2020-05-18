@@ -27,7 +27,8 @@ export const backgroundStats = {
 export const buttonStyle = {
     maxHeight: '50px',
     zIndex: 5,
-    position: 'relative'
+    position: 'relative',
+    marginTop: '5px'
 }
 
 export const headerStyle = {
@@ -142,7 +143,7 @@ export const capturedPiecesStyle = {
 }
 
 export const gameFooterStyle = {
-    paddingTop: '25px',
-    paddingBottom: '30px'
+    /*paddingTop: '25px',
+    paddingBottom: '30px'*/
 }
 
