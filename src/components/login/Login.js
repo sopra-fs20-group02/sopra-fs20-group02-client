@@ -34,6 +34,7 @@ class Login extends React.Component {
       // TODO: test this again when 204 from /login is fixed
       localStorage.setItem('token', user.token);
       localStorage.setItem('userId', user.userId);
+      localStorage.setItem('userName', user.username);
 
       // Login successfully worked --> navigate to the route /lobby in the GameRouter
       this.props.history.push({
