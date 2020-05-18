@@ -7,21 +7,21 @@ export const gridStyle = {
 };
 
 export const background = {
-    position: 'absolute',
-    background: '#272727',
+    position: 'static',
+    /*background: '#272727',
     width: '100vw',
-    height: '100vh',
+    height: '100vw',*/
     margin: '0',
     padding: '0'
 };
 
 export const backgroundStats = {
-    position: 'absolute',
-    background: '#272727',
+    position: 'static',
+    /*background: '#272727',
     width: '100vw',
-    height: '170vh',
+    height: '100vw',*/
     margin: '0',
-    padding: '0'
+    padding: '20px 10px 80px 10px'
 };
 
 export const buttonStyle = {

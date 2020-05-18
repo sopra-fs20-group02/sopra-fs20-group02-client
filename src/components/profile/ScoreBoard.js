@@ -74,11 +74,8 @@ class ScoreBoard extends React.Component {
     let table = [];
 
     table.push(
-        <div style={{
-          overflowY: 'scroll'
-        }}>
           <table className="ui celled table unstackable"
-                 style={{width: '100%', maxWidth: '600px', backgroundColor: 'rgba(43,43,43,0.8)', color: 'white'}}>
+                 style={{width: '100%', maxWidth: '300px', backgroundColor: 'rgba(43,43,43,0.8)', color: 'white'}}>
             <thead>
             <tr>
               <th>
@@ -93,7 +90,6 @@ class ScoreBoard extends React.Component {
             {entries}
             </tbody>
           </table>
-        </div>
 
     )
 
@@ -104,19 +100,17 @@ class ScoreBoard extends React.Component {
     const users = this.state.users;
     if (users) {
       return (
-          <div style={background}>
-            <div style={{height: '50vh'}}>
-              <Grid centered>
-                <Grid.Row style={gamesStatsHeaderStyle}>
-                  <Header as='h3' style={statsTextStyle}>
-                    Score Board
-                  </Header>
-                </Grid.Row>
-                <Grid.Row columns={2}>
-                  {this.getTable()}
-                </Grid.Row>
-              </Grid>
-            </div>
+          <div style={backgroundStats}>
+            <Grid centered>
+              <Grid.Row style={gamesStatsHeaderStyle}>
+                <Header as='h3' style={statsTextStyle}>
+                  Score Board
+                </Header>
+              </Grid.Row>
+              <Grid.Row columns={2}>
+                {this.getTable()}
+              </Grid.Row>
+            </Grid>
           </div>
 
       );
