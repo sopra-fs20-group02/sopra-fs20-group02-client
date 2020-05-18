@@ -275,11 +275,11 @@ class GamesStats extends React.Component {
                   </DiscreteColorLegend>
                 </Grid.Column>
                 <Grid.Column width={12}>
-                  <div style={{width:'400px', height:'300px', margin:'0 auto'} }>
+                  <div style={{width:'300px', height:'300px', margin:'0 auto'} }>
                     <XYPlot
                         xDomain={[0, 1]}
                         yDomain={[0, 1]}
-                        width={400}
+                        width={300}
                         height={300}
                     >
                       <ArcSeries

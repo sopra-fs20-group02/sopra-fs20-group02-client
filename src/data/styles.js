@@ -93,8 +93,8 @@ export const statsTextStyle = {
 }
 
 export const statsStyle = {
-    height: '100vh',
-    width: '100vw',
+    /*height: '100vh',
+    width: '100vw',*/
     align: 'bottom',
     margin: '0',
     background: 'linear-gradient(#FF6464, #FF5A86)'
