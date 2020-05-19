@@ -4,8 +4,9 @@ import User from '../shared/models/User';
 import { withRouter } from 'react-router-dom';
 import { Grid, Header, Form, Button } from 'semantic-ui-react';
 import {
-    headerStyle, buttonStyle, background
+    headerStyle, buttonStyle, background, hideUnhideStyle
 } from "../../data/styles";
+import Icon from "semantic-ui-react/dist/commonjs/elements/Icon";
 
 
 class Registration extends React.Component {
@@ -15,8 +16,10 @@ class Registration extends React.Component {
             username: null,
             name: null,
             password: null,
-            fields: ['username', 'password']
+            fields: ['username', 'password'],
+            passwordField: 'show'
         };
+        this.showHide = this.showHide.bind(this);
     }
 
     async registration() {
@@ -46,6 +49,14 @@ class Registration extends React.Component {
         this.setState({ [key]: value });
     }
 
+    showHide(e){
+        e.preventDefault();
+        e.stopPropagation();
+        this.setState({
+            passwordField: this.state.passwordField === 'show' ? 'password' : 'show'
+        })
+    }
+
     componentDidMount() {}
 
     render() {
@@ -65,8 +76,27 @@ class Registration extends React.Component {
                                     >
                                         <Form.Input>
                                             <input
+                                                type={field === 'password' ? this.state.passwordField : ''}
+                                                className="password__show"
+                                                onKeyPress = {e => {
+                                                    if (e.key === 'Enter' && field === 'password' &&
+                                                        this.state.username && this.state.password) {
+                                                        this.registration();
+                                                    }
+                                                }}
                                                 placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
                                             />
+                                            {(field === 'password') &&
+                                                <span
+                                                    className="password__show"
+                                                    onClick={this.showHide}
+                                                >
+                                                    <Icon
+                                                        style={hideUnhideStyle}
+                                                        name={this.state.passwordField === 'show'  ? 'hide' : 'unhide'}
+                                                    />
+                                                </span>
+                                            }
                                         </Form.Input>
                                     </Form>
                                 </Grid.Column>
