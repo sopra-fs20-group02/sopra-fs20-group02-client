@@ -86,7 +86,7 @@ class Registration extends React.Component {
                                                 }}
                                                 placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
                                             />
-                                            {(field === 'password') &&
+                                            {field === 'password' ?
                                                 <span
                                                     className="password__show"
                                                     onClick={this.showHide}
@@ -95,7 +95,7 @@ class Registration extends React.Component {
                                                         style={hideUnhideStyle}
                                                         name={this.state.passwordField === 'show'  ? 'hide' : 'unhide'}
                                                     />
-                                                </span>
+                                                </span> : <span><Icon/></span>
                                             }
                                         </Form.Input>
                                     </Form>

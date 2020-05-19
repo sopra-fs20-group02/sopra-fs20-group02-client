@@ -1,5 +1,5 @@
 import React from "react";
-import {Icon} from "semantic-ui-react";
+import {Popup, Icon} from "semantic-ui-react";
 import {FooterStyle} from "../../data/styles";
 import {withRouter} from "react-router-dom";
 import {api, handleError} from "../../helpers/api";
@@ -10,11 +10,13 @@ export class Footer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            pathname: props.location.pathname
+            pathname: props.location.pathname,
+            width: null
         };
         this.logout = this.logout.bind(this);
         this.gamesStats = this.gamesStats.bind(this);
         this.scoreBoard = this.scoreBoard.bind(this);
+        this.reactRef = React.createRef();
     }
 
     async lobby(){
@@ -77,65 +79,94 @@ export class Footer extends React.Component {
         }
     }
 
+    componentDidMount() {
+        const width = this.reactRef.current.clientWidth;
+        this.setState({ popupDisabled : width < 500 ? true : false });
+    }
+
     render() {
+        console.log(this.state.width)
         return(
-            <div style={FooterStyle}>
+            <div
+                style={FooterStyle}
+                ref={this.reactRef}
+            >
                 <div className="ui four column grid " >
                     <div className="column">
                         <motion.div whileHover={{ scale: 1.1 }} >
-                            <Icon style={{
-                                color: 'black',
-                            }}
-                                  name='log out'
-                                  size='large'
-                                  color='#FF3377'
-                                  flipped='horizontally'
-                                  onClick={() => {
-                                      this.logout();
-                                  }}
-                            />
+                            <Popup
+                                content='Logout'
+                                disabled={this.state.popupDisabled}
+                                trigger={
+                                <Icon style={{
+                                    color: 'black',
+                                }}
+                                      name='log out'
+                                      size='large'
+                                      color='#FF3377'
+                                      flipped='horizontally'
+                                      onClick={() => {
+                                          this.logout();
+                                      }}
+                                />
+                            } />
                         </motion.div>
                     </div>
                     <div className="column">
                         <motion.div whileHover={{ scale: 1.1 }} >
-                            <Icon style={{
-                                color: window.location.href.includes('lobby/main') ? '#ff5e00' : 'black',
-                            }}
-                                  name='chess'
-                                  size='large'
-                                  color='#FF3377'
-                                  onClick={() => {
-                                      this.lobby();
-                                  }}
-                            />
+                            <Popup
+                                content='Game Lobby'
+                                disabled={this.state.popupDisabled}
+                                trigger={
+                                <Icon style={{
+                                    color: window.location.href.includes('lobby/main') ? '#ff5e00' : 'black',
+                                }}
+                                      name='chess'
+                                      size='large'
+                                      color='#FF3377'
+                                      onClick={() => {
+                                          this.lobby();
+                                      }}
+                                />
+                            } />
                         </motion.div>
                     </div>
                     <div className="column">
                         <motion.div whileHover={{ scale: 1.1 }} >
-                            <Icon style={{
-                                color: window.location.href.includes('lobby/stats') ? '#ff5e00' : 'black',
-                            }}
-                                  name='chart bar'
-                                  size='large'
-                                  color='#FF3377'
-                                  onClick={() => {
-                                      this.gamesStats();
-                                  }}
-                            />
+                            <Popup
+                                content='Game Statistics'
+                                disabled={this.state.popupDisabled}
+                                trigger={
+                                <Icon style={{
+                                    color: window.location.href.includes('lobby/stats') ? '#ff5e00' : 'black',
+                                }}
+                                      name='chart bar'
+                                      size='large'
+                                      color='#FF3377'
+                                      onClick={() => {
+                                          this.gamesStats();
+                                      }}
+                                />
+                            } />
                         </motion.div>
                     </div>
                     <div className="column">
                         <motion.div whileHover={{ scale: 1.1 }} >
-                            <Icon style={{
-                                color: window.location.href.includes('lobby/scores') ? '#ff5e00' : 'black',
-                            }}
-                                  name='winner'
-                                  size='large'
-                                  color='#FF3377'
-                                  onClick={() => {
-                                      this.scoreBoard();
-                                  }}
-                            />
+                            <Popup
+                                content='Scoreboard'
+                                disabled={this.state.popupDisabled}
+                                trigger={
+                                <Icon style={{
+                                    color: window.location.href.includes('lobby/scores') ? '#ff5e00' : 'black',
+                                }}
+                                      name='winner'
+                                      size='large'
+                                      color='#FF3377'
+                                      onClick={() => {
+                                          this.scoreBoard();
+                                      }}
+                                />
+                            } />
                         </motion.div>
                     </div>
                 </div>
