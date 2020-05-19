@@ -68,7 +68,9 @@ class GameBoard extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.interval);
-        this.resign(false);
+        if(!this.state.isWatching && this.state.game.gameStatus === 'WON') {
+            this.resign(false);
+        }
     }
 
     async getMovablePieces() {
@@ -413,7 +415,9 @@ class GameBoard extends React.Component {
                                 <Button
                                     style={gameButtonStyle}
                                     onClick={() => {
-                                        this.endGame(false);
+                                        this.props.history.push({
+                                            pathname: '/lobby/main',
+                                        })
                                     }}
                                 >
                                     Lobby
