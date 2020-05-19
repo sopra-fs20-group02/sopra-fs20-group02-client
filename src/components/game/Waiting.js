@@ -27,7 +27,7 @@ class Waiting extends React.Component {
         clearInterval(this.interval);
     }
 
-    // gets random quote
+    // fetching random quote from external API
     async getRandomQuote() {
         try {
             const response = await api.get('https://quotes.rest/qod.json');
@@ -48,6 +48,7 @@ class Waiting extends React.Component {
         });
     }
 
+    // deletes the game
     async deleteGame() {
         try {
             const response = await api.delete('/games/' + this.state.gameId);
@@ -59,6 +60,7 @@ class Waiting extends React.Component {
         }
     }
 
+    // handles waiting
     async handleWaiting() {
         let status = 'WAITING';
 

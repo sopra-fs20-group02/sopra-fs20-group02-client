@@ -27,7 +27,7 @@ class GameEnded extends React.Component {
         this.getRandomQuote();
     }
 
-    // gets random quote
+    // gets random quote from external API
     async getRandomQuote() {
         try {
             const response = await api.get('https://quotes.rest/qod.json');
@@ -42,6 +42,7 @@ class GameEnded extends React.Component {
         }
     }
 
+    // customized game over message
     getEndMessage() {
         let endMessage;
         if (this.state.game) {

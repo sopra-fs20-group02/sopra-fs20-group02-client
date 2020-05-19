@@ -25,6 +25,7 @@ class GamesStats extends React.Component {
     });
   }
 
+  // the number of total opponent pieces that were captured
   getTotalOpponentPiecesCaptured(gameHistory) {
     const userId = localStorage.getItem('userId');
     let totalOpponentPiecesCaptured = 0;
@@ -40,6 +41,7 @@ class GamesStats extends React.Component {
     return totalOpponentPiecesCaptured;
   }
 
+  // the number of total own pieces that got captured
   getTotalOwnPiecesCaptured(gameHistory) {
     const userId = localStorage.getItem('userId');
     let totalOwnPiecesCaptured = 0;
@@ -55,6 +57,7 @@ class GamesStats extends React.Component {
     return totalOwnPiecesCaptured;
   }
 
+  // the average number of opponent pieces captured per game
   getAverageOpponentPiecesCaptured(gameHistory) {
     if (gameHistory.length !== 0) {
       return this.getTotalOpponentPiecesCaptured(gameHistory) / gameHistory.length;
@@ -63,6 +66,7 @@ class GamesStats extends React.Component {
     }
   }
 
+  // the average number of own pieces captured per game
   getAverageOwnPiecesCaptured(gameHistory) {
     if (gameHistory.length !== 0) {
       return this.getTotalOwnPiecesCaptured(gameHistory) / gameHistory.length;
@@ -71,6 +75,7 @@ class GamesStats extends React.Component {
     }
   }
 
+  // the total play time
   getTotalTimePlayed(gamesStats) {
     let time = gamesStats.totalTimePlayed;
     const hours = ~~Math.floor(time / 3600);
@@ -79,13 +84,12 @@ class GamesStats extends React.Component {
     return [hours, minutes, seconds];
   }
 
+  // the average play time
   getAveragePlayTime(gamesStats, gameHistory) {
-
     const averagePlayTime = (gamesStats.totalTimePlayed) / gameHistory.length;
     const averageHours = ~~Math.floor(averagePlayTime / 3600);
     const averageMinutes = ~~((averagePlayTime % 3600) / 60);
     const averageSeconds = ~~averagePlayTime % 60;
-
     return [averageHours, averageMinutes, averageSeconds];
   }
 
