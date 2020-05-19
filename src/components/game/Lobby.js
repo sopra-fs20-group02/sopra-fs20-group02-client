@@ -139,7 +139,7 @@ class Lobby extends React.Component {
                             {' vs. '}
                             {game.playerBlack ? game.playerBlack.username : '-'}
                           </div>
-                          {(game.playerWhite == null || game.playerBlack == null) &&
+                          {(game.playerWhite === null || game.playerBlack === null) &&
                           <button className="small ui inverted button"  onClick={() => {
                             this.joinSpecificGame(game);
                           }}>play</button>

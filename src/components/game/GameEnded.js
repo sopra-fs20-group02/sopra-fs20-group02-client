@@ -46,10 +46,13 @@ class GameEnded extends React.Component {
     getEndMessage() {
         let endMessage;
         if (this.state.game) {
+            console.log('endmessage: ');
+            console.log(this.state.game);
+            console.log(this.state.game.gameStatus);
             if (this.state.game.gameStatus === 'DRAW') {
+                console.log('entersloop');
                 endMessage = "It's a draw!";
-            }
-            if (this.state.game.winner === Number(localStorage.getItem('userId'))) {
+            } else if (this.state.game.winner === Number(localStorage.getItem('userId'))) {
                 endMessage = 'You won!';
             } else if (this.state.isWatching) {
                 if (this.state.game.winner === this.state.game.playerBlack.userId) {

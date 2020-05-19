@@ -49,7 +49,7 @@ class GameBoard extends React.Component {
                 this.setState({
                     isPlayerWhite: Number(localStorage.getItem('userId')) === gameStatusObject.data.playerWhite.userId
                 });
-                if (this.state.game.gameMode == 'BLITZ' && this.isMyTurn()) {
+                if (this.state.game.gameMode === 'BLITZ' && this.isMyTurn()) {
                     this.setState({ remainingTime : this.state.remainingTime - 1})
                 }
                 if (this.state.remainingTime < 1) {
@@ -234,7 +234,7 @@ class GameBoard extends React.Component {
     }
 
     getBlitzInfo() {
-        if (this.state.game.gameMode == 'BLITZ') {
+        if (this.state.game.gameMode === 'BLITZ') {
             const minutes = '0' + String(Math.floor(this.state.remainingTime / 60));
             let seconds = this.state.remainingTime - minutes * 60;
             seconds = seconds < 10 ? '0' + String(seconds) : String(seconds);

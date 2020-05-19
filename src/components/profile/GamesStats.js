@@ -22,18 +22,14 @@ class GamesStats extends React.Component {
     });
   }
 
-  getNumberOfGames(gamesStats) {
-    return gamesStats.numberOfWinnings + gamesStats.numberOfLosses + gamesStats.numberOfDraws;
-  }
-
   getTotalOpponentPiecesCaptured(gameHistory) {
     const userId = localStorage.getItem('userId');
     let totalOpponentPiecesCaptured = 0;
     for (let i = 0; i < gameHistory.length; i++) {
-      const opponentColor = gameHistory[i].playerWhite.userId == userId ? 'BLACK' : 'WHITE';
+      const opponentColor = gameHistory[i].playerWhite.userId === userId ? 'BLACK' : 'WHITE';
       for (let j = 0; j < gameHistory[i].pieces.length; j++) {
         if (gameHistory[i].pieces[j].captured &&
-            gameHistory[i].pieces[j].color == opponentColor) {
+            gameHistory[i].pieces[j].color === opponentColor) {
           totalOpponentPiecesCaptured = totalOpponentPiecesCaptured + 1
         }
       }
@@ -45,10 +41,10 @@ class GamesStats extends React.Component {
     const userId = localStorage.getItem('userId');
     let totalOwnPiecesCaptured = 0;
     for (let i = 0; i < gameHistory.length; i++) {
-      const color = gameHistory[i].playerWhite.userId == userId ? 'WHITE' : 'BLACK';
+      const color = gameHistory[i].playerWhite.userId === userId ? 'WHITE' : 'BLACK';
       for (let j = 0; j < gameHistory[i].pieces.length; j++) {
         if (gameHistory[i].pieces[j].captured &&
-            gameHistory[i].pieces[j].color == color) {
+            gameHistory[i].pieces[j].color === color) {
           totalOwnPiecesCaptured = totalOwnPiecesCaptured + 1
         }
       }
@@ -57,7 +53,7 @@ class GamesStats extends React.Component {
   }
 
   getAverageOpponentPiecesCaptured(gameHistory) {
-    if (gameHistory.length != 0) {
+    if (gameHistory.length !== 0) {
       return this.getTotalOpponentPiecesCaptured(gameHistory) / gameHistory.length;
     } else {
       return 0;
@@ -65,7 +61,7 @@ class GamesStats extends React.Component {
   }
 
   getAverageOwnPiecesCaptured(gameHistory) {
-    if (gameHistory.length != 0) {
+    if (gameHistory.length !== 0) {
       return this.getTotalOwnPiecesCaptured(gameHistory) / gameHistory.length;
     } else {
       return 0;
@@ -80,34 +76,9 @@ class GamesStats extends React.Component {
     return [hours, minutes, seconds];
   }
 
-  getAveragePlayTime(gameHistory) {
+  getAveragePlayTime(gamesStats, gameHistory) {
 
-    let totalHoursPlayed = 0;
-    let totalMinutesPlayed = 0;
-    let totalSecondsPlayed = 0;
-
-    // one could just use the total time played from the gamesStats
-    // but we might want to e.g. plot the individual game times
-    for (let i = 0; i < gameHistory.length; i++) {
-      const endTime = gameHistory[i].endTime;
-      const startTime = gameHistory[i].startTime;
-      const endDate = new Date(endTime.substring(0, endTime.length - 4) + 'Z');
-      const startDate = new Date(startTime.substring(0, startTime.length - 4) + 'Z');
-
-      let hoursDifference = endDate.getHours() - startDate.getHours();
-      let minutesDifference = endDate.getMinutes() - startDate.getMinutes();
-      let secondsDifference = endDate.getSeconds() - startDate.getSeconds();
-
-      totalHoursPlayed = totalHoursPlayed + hoursDifference;
-      totalMinutesPlayed = totalMinutesPlayed + minutesDifference;
-      totalSecondsPlayed = totalSecondsPlayed + secondsDifference;
-
-    }
-
-    const numberOfGamesPlayed = gameHistory.length;
-    const totalPlayTime = totalSecondsPlayed + totalMinutesPlayed * 60 + totalHoursPlayed * 60 ** 2;
-    const averagePlayTime = totalPlayTime / numberOfGamesPlayed;
-
+    const averagePlayTime = (gamesStats.totalTimePlayed) / gameHistory.length;
     const averageHours = ~~Math.floor(averagePlayTime / 3600);
     const averageMinutes = ~~((averagePlayTime % 3600) / 60);
     const averageSeconds = ~~averagePlayTime % 60;
@@ -129,7 +100,6 @@ class GamesStats extends React.Component {
     const gamesStats = this.state.gamesStats;
     const gameHistory = this.state.gameHistory;
 
-    console.log(gameHistory);
     if (gamesStats && gameHistory) {
 
       let totalOpponentPiecesCaptured = 0;
@@ -138,25 +108,18 @@ class GamesStats extends React.Component {
       let averageOwnPiecesCaptures = 0;
       let totalTimePlayed = 0;
       let averagePlayTime = 0;
-      let numberOfGames = 0;
-      try{
+      let numberOfGames = gameHistory.length;
+      try {
         totalOpponentPiecesCaptured = this.getTotalOpponentPiecesCaptured(gameHistory);
         totalOwnPiecesCaptured = this.getTotalOwnPiecesCaptured(gameHistory);
         averageOpponentPiecesCaptures = this.getAverageOpponentPiecesCaptured(gameHistory);
         averageOwnPiecesCaptures = this.getAverageOwnPiecesCaptured(gameHistory);
         totalTimePlayed = this.getTotalTimePlayed(gamesStats);
-        averagePlayTime = this.getAveragePlayTime(gameHistory);
-        numberOfGames = this.getNumberOfGames(gamesStats);
+        averagePlayTime = this.getAveragePlayTime(gamesStats, gameHistory);
       }
       catch (e) {
         console.error(e);
       }
-
-
-      console.log(averageOpponentPiecesCaptures)
-
-      console.log(2*PI*this.state.gamesStats.numberOfWinnings / numberOfGames);
-
       return (
           <div style={backgroundStats}>
           <div style={{maxWidth: '1000px', margin: '0 auto'}}>
@@ -203,20 +166,20 @@ class GamesStats extends React.Component {
                 <Grid.Column>
                   <div className="ui inverted statistic">
                     <div className="label">
-                      Number of wins:
+                      Number of games:
                     </div>
                     <div className="value">
-                      {this.state.gamesStats.numberOfWinnings}
+                      {numberOfGames}
                     </div>
                   </div>
                 </Grid.Column>
                 <Grid.Column>
                   <div className="ui inverted statistic">
                     <div className="label">
-                      Number of games:
+                      Number of wins:
                     </div>
                     <div className="value">
-                      {numberOfGames}
+                      {this.state.gamesStats.numberOfWinnings}
                     </div>
                   </div>
                 </Grid.Column>
@@ -259,12 +222,11 @@ class GamesStats extends React.Component {
                       Average game time:
                     </div>
                     <div className="value">
-                      {(gameHistory.length != 0) ?
+                      {(gameHistory.length !== 0) ?
                           averagePlayTime[0] + 'h, ' +averagePlayTime[1] + 'm, ' + averagePlayTime[2] + 's' : '-'}
                     </div>
                   </div>
                 </Grid.Column>
-
               </Grid.Row>
               <Grid.Row>
                 <Grid.Column>
@@ -316,7 +278,7 @@ class GamesStats extends React.Component {
                       Average opponent pieces captured:
                     </div>
                     <div className="value">
-                      {averageOpponentPiecesCaptures.toFixed(1)}
+                      {gameHistory.length !== 0 ? averageOpponentPiecesCaptures.toFixed(1) : '-'}
                     </div>
                   </div>
                 </Grid.Column>
@@ -326,7 +288,7 @@ class GamesStats extends React.Component {
                       Average own pieces captured:
                     </div>
                     <div className="value">
-                      {averageOwnPiecesCaptures.toFixed(1)}
+                      {gameHistory.length !== 0 ? averageOwnPiecesCaptures.toFixed(1) : '-'}
                     </div>
                   </div>
                 </Grid.Column>
