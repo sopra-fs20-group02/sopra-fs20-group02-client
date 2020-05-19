@@ -4,8 +4,9 @@ import User from '../shared/models/User';
 import { withRouter } from 'react-router-dom';
 import { Grid, Header, Form, Button } from 'semantic-ui-react';
 import {
-  headerStyle, buttonStyle, background
+  headerStyle, buttonStyle, background, hideUnhideStyle
 } from "../../data/styles";
+import Icon from "semantic-ui-react/dist/commonjs/elements/Icon";
 
 class Login extends React.Component {
   constructor() {
@@ -14,8 +15,10 @@ class Login extends React.Component {
       username: null,
       password: null,
       emoji: null,
-      fields: ['username', 'password']
+      fields: ['username', 'password'],
+      passwordField: 'show'
     };
+    this.showHide = this.showHide.bind(this);
   }
 
   getRandomEmoji() {
@@ -62,7 +65,15 @@ class Login extends React.Component {
   }
 
   handleInputChange(key, value) {
-    this.setState({ [key]: value });
+      this.setState({ [key]: value });
+  }
+
+  showHide(e){
+      e.preventDefault();
+      e.stopPropagation();
+      this.setState({
+        passwordField: this.state.passwordField === 'show' ? 'password' : 'show'
+      })
   }
 
   componentDidMount() {}
@@ -80,12 +91,33 @@ class Login extends React.Component {
                     <Grid.Row>
                       <Grid.Column width={8}>
                         <Form inverted
-                            onChange={e => {this.handleInputChange(field, e.target.value);}}
+                            onChange={
+                                e => {this.handleInputChange(field, e.target.value)}
+                            }
                         >
                           <Form.Input>
                             <input
+                                type={field === 'password' ? this.state.passwordField : ''}
+                                className="password__show"
+                                onKeyPress = {e => {
+                                    if (e.key === 'Enter' && field === 'password' &&
+                                        this.state.username && this.state.password) {
+                                        this.login();
+                                    }
+                                }}
                                 placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
                             />
+                            {(field === 'password') &&
+                              <span
+                                  className="password__show"
+                                  onClick={this.showHide}
+                              >
+                                <Icon
+                                    style={hideUnhideStyle}
+                                    name={this.state.passwordField === 'show'  ? 'hide' : 'unhide'}
+                                />
+                              </span>
+                            }
                           </Form.Input>
                         </Form>
                       </Grid.Column>

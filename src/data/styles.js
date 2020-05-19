@@ -147,3 +147,9 @@ export const gameFooterStyle = {
     paddingBottom: '30px'*/
 }
 
+export const hideUnhideStyle = {
+    color:'white',
+    paddingTop: '10px',
+    paddingLeft: '10px'
+}
+
