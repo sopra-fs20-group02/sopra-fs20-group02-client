@@ -76,7 +76,12 @@ class Lobby extends React.Component {
   async watchGame(game){
     console.log(game);
     try {
-      this.navigateToGame(game)
+      this.props.history.push({
+        pathname: '/game/play',
+        state: {
+          gameId: game.gameId
+        }
+      })
     } catch (error) {
       alert(`Something went wrong while creating the game: \n${handleError(error)}`);
     }
