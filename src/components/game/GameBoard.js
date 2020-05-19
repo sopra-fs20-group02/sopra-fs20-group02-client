@@ -85,7 +85,7 @@ class GameBoard extends React.Component {
         }
     }
 
-    // gets all possible moves for the selected piece
+    // gets all possible moves for selected piece
     async getPossibleMoves(pieceId, pieceIsWhite) {
         if (!this.state.isWatching){
 
