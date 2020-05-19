@@ -6,19 +6,12 @@ import GamesStats from "../../profile/GamesStats";
 import ScoreBoard from "../../profile/ScoreBoard";
 import Lobby from "../../game/Lobby";
 import Footer from "../../game/Footer";
-import {background} from "../../../data/styles";
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
+
 
 class LobbyRouter extends React.Component {
   render() {
-    /**
-     * "this.props.base" is "/app" because as been passed as a prop in the parent of GameRouter, i.e., App.js
-     */
     return (
-        <Container>
+        <div>
             <Route
                 path="/lobby/stats"
                 render={() => (
@@ -52,11 +45,8 @@ class LobbyRouter extends React.Component {
             />
             <Footer from={'lobby'} userStateCallback={this.props.userStateCallback}/>
 
-        </Container>
+        </div>
     );
   }
 }
-/*
-* Don't forget to export your component!
- */
 export default LobbyRouter;

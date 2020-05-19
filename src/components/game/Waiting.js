@@ -2,12 +2,7 @@ import React from "react";
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, Header } from "semantic-ui-react";
-import {
-    gameFooterStyle,
-    quoteStyle,
-    background,
-    buttonStyle
-} from "../../data/styles";
+import { quoteStyle, background, buttonStyle } from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
 
 class Waiting extends React.Component {
@@ -103,7 +98,7 @@ class Waiting extends React.Component {
                             {this.state.gameDeleted ? 'Game was deleted' : 'Waiting...'}
                         </Header>
                     </Grid.Row>
-                    <Grid.Row columns={2} style={gameFooterStyle}>
+                    <Grid.Row columns={2}>
                         <Grid.Column textAlign='center'>
 
                             <button className="ui inverted button" style={buttonStyle} onClick={() => {

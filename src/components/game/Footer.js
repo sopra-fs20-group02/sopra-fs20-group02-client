@@ -1,6 +1,6 @@
 import React from "react";
 import {Popup, Icon} from "semantic-ui-react";
-import {FooterStyle} from "../../data/styles";
+import {FooterStyle, footerIconStyle} from "../../data/styles";
 import {withRouter} from "react-router-dom";
 import {api, handleError} from "../../helpers/api";
 import { motion } from "framer-motion"
@@ -44,13 +44,12 @@ export class Footer extends React.Component {
     // goes to user stats page
     async gamesStats() {
         try {
-            const requestBody = JSON.stringify({
-                userId: localStorage.getItem('userId')
-            });
-            const response1 = await api.get('/users/' + localStorage.getItem('userId') + '/gameHistory');
-            const response2 = await api.get('/users/' + localStorage.getItem('userId'));
-            const gamesStats = response2.data.userStats;
-            const gameHistory = response1.data;
+
+            const historyResponse = await api.get('/users/' + localStorage.getItem('userId') + '/gameHistory');
+            const statsResponse = await api.get('/users/' + localStorage.getItem('userId'));
+
+            const gameHistory = historyResponse.data;
+            const gamesStats = statsResponse.data.userStats;
             this.props.history.push({
                 pathname: '/lobby/stats',
                 state: {
@@ -98,9 +97,7 @@ export class Footer extends React.Component {
                                 content='Logout'
                                 disabled={this.state.popupDisabled}
                                 trigger={
-                                <Icon style={{
-                                    color: 'black',
-                                }}
+                                <Icon style={footerIconStyle}
                                       name='log out'
                                       size='large'
                                       color='#FF3377'

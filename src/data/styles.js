@@ -8,18 +8,12 @@ export const gridStyle = {
 
 export const background = {
     position: 'static',
-    /*background: '#272727',
-    width: '100vw',
-    height: '100vw',*/
     margin: '0',
     padding: '0'
 };
 
 export const backgroundStats = {
     position: 'static',
-    /*background: '#272727',
-    width: '100vw',
-    height: '100vw',*/
     margin: '0 10px 0 10px',
     padding: '20px 0 80px 0'
 };
@@ -78,15 +72,6 @@ export const gamesStatsHeaderStyle = {
     color: 'white'
 }
 
-export const gamesStatsFooterStyle = {
-    height: '80px',
-    background: 'white',
-    position: 'absolute',
-    bottom: '0',
-    borderTopLeftRadius: '5px',
-    borderTopRightRadius: '5px'
-}
-
 export const statsTextStyle = {
     marginTop: '20px',
     marginBottom: '0px',
@@ -94,8 +79,6 @@ export const statsTextStyle = {
 }
 
 export const statsStyle = {
-    /*height: '100vh',
-    width: '100vw',*/
     align: 'bottom',
     margin: '0',
     background: 'linear-gradient(#FF6464, #FF5A86)'
@@ -107,6 +90,15 @@ export const statsHeaderStyle = {
     color: 'white'
 }
 
+export const boardRankStyle = {
+    margin: '0px',
+    padding: '0px'
+}
+
+export const capturedPiecesStyle = {
+    margin: '0px',
+    padding: '10px'
+}
 
 // styles for waiting and game over pages
 export const quoteStyle = {
@@ -132,24 +124,84 @@ export const gameButtonStyle = {
     maxWidth: '200px'
 }
 
-export const boardRankStyle = {
-    margin: '0px',
-    padding: '0px'
-}
-
-export const capturedPiecesStyle = {
-    margin: '0px',
-    padding: '10px'
-}
-
-export const gameFooterStyle = {
-    /*paddingTop: '25px',
-    paddingBottom: '30px'*/
-}
-
 export const hideUnhideStyle = {
     color:'white',
     paddingTop: '10px',
     paddingLeft: '10px'
 }
 
+export const footerIconStyle = {
+    color: 'black',
+}
+
+export const saddlingHorsesStyle = {
+    marginBottom: '270px',
+    marginTop: '270px'
+}
+
+export const pieceStyleOne = {
+    position: 'relative',
+    top: '8px',
+    left: '2px',
+    color: 'rgba(255,94,0,0.5)'
+}
+
+export const pieceStyleTwo = {
+    position: 'relative',
+    top: '9px',
+    left: '2px',
+    color: '#ff5e00',
+}
+
+export const gamesStatsStyle = {
+    maxWidth: '1000px',
+    margin: '0 auto'
+}
+
+export const plotStyleOne = {
+    width:'400px',
+    height:'300px',
+    margin:'0 auto'
+}
+
+export const plotStyleTwo = {
+    width:'300px',
+    height:'300px',
+    margin:'0 auto'
+}
+
+export const scoreBoardStyle = {
+    width: '100%',
+    maxWidth: '300px',
+    backgroundColor: 'rgba(43, 43, 43, 0.8)',
+    color: 'white'
+}
+
+export const commentGroupStyle = {
+    maxWidth: '300px',
+    margin: '20px',
+    position: 'fixed',
+    scroll: 'fixed',
+    bottom: '90px',
+    right: '0',
+    zIndex: '20',
+    background: '#4b4b4b',
+    padding: '10px',
+    borderRadius: '3px',
+}
+
+export const commentStyle = {
+    maxWidth: '300px',
+    margin: '25px',
+    position: 'fixed',
+    scroll: 'fixed',
+    bottom: '90px',
+    right: '0',
+    zIndex: '24',
+    borderRadius: '3px',
+}
+
+export const commentGroupDivStyle = {
+    maxHeight: '50vh',
+    overflowY: 'scroll',
+}
