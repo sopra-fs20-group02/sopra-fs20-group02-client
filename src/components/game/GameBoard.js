@@ -71,6 +71,20 @@ class GameBoard extends React.Component {
         this.resign(false);
     }
 
+    async getMovablePieces() {
+        try {
+            const params = JSON.stringify({
+                userId: this.state.userId
+            });
+            const mapping = '/game/' + this.state.game.gameId.toString() + '/movable';
+            const response = await api.post(mapping, params);
+            return response.data;
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     // gets all possible moves for the selected piece
     async getPossibleMoves(pieceId, pieceIsWhite) {
         if (!this.state.isWatching){
