@@ -21,6 +21,7 @@ class ScoreBoard extends React.Component {
     });
   }
 
+  // calculates the ranking of all registered users
   getRanking() {
     let userNames = [];
     let wins = [];
@@ -51,13 +52,7 @@ class ScoreBoard extends React.Component {
     return ranking;
   }
 
-  componentDidMount() {
-    this.setState({users: this.props.location.state.users});
-  }
-
-  componentWillUnmount() {
-  }
-
+  // returns the scoreboard table
   getTable(){
     let entries = [];
     const users = this.getRanking();
@@ -74,24 +69,30 @@ class ScoreBoard extends React.Component {
     let table = [];
 
     table.push(
-          <table className="ui celled table unstackable" style={scoreBoardStyle}>
-            <thead>
-            <tr>
-              <th>
-                Username
-              </th>
-              <th>
-                Score
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            {entries}
-            </tbody>
-          </table>
+        <table className="ui celled table unstackable" style={scoreBoardStyle}>
+          <thead>
+          <tr>
+            <th>
+              Username
+            </th>
+            <th>
+              Score
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          {entries}
+          </tbody>
+        </table>
     )
-
     return table;
+  }
+
+  componentDidMount() {
+    this.setState({users: this.props.location.state.users});
+  }
+
+  componentWillUnmount() {
   }
 
   render() {

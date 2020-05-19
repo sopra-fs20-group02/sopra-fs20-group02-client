@@ -19,11 +19,13 @@ export class Footer extends React.Component {
         this.reactRef = React.createRef();
     }
 
+    // goes to lobby
     async lobby(){
         this.props.history.push({
             pathname: `/lobby/main`
         });
     }
+
     // logs out user
     async logout() {
         console.log(this.context)

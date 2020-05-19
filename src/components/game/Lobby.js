@@ -43,6 +43,7 @@ class Lobby extends React.Component {
     }
   }
 
+  // allows joining a random game
   async joinRandomGame(){
     try {
       const requestBody = JSON.stringify({
@@ -56,6 +57,7 @@ class Lobby extends React.Component {
     }
   }
 
+  // allows joining a specific game
   async joinSpecificGame(game){
     console.log(game);
     try {
@@ -70,6 +72,7 @@ class Lobby extends React.Component {
     }
   }
 
+  // allows joining a game in watch mode
   async watchGame(game){
     console.log(game);
     try {
@@ -84,6 +87,7 @@ class Lobby extends React.Component {
     }
   }
 
+  // navigating to game page
   async navigateToGame(game){
     this.props.history.push({
       pathname: '/game/wait',
@@ -93,6 +97,7 @@ class Lobby extends React.Component {
     })
   }
 
+  // get a list of active open games
   async getGames() {
     try {
       const response = await api.get('/games');

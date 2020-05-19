@@ -73,6 +73,7 @@ class GameBoard extends React.Component {
         }
     }
 
+    // fetches all movable pieces
     async getMovablePieces() {
         try {
             const params = JSON.stringify({
@@ -117,7 +118,7 @@ class GameBoard extends React.Component {
         }
     }
 
-    // moves the piece
+    // moves the selected piece
     async moveSelectedPiece(x, y) {
         if (!this.state.isWatching){
             try {
@@ -156,6 +157,7 @@ class GameBoard extends React.Component {
         }
     }
 
+    // ends the game
     async endGame(ranOutOfTime) {
         this.props.history.push({
             pathname: '/game/end',
@@ -184,12 +186,10 @@ class GameBoard extends React.Component {
 
     // returns true if the opponent is offering draw and the offer is not denied
     opponentIsOfferingDraw() {
-
         if ((this.state.game.playerWhite.userId === Number(this.state.userId) && this.state.game.blackOffersDraw) ||
             (this.state.game.playerBlack.userId === Number(this.state.userId) && this.state.game.whiteOffersDraw)) {
             this.setState({open: true})
         }
-
     }
 
     // returns opponent name
@@ -205,6 +205,7 @@ class GameBoard extends React.Component {
         }
     }
 
+    // allows canceling game
     async cancel(){
         this.setState({
             open: false
@@ -222,6 +223,7 @@ class GameBoard extends React.Component {
         }
     }
 
+    // boolean indicator for whose turn
     isMyTurn(){
         return ((this.state.game.isWhiteTurn && this.state.game.playerWhite.userId === Number(this.state.userId)) ||
             (!this.state.game.isWhiteTurn && this.state.game.playerBlack.userId === Number(this.state.userId)));
@@ -249,6 +251,7 @@ class GameBoard extends React.Component {
         );
     }
 
+    // remaining time for blitz mode
     getBlitzInfo() {
         if (this.state.game.gameMode === 'BLITZ') {
             const minutes = '0' + String(Math.floor(this.state.remainingTime / 60));
@@ -265,6 +268,7 @@ class GameBoard extends React.Component {
         }
     }
 
+    // a list of the captured pieces
     getCapturedPieces(player) {
         let pieceColors;
         if (player === 'opponent') {
@@ -280,7 +284,6 @@ class GameBoard extends React.Component {
                 pieceColors = 'WHITE';
             }
         }
-
         let capturedPieces = [];
         this.state.game.pieces.forEach(function (piece) {
             if (piece.captured) {
@@ -308,15 +311,18 @@ class GameBoard extends React.Component {
         )
     }
 
+    // tile handling
     async tileCallback(id, x, y, isWhiteTile){
         if (!this.state.displayMoves){
             await this.getPossibleMoves(id,isWhiteTile);
         }
         else {
             this.setState(
-                {displayMoves: false,
+                {
+                    displayMoves: false,
                     possibleMoves: null
-            });
+                }
+            );
             if (this.state.possibleMoves) {
                 for (let i = 0; i < this.state.possibleMoves.length; i++){
                     if (
@@ -330,6 +336,7 @@ class GameBoard extends React.Component {
         }
     }
 
+    // board handling
     renderBoard(){
         let board = [];
         for (let y = 1; y <= 8; y++){
@@ -352,7 +359,7 @@ class GameBoard extends React.Component {
                 </Grid.Row>
             );
         }
-        // flip board
+        // flips board
         if (Number(this.state.game.playerWhite.userId) === Number(this.state.userId)){
             board = board.reverse();
         }

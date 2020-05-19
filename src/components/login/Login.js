@@ -29,6 +29,7 @@ class Login extends React.Component {
     return emoji[Math.floor(Math.random() * emoji.length)];
   }
 
+  // logs in user
   async login() {
     let user;
 
@@ -64,10 +65,12 @@ class Login extends React.Component {
     }
   }
 
+  // handle changes to the input fields
   handleInputChange(key, value) {
       this.setState({ [key]: value });
   }
 
+  // show or hide password
   showHide(e){
       e.preventDefault();
       e.stopPropagation();
