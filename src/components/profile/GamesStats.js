@@ -1,7 +1,10 @@
 import React from "react";
 import { withRouter } from 'react-router-dom';
 import { Grid, Header} from "semantic-ui-react";
-import {statsHeaderStyle, background, backgroundStats} from "../../data/styles";
+import {
+  statsHeaderStyle, background, backgroundStats,
+  gamesStatsStyle, plotStyleOne, plotStyleTwo, saddlingHorsesStyle
+} from "../../data/styles";
 import {XYPlot, ArcSeries} from 'react-vis';
 import DiscreteColorLegend from "react-vis/es/legends/discrete-color-legend";
 
@@ -121,12 +124,12 @@ class GamesStats extends React.Component {
         console.error(e);
       }
       return (
-          <div style={backgroundStats}>
-          <div style={{maxWidth: '1000px', margin: '0 auto'}}>
+        <div style={backgroundStats}>
+          <div style={gamesStatsStyle}>
             <Grid centered columns='equal' inverted padded  divided='vertically'>
               <Grid.Row>
                 <Grid.Column width={12}>
-                  <div style={{width:'400px', height:'300px', margin:'0 auto'} }>
+                  <div style={plotStyleOne}>
                     <XYPlot
                         xDomain={[0, 1]}
                         yDomain={[0, 1]}
@@ -138,14 +141,18 @@ class GamesStats extends React.Component {
                           radiusType={'literal'}
                           center={{x: 0.5, y: 0.5}}
                           data={[
-                            {angle0: 0, angle: 2*PI*this.state.gamesStats.numberOfWinnings / (numberOfGames + 0.00001), opacity: 1, radius: 100, radius0: 40, color: "#e5ff3a"},
+                            { angle0: 0,
+                              angle: 2*PI*this.state.gamesStats.numberOfWinnings / (numberOfGames + 0.00001),
+                              opacity: 1, radius: 100, radius0: 40, color: "#e5ff3a"},
                             {
                               angle0: 2*PI*this.state.gamesStats.numberOfWinnings / (numberOfGames + 0.001),
-                              angle: 2*PI* (this.state.gamesStats.numberOfWinnings  + this.state.gamesStats.numberOfDraws )/ (numberOfGames + 0.00001),
+                              angle: 2*PI* (this.state.gamesStats.numberOfWinnings  +
+                                  this.state.gamesStats.numberOfDraws )/ (numberOfGames + 0.00001),
                               opacity: 1, radius: 100, radius0:  40, color: "#009aff"
                             },
                             {
-                              angle0: 2*PI* (this.state.gamesStats.numberOfWinnings  + this.state.gamesStats.numberOfDraws )/ (numberOfGames + 0.00001),
+                              angle0: 2*PI* (this.state.gamesStats.numberOfWinnings  +
+                                  this.state.gamesStats.numberOfDraws )/ (numberOfGames + 0.00001),
                               angle: 2*PI,
                               opacity: 1, radius: 100, radius0:  40, color: "#ff0044"
                             }
@@ -158,7 +165,12 @@ class GamesStats extends React.Component {
                   <DiscreteColorLegend
                       orientation="horizontal"
                       style={{color:"white"}}
-                      items={[{title: "Games won", color:"#e5ff3a"},{title: "draw", color:"#009aff"},{title: "Games lost", color:"#ff0044"}]}>
+                      items={[
+                          {title: "Games won", color:"#e5ff3a"},
+                          {title: "draw", color:"#009aff"},
+                          {title: "Games lost", color:"#ff0044"}
+                          ]}
+                  >
                   </DiscreteColorLegend>
                 </Grid.Column>
               </Grid.Row>
@@ -237,7 +249,7 @@ class GamesStats extends React.Component {
                   </DiscreteColorLegend>
                 </Grid.Column>
                 <Grid.Column width={12}>
-                  <div style={{width:'300px', height:'300px', margin:'0 auto'} }>
+                  <div style={plotStyleTwo}>
                     <XYPlot
                         xDomain={[0, 1]}
                         yDomain={[0, 1]}
@@ -249,9 +261,11 @@ class GamesStats extends React.Component {
                           radiusType={'literal'}
                           center={{x: 0.5, y: 0.5}}
                           data={[
-                            {angle0: 0, angle: 2*PI*totalOpponentPiecesCaptured / (totalOpponentPiecesCaptured + totalOwnPiecesCaptured + 0.001), opacity: 1, radius: 100, radius0: 40, color: "#e5ff3a"},
+                            {angle0: 0, angle: 2*PI*totalOpponentPiecesCaptured / (totalOpponentPiecesCaptured +
+                               totalOwnPiecesCaptured + 0.001), opacity: 1, radius: 100, radius0: 40, color: "#e5ff3a"},
                             {
-                              angle0: 2*PI*totalOpponentPiecesCaptured / (totalOpponentPiecesCaptured + totalOwnPiecesCaptured + 0.001),
+                              angle0: 2*PI*totalOpponentPiecesCaptured / (totalOpponentPiecesCaptured +
+                                totalOwnPiecesCaptured + 0.001),
                               angle: 2*PI,
                               opacity: 1, radius: 100, radius0:  40, color: "#ff0044"
                             },
@@ -307,16 +321,13 @@ class GamesStats extends React.Component {
               </Grid.Row>
             </Grid>
           </div>
-          </div>
+        </div>
       );
     } else {
       return (
           <div style={background}>
             <Grid centered>
-              <Grid.Row style={{
-                marginBottom: '270px',
-                marginTop: '270px'
-              }}>
+              <Grid.Row style={saddlingHorsesStyle}>
                 <Header as='h3' style={statsHeaderStyle}>
                   fetching games stats...
                 </Header>

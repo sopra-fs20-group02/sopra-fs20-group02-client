@@ -4,8 +4,8 @@ import { withRouter } from 'react-router-dom';
 import { Grid, Header, Icon, Confirm } from "semantic-ui-react";
 import Tile from './Tile';
 import {
-    gameHeaderStyle, boardRankStyle,
-    capturedPiecesStyle, gameButtonStyle, gameFooterStyle, background, buttonStyle
+    gameHeaderStyle, boardRankStyle, saddlingHorsesStyle, buttonStyle,
+    capturedPiecesStyle, gameButtonStyle, background
 } from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
 import {Button} from "../../views/design/Button";
@@ -167,7 +167,7 @@ class GameBoard extends React.Component {
     }
 
     // returns true if the opponent is offering draw and the offer is not denied
-    opponentIsOfferingDraw(game) {
+    opponentIsOfferingDraw() {
 
         if ((this.state.game.playerWhite.userId === Number(this.state.userId) && this.state.game.blackOffersDraw) ||
             (this.state.game.playerBlack.userId === Number(this.state.userId) && this.state.game.whiteOffersDraw)) {
@@ -347,7 +347,9 @@ class GameBoard extends React.Component {
                 height: '340px',
                 margin: '0px',
                 background: '#ffffff',
-                boxShadow: this.isMyTurn() ? '0px 40px 70px -50px #ff5e00, 0px 90px 100px -50px #A50200' : '0px -40px 70px -50px #ff5e00, 0px -90px 100px -50px #A50200',
+                boxShadow: this.isMyTurn() ?
+                    '0px 40px 70px -50px #ff5e00, 0px 90px 100px -50px #A50200' :
+                    '0px -40px 70px -50px #ff5e00, 0px -90px 100px -50px #A50200',
                 padding: '10px',
                 borderRadius: '3px',
             }} >
@@ -376,7 +378,7 @@ class GameBoard extends React.Component {
                             onConfirm={this.offerDraw}
                         />
                         {!this.state.isWatching &&
-                        <Grid.Row columns={1} style={gameFooterStyle}>
+                        <Grid.Row columns={1}>
                             <Grid.Column textAlign='center'>
                                 <button className="ui inverted button" style={buttonStyle} onClick={() => {
                                     this.resign(false);
@@ -392,7 +394,7 @@ class GameBoard extends React.Component {
                         </Grid.Row>
                         }
                         {this.state.isWatching &&
-                        <Grid.Row columns={2} style={gameFooterStyle}>
+                        <Grid.Row columns={2}>
                             <Grid.Column textAlign='center'>
                                 <Button
                                     style={gameButtonStyle}
@@ -413,10 +415,7 @@ class GameBoard extends React.Component {
             return (
                 <div style={background}>
                     <Grid centered>
-                        <Grid.Row style={{
-                            marginBottom: '270px',
-                            marginTop: '270px'
-                        }}>
+                        <Grid.Row style={saddlingHorsesStyle}>
                             <Header as='h3' style={gameHeaderStyle}>
                                 saddling horses...
                             </Header>

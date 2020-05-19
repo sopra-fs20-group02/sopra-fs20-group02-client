@@ -5,7 +5,6 @@ import { Grid, Header } from "semantic-ui-react";
 import {
     background,
     buttonStyle,
-    gameFooterStyle,
     quoteStyle,
 } from "../../data/styles";
 
@@ -85,7 +84,7 @@ class GameEnded extends React.Component {
                             {this.getEndMessage()}
                         </Header>
                     </Grid.Row>
-                    <Grid.Row columns={2} style={gameFooterStyle}>
+                    <Grid.Row columns={2}>
                         <Grid.Column textAlign='center'>
                             <button className="ui inverted button" style={buttonStyle}
                                 onClick={() => {

@@ -2,8 +2,8 @@ import React from "react";
 import { withRouter } from 'react-router-dom';
 import { Grid, Header} from "semantic-ui-react";
 import {
-  gamesStatsHeaderStyle,
-  statsTextStyle, statsStyle, statsHeaderStyle, backgroundStats, background
+  gamesStatsHeaderStyle, statsTextStyle, statsStyle, statsHeaderStyle,
+   backgroundStats, saddlingHorsesStyle, scoreBoardStyle
 } from "../../data/styles";
 
 class ScoreBoard extends React.Component {
@@ -74,8 +74,7 @@ class ScoreBoard extends React.Component {
     let table = [];
 
     table.push(
-          <table className="ui celled table unstackable"
-                 style={{width: '100%', maxWidth: '300px', backgroundColor: 'rgba(43,43,43,0.8)', color: 'white'}}>
+          <table className="ui celled table unstackable" style={scoreBoardStyle}>
             <thead>
             <tr>
               <th>
@@ -90,7 +89,6 @@ class ScoreBoard extends React.Component {
             {entries}
             </tbody>
           </table>
-
     )
 
     return table;
@@ -117,10 +115,7 @@ class ScoreBoard extends React.Component {
     } else {
       return (
           <Grid style={statsStyle} centered>
-            <Grid.Row style={{
-              marginBottom: '270px',
-              marginTop: '270px'
-            }}
+            <Grid.Row style={saddlingHorsesStyle}
             >
               <Header as='h3' style={statsHeaderStyle}>
                 fetching users...
