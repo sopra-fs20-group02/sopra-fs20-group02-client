@@ -22,6 +22,7 @@ class Registration extends React.Component {
         this.showHide = this.showHide.bind(this);
     }
 
+    // registering the user
     async registration() {
         try {
             const requestBody = JSON.stringify({
@@ -31,10 +32,6 @@ class Registration extends React.Component {
             console.log(requestBody);
             const response = await api.post('/users', requestBody);
 
-            // Get the returned user and update a new object.
-            //const user = new User(response.data);
-
-            // Login successfully worked --> navigate to /login
             this.props.history.push(`/login`);
         } catch (error) {
             if(error.response.status === 409){
@@ -46,10 +43,12 @@ class Registration extends React.Component {
         }
     }
 
+    // handle changes to input fields
     handleInputChange(key, value) {
         this.setState({ [key]: value });
     }
 
+    // showing and hiding the password
     showHide(e){
         e.preventDefault();
         e.stopPropagation();

@@ -1,12 +1,10 @@
 import React from "react";
-import styled from "styled-components";
 import {Redirect, Route} from "react-router-dom";
 import {GameGuard} from "../routeProtectors/GameGuard";
 import GamesStats from "../../profile/GamesStats";
 import ScoreBoard from "../../profile/ScoreBoard";
 import Lobby from "../../game/Lobby";
 import Footer from "../../game/Footer";
-
 
 class LobbyRouter extends React.Component {
   render() {
