@@ -66,7 +66,10 @@ export default class Tile extends React.Component {
 
         let pieceColor = this.selected ? '#ff5e00' :
             (this.isInCheck ? '#ff0039' : (this.isWhite ? (this.props.isMovable ?
-                '#CBECBF' : 'white') : (this.props.isMovable ? '#113405' : 'black')));
+            '#CBECBF' : 'white') : (this.props.isMovable ? '#113405' : 'black')));
+
+        let shadow = (this.isWhite && !this.selected && !this.isInCheck) ?
+            '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' : ''
 
         return(
             <div style={{
@@ -83,8 +86,7 @@ export default class Tile extends React.Component {
                                 top: '8px',
                                 left: '2px',
                                 color: pieceColor,
-                                textShadow: (this.isWhite && !this.selected && !this.isInCheck) ?
-                                    '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' : ''
+                                textShadow: shadow
                             }}
                             name={this.pieceType}
                             size='large'
