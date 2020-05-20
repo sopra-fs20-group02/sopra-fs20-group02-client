@@ -27,7 +27,8 @@ class GameBoard extends React.Component {
             isWatching: null,
             isPlayerWhite: null,
             open: false,
-            remainingTime: 300
+            remainingTime: 300,
+            movablePieces: []
         };
         this.tileCallback = this.tileCallback.bind(this);
         this.offerDraw = this.offerDraw.bind(this);
@@ -52,6 +53,7 @@ class GameBoard extends React.Component {
                 if (this.state.game.gameMode === 'BLITZ' && this.isMyTurn()) {
                     this.setState({ remainingTime : this.state.remainingTime - 1})
                 }
+                if (this.isMyTurn()) { this.getMovablePieces()};
                 if (this.state.remainingTime < 1) {
                     this.resign(true);
                 }
@@ -68,7 +70,7 @@ class GameBoard extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.interval);
-        if(!this.state.isWatching && this.state.game.gameStatus === 'WON') {
+        if(!this.state.isWatching && this.state.game.gameStatus === 'FULL') {
             this.resign(false);
         }
     }
@@ -79,13 +81,27 @@ class GameBoard extends React.Component {
             const params = JSON.stringify({
                 userId: this.state.userId
             });
-            const mapping = '/game/' + this.state.game.gameId.toString() + '/movable';
-            const response = await api.post(mapping, params);
-            return response.data;
+            const mapping = '/games/' + this.state.game.gameId.toString() + '/movable';
+            const response = await api.put(mapping, params);
+            console.log(response.data instanceof Array);
+            this.setState({ movablePieces : response.data});
 
         } catch (error) {
             console.error(error)
         }
+    }
+
+    isMovable(x, y) {
+        let isMovable = false;
+        if (this.isMyTurn()) {
+            const movablePieces = this.state.movablePieces;
+            movablePieces.forEach(function (piece) {
+                if (piece.xcord === x && piece.ycord === y) {
+                    isMovable = true;
+                }
+            });
+        }
+        return isMovable;
     }
 
     // gets all possible moves for selected piece
@@ -134,6 +150,7 @@ class GameBoard extends React.Component {
                     game: response.data,
                     selectedPiece: null,
                     blueDots: false,
+                    movablePieces: []
                 });
             } catch (error) {
                 console.error(error)
@@ -350,6 +367,7 @@ class GameBoard extends React.Component {
                         isPlayerWhite={this.state.isPlayerWhite}
                         click={this.tileCallback}
                         moves={this.state.possibleMoves}
+                        isMovable={this.isMovable(x, y)}
                     />
                 )
             }

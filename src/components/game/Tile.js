@@ -64,6 +64,10 @@ export default class Tile extends React.Component {
             }
         }
 
+        let pieceColor = this.selected ? '#ff5e00' :
+            (this.isInCheck ? '#ff0039' : (this.isWhite ? (this.props.isMovable ?
+                '#CBECBF' : 'white') : (this.props.isMovable ? '#113405' : 'black')));
+
         return(
             <div style={{
                 background: this.color,
@@ -78,12 +82,9 @@ export default class Tile extends React.Component {
                                 position: 'relative',
                                 top: '8px',
                                 left: '2px',
-                                color: this.selected ?
-                                    '#ff5e00' :
-                                    (this.isInCheck ? '#ff0039' : (this.isWhite ? 'white' : 'black')),
+                                color: pieceColor,
                                 textShadow: (this.isWhite && !this.selected && !this.isInCheck) ?
-                                    '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' :
-                                    ''
+                                    '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' : ''
                             }}
                             name={this.pieceType}
                             size='large'
