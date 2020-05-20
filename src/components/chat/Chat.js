@@ -42,6 +42,12 @@ class Chat extends Component {
                         messages: tmpMessages,
                         senders: tmpSenders,
                     });
+
+                    const doc = document.getElementById("comment");
+
+                    window.scrollTo(
+                        0, doc.scrollHeight
+                    )
                 });
             });
         }
@@ -153,7 +159,6 @@ class Chat extends Component {
         else{
             return (<div></div>);
         }
-
     }
 }
 
