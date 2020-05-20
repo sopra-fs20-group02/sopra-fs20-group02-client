@@ -83,7 +83,6 @@ class GameBoard extends React.Component {
             });
             const mapping = '/games/' + this.state.game.gameId.toString() + '/movable';
             const response = await api.put(mapping, params);
-            console.log(response.data instanceof Array);
             this.setState({ movablePieces : response.data});
 
         } catch (error) {
@@ -91,6 +90,7 @@ class GameBoard extends React.Component {
         }
     }
 
+    // checks if this piece is movable
     isMovable(x, y) {
         let isMovable = false;
         if (this.isMyTurn()) {
