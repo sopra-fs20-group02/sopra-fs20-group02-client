@@ -65,17 +65,24 @@ export default class Tile extends React.Component {
         }
 
         let pieceColor = this.selected ? '#ff5e00' :
-            (this.isInCheck ? '#ff0039' : (this.isWhite ? (this.props.isMovable ?
-            '#CBECBF' : 'white') : (this.props.isMovable ? '#113405' : 'black')));
+            (this.isInCheck ? '#ff0039' : (this.isWhite ? ('white') :  'black'));
 
         let shadow = (this.isWhite && !this.selected && !this.isInCheck) ?
-            '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' : ''
+            '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000 , ' : '';
+
+        if (this.props.isMovable){
+            shadow += '0 0 5px #ff5e00'
+        } else{
+            shadow += '0 0 0 #000'
+        }
 
         return(
             <div style={{
-                background: this.color,
+                background: (!this.pieceType && this.selected) ? '#ff5e00' : this.color,
                 height: '40px',
                 width: '40px',
+                border: (!this.pieceType && this.selected) ? '0.1px solid #fff' : '',
+                boxSizing: 'border-box'
             }} onClick={this.handleClick}>
                 {
                     this.pieceType &&

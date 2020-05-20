@@ -1,13 +1,13 @@
 import React from "react";
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
-import { Grid, List, Header} from "semantic-ui-react";
+import {Grid, List, Header, Icon, Popup, Button} from "semantic-ui-react";
 import {
   lobbyHeaderStyle,
   playersListStyle,
   userItemStyle,
   lobbyTextStyle,
-  buttonStyle, backgroundStats
+  buttonStyle, backgroundStats, footerIconStyle
 } from "../../data/styles";
 
 class Lobby extends React.Component {
@@ -117,21 +117,40 @@ class Lobby extends React.Component {
             </Grid.Row>
             <Grid.Row style={lobbyTextStyle}>
               <div>
-                <button className="ui inverted button" style={buttonStyle} onClick={() => {
-                  this.createGame(false);
-                }}>
-                  Classic
-                </button>
-                <button className="ui inverted button" style={buttonStyle} onClick={() => {
-                  this.createGame(true);
-                }}>
-                  Blitz
-                </button>
-                <button className="ui inverted button" style={buttonStyle} onClick={() => {
-                  this.joinRandomGame();
-                }}>
-                  Join
-                </button>
+                <Popup
+                    small
+                    content='Create new chess game with regular rules'
+                    disabled={this.state.popupDisabled}
+                    trigger={
+                      <Button inverted style={buttonStyle} onClick={() => {
+                        this.createGame(false);
+                      }}>
+                        Classic
+                      </Button>
+                    } />
+                <Popup
+                    small
+                    content='Create new chess game with blitz rules'
+                    disabled={this.state.popupDisabled}
+                    trigger={
+                      <Button inverted style={buttonStyle} onClick={() => {
+                        this.createGame(true);
+                      }}>
+                        Blitz
+                      </Button>
+                    } />
+
+                <Popup
+                    small
+                    content='Join random available game'
+                    disabled={this.state.popupDisabled}
+                    trigger={
+                      <Button inverted style={buttonStyle} onClick={() => {
+                        this.joinRandomGame();
+                      }}>
+                        Join
+                      </Button>
+                    } />
               </div>
             </Grid.Row>
             <Header as='h3' style={lobbyTextStyle}>

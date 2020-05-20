@@ -46,9 +46,11 @@ class Chat extends Component {
 
                     const doc = document.getElementById("comment");
 
-                    window.scrollTo(
-                        0, doc.scrollHeight
-                    )
+                    if (doc){
+                        window.scrollTo(
+                            -1000, doc.scrollHeight
+                        )
+                    }
                 });
             });
         }
