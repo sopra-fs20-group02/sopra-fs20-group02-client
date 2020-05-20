@@ -19,6 +19,7 @@ class GameBoard extends React.Component {
                 'chess pawn', 'chess queen', 'chess rook'
             ],
             game: null,
+            prevPieces: [],
             gameId: null,
             possibleMoves: null,
             displayMoves: false,
@@ -31,6 +32,7 @@ class GameBoard extends React.Component {
             movablePieces: []
         };
         this.tileCallback = this.tileCallback.bind(this);
+        this.computeChange = this.computeChange.bind(this);
         this.offerDraw = this.offerDraw.bind(this);
         this.cancel = this.cancel.bind(this);
     }
@@ -47,13 +49,29 @@ class GameBoard extends React.Component {
                     isWatching: ( Number(this.state.userId) !== this.state.game.playerWhite.userId
                         && Number(this.state.userId) !== this.state.game.playerBlack.userId)
                 });
+                /*if (this.state.prevPieces){
+                    for (let i = 0; i< this.state.game.pieces.length; i++){
+                        if (this.state.prevPieces[i] == )
+                    }
+
+                    this.computeChange();
+                    this.setState({
+                        prevPieces: this.state.game.pieces
+                    })
+                }
+                else{
+                    this.setState({
+                        prevPieces: this.state.game.pieces
+                    })
+                }*/
+
                 this.setState({
                     isPlayerWhite: Number(localStorage.getItem('userId')) === gameStatusObject.data.playerWhite.userId
                 });
                 if (this.state.game.gameMode === 'BLITZ' && this.isMyTurn()) {
                     this.setState({ remainingTime : this.state.remainingTime - 1})
                 }
-                if (this.isMyTurn()) { this.getMovablePieces()};
+                if (this.isMyTurn()) { this.getMovablePieces()}
                 if (this.state.remainingTime < 1) {
                     this.resign(true);
                 }
@@ -66,6 +84,10 @@ class GameBoard extends React.Component {
                 this.opponentIsOfferingDraw();
             }
         }, 1000);
+    }
+
+    computeChange(){
+        console.log("change detected");
     }
 
     componentWillUnmount() {
