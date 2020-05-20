@@ -63,7 +63,7 @@ class Waiting extends React.Component {
     // handles waiting
     async handleWaiting() {
         let status = 'WAITING';
-
+        localStorage.setItem('remainingTime', '300');
         this.interval = setInterval(async () => {
             if (!this.state.gameDeleted) {
                 const gameStatusObject = await fetchGameStatus(localStorage.getItem('userId'), this.state.gameId);

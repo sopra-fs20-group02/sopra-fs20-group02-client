@@ -27,7 +27,6 @@ class GameBoard extends React.Component {
             isWatching: null,
             isPlayerWhite: null,
             open: false,
-            remainingTime: 300,
             movablePieces: []
         };
         this.tileCallback = this.tileCallback.bind(this);
@@ -51,7 +50,8 @@ class GameBoard extends React.Component {
                     isPlayerWhite: Number(localStorage.getItem('userId')) === gameStatusObject.data.playerWhite.userId
                 });
                 if (this.state.game.gameMode === 'BLITZ' && this.isMyTurn()) {
-                    this.setState({ remainingTime : this.state.remainingTime - 1})
+                    let time = localStorage.getItem('remainingTime');
+                    localStorage.setItem('remainingTime', (time-1).toString());
                 }
                 if (this.isMyTurn()) { this.getMovablePieces()};
                 if (this.state.remainingTime < 1) {
@@ -271,8 +271,8 @@ class GameBoard extends React.Component {
     // remaining time for blitz mode
     getBlitzInfo() {
         if (this.state.game.gameMode === 'BLITZ') {
-            const minutes = '0' + String(Math.floor(this.state.remainingTime / 60));
-            let seconds = this.state.remainingTime - minutes * 60;
+            const minutes = '0' + String(Math.floor(localStorage.getItem('remainingTime') / 60));
+            let seconds =  localStorage.getItem('remainingTime') - minutes * 60;
             seconds = seconds < 10 ? '0' + String(seconds) : String(seconds);
             const remainingTime =  (' ' + minutes + ':' + seconds)
             return (
