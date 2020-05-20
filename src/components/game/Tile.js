@@ -18,10 +18,10 @@ export default class Tile extends React.Component {
         if (this.props.x % 2 === 0 && this.props.y % 2 === 0 ||
             this.props.x % 2 === 1 && this.props.y % 2 === 1
         ){
-            this.color = this.props.isPlayerWhite ? "white" : "#4f4f4f"
+            this.color = "#4f4f4f"
         }
         else{
-            this.color = this.props.isPlayerWhite ? "#4f4f4f" : "white"
+            this.color = "white"
         }
 
         this.prevPieceType = this.pieceType ? this.pieceType : this.prevPieceType;
