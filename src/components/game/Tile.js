@@ -24,17 +24,8 @@ export default class Tile extends React.Component {
             this.color = "white"
         }
 
-        this.prevPieceType = this.pieceType ? this.pieceType : this.prevPieceType;
-
-        if (this.prevPieceType){
-            setInterval(
-                () => {
-                    this.prevPieceType = undefined
-                }, 8000
-            )
-        }
-
         this.pieceType = undefined;
+        this.id = undefined;
         this.selected = false;
         this.isInCheck = false;
 
@@ -42,7 +33,6 @@ export default class Tile extends React.Component {
             const piece = this.props.game.pieces[i];
 
             if (Number(piece.xcord) === this.props.x && Number(piece.ycord) === this.props.y){
-                this.prevPieceType = this.pieceType;
                 this.pieceType = 'chess ' + piece.pieceType.toLowerCase();
                 this.isWhite = piece.color === "WHITE";
                 this.id = piece.pieceId;
@@ -99,14 +89,6 @@ export default class Tile extends React.Component {
                             size='large'
                         />
                     </motion.div>
-                }
-                {
-                    this.prevPieceType && !this.pieceType &&
-                    <Icon
-                        style={pieceStyleOne}
-                        name={this.prevPieceType}
-                        size='large'
-                    />
                 }
                 {
                     !this.pieceType && this.selected &&

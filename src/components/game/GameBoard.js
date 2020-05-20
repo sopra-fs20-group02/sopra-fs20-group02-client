@@ -331,7 +331,9 @@ class GameBoard extends React.Component {
     // tile handling
     async tileCallback(id, x, y, isWhiteTile){
         if (!this.state.displayMoves){
-            await this.getPossibleMoves(id,isWhiteTile);
+            if (id){
+                await this.getPossibleMoves(id,isWhiteTile);
+            }
         }
         else {
             this.setState(
