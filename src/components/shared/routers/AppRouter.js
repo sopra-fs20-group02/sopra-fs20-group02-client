@@ -4,13 +4,7 @@ import { GameGuard } from "../routeProtectors/GameGuard";
 import GameRouter from "./GameRouter";
 import { LoginGuard } from "../routeProtectors/LoginGuard";
 import Login from "../../login/Login";
-import Game from "../../game/GameBoard";
 import Registration from "../../registration/Registration";
-import Waiting from "../../game/Waiting";
-import Lobby from "../../game/Lobby";
-import GameEnded from "../../game/GameEnded";
-import GamesStats from "../../profile/GamesStats";
-import ScoreBoard from "../../profile/ScoreBoard";
 import LobbyRouter from "./LobbyRouter";
 import Chat from "../../chat/Chat";
 

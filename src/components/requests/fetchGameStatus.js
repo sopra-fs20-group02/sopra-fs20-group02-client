@@ -1,6 +1,7 @@
 // update game status
 import {api, handleError} from "../../helpers/api";
 
+// fetches the game status
 export const fetchGameStatus = async (userId, gameId) => {
   try {
     const parameters = JSON.stringify({

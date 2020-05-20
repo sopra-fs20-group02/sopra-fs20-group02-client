@@ -1,6 +1,7 @@
 import React from "react";
 import {Icon} from "semantic-ui-react";
 import { motion } from "framer-motion"
+import {pieceStyleOne, pieceStyleTwo} from "../../data/styles";
 
 export default class Tile extends React.Component {
     constructor(props) {
@@ -63,6 +64,13 @@ export default class Tile extends React.Component {
             }
         }
 
+        let pieceColor = this.selected ? '#ff5e00' :
+            (this.isInCheck ? '#ff0039' : (this.isWhite ? (this.props.isMovable ?
+            '#CBECBF' : 'white') : (this.props.isMovable ? '#113405' : 'black')));
+
+        let shadow = (this.isWhite && !this.selected && !this.isInCheck) ?
+            '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' : ''
+
         return(
             <div style={{
                 background: this.color,
@@ -77,10 +85,8 @@ export default class Tile extends React.Component {
                                 position: 'relative',
                                 top: '8px',
                                 left: '2px',
-                                color: this.selected ? '#ff5e00' : (this.isInCheck ? '#ff0039' : (this.isWhite ? 'white' : 'black')),
-                                textShadow: (this.isWhite && !this.selected && !this.isInCheck) ?
-                                    '1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000' :
-                                    ''
+                                color: pieceColor,
+                                textShadow: shadow
                             }}
                             name={this.pieceType}
                             size='large'
@@ -90,12 +96,7 @@ export default class Tile extends React.Component {
                 {
                     this.prevPieceType && !this.pieceType &&
                     <Icon
-                        style={{
-                            position: 'relative',
-                            top: '8px',
-                            left: '2px',
-                            color: 'rgba(255,94,0,0.5)'
-                        }}
+                        style={pieceStyleOne}
                         name={this.prevPieceType}
                         size='large'
                     />
@@ -103,12 +104,7 @@ export default class Tile extends React.Component {
                 {
                     !this.pieceType && this.selected &&
                     <Icon
-                        style={{
-                            position: 'relative',
-                            top: '9px',
-                            left: '2px',
-                            color: '#ff5e00',
-                        }}
+                        style={pieceStyleTwo}
                         name='circle'
                         size='mini'
                     />

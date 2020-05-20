@@ -1,7 +1,10 @@
 import React from "react";
 import { withRouter } from 'react-router-dom';
 import { Grid, Header} from "semantic-ui-react";
-import {statsHeaderStyle, background, backgroundStats} from "../../data/styles";
+import {
+  statsHeaderStyle, background, backgroundStats,
+  gamesStatsStyle, plotStyleOne, plotStyleTwo, saddlingHorsesStyle
+} from "../../data/styles";
 import {XYPlot, ArcSeries} from 'react-vis';
 import DiscreteColorLegend from "react-vis/es/legends/discrete-color-legend";
 
@@ -22,18 +25,15 @@ class GamesStats extends React.Component {
     });
   }
 
-  getNumberOfGames(gamesStats) {
-    return gamesStats.numberOfWinnings + gamesStats.numberOfLosses + gamesStats.numberOfDraws;
-  }
-
+  // the number of total opponent pieces that were captured
   getTotalOpponentPiecesCaptured(gameHistory) {
     const userId = localStorage.getItem('userId');
     let totalOpponentPiecesCaptured = 0;
     for (let i = 0; i < gameHistory.length; i++) {
-      const opponentColor = gameHistory[i].playerWhite.userId == userId ? 'BLACK' : 'WHITE';
+      const opponentColor = gameHistory[i].playerWhite.userId === userId ? 'BLACK' : 'WHITE';
       for (let j = 0; j < gameHistory[i].pieces.length; j++) {
         if (gameHistory[i].pieces[j].captured &&
-            gameHistory[i].pieces[j].color == opponentColor) {
+            gameHistory[i].pieces[j].color === opponentColor) {
           totalOpponentPiecesCaptured = totalOpponentPiecesCaptured + 1
         }
       }
@@ -41,14 +41,15 @@ class GamesStats extends React.Component {
     return totalOpponentPiecesCaptured;
   }
 
+  // the number of total own pieces that got captured
   getTotalOwnPiecesCaptured(gameHistory) {
     const userId = localStorage.getItem('userId');
     let totalOwnPiecesCaptured = 0;
     for (let i = 0; i < gameHistory.length; i++) {
-      const color = gameHistory[i].playerWhite.userId == userId ? 'WHITE' : 'BLACK';
+      const color = gameHistory[i].playerWhite.userId === userId ? 'WHITE' : 'BLACK';
       for (let j = 0; j < gameHistory[i].pieces.length; j++) {
         if (gameHistory[i].pieces[j].captured &&
-            gameHistory[i].pieces[j].color == color) {
+            gameHistory[i].pieces[j].color === color) {
           totalOwnPiecesCaptured = totalOwnPiecesCaptured + 1
         }
       }
@@ -56,22 +57,25 @@ class GamesStats extends React.Component {
     return totalOwnPiecesCaptured;
   }
 
+  // the average number of opponent pieces captured per game
   getAverageOpponentPiecesCaptured(gameHistory) {
-    if (gameHistory.length != 0) {
+    if (gameHistory.length !== 0) {
       return this.getTotalOpponentPiecesCaptured(gameHistory) / gameHistory.length;
     } else {
       return 0;
     }
   }
 
+  // the average number of own pieces captured per game
   getAverageOwnPiecesCaptured(gameHistory) {
-    if (gameHistory.length != 0) {
+    if (gameHistory.length !== 0) {
       return this.getTotalOwnPiecesCaptured(gameHistory) / gameHistory.length;
     } else {
       return 0;
     }
   }
 
+  // the total play time
   getTotalTimePlayed(gamesStats) {
     let time = gamesStats.totalTimePlayed;
     const hours = ~~Math.floor(time / 3600);
@@ -80,38 +84,12 @@ class GamesStats extends React.Component {
     return [hours, minutes, seconds];
   }
 
-  getAveragePlayTime(gameHistory) {
-
-    let totalHoursPlayed = 0;
-    let totalMinutesPlayed = 0;
-    let totalSecondsPlayed = 0;
-
-    // one could just use the total time played from the gamesStats
-    // but we might want to e.g. plot the individual game times
-    for (let i = 0; i < gameHistory.length; i++) {
-      const endTime = gameHistory[i].endTime;
-      const startTime = gameHistory[i].startTime;
-      const endDate = new Date(endTime.substring(0, endTime.length - 4) + 'Z');
-      const startDate = new Date(startTime.substring(0, startTime.length - 4) + 'Z');
-
-      let hoursDifference = endDate.getHours() - startDate.getHours();
-      let minutesDifference = endDate.getMinutes() - startDate.getMinutes();
-      let secondsDifference = endDate.getSeconds() - startDate.getSeconds();
-
-      totalHoursPlayed = totalHoursPlayed + hoursDifference;
-      totalMinutesPlayed = totalMinutesPlayed + minutesDifference;
-      totalSecondsPlayed = totalSecondsPlayed + secondsDifference;
-
-    }
-
-    const numberOfGamesPlayed = gameHistory.length;
-    const totalPlayTime = totalSecondsPlayed + totalMinutesPlayed * 60 + totalHoursPlayed * 60 ** 2;
-    const averagePlayTime = totalPlayTime / numberOfGamesPlayed;
-
+  // the average play time
+  getAveragePlayTime(gamesStats, gameHistory) {
+    const averagePlayTime = (gamesStats.totalTimePlayed) / gameHistory.length;
     const averageHours = ~~Math.floor(averagePlayTime / 3600);
     const averageMinutes = ~~((averagePlayTime % 3600) / 60);
     const averageSeconds = ~~averagePlayTime % 60;
-
     return [averageHours, averageMinutes, averageSeconds];
   }
 
@@ -129,7 +107,6 @@ class GamesStats extends React.Component {
     const gamesStats = this.state.gamesStats;
     const gameHistory = this.state.gameHistory;
 
-    console.log(gameHistory);
     if (gamesStats && gameHistory) {
 
       let totalOpponentPiecesCaptured = 0;
@@ -138,32 +115,25 @@ class GamesStats extends React.Component {
       let averageOwnPiecesCaptures = 0;
       let totalTimePlayed = 0;
       let averagePlayTime = 0;
-      let numberOfGames = 0;
-      try{
+      let numberOfGames = gameHistory.length;
+      try {
         totalOpponentPiecesCaptured = this.getTotalOpponentPiecesCaptured(gameHistory);
         totalOwnPiecesCaptured = this.getTotalOwnPiecesCaptured(gameHistory);
         averageOpponentPiecesCaptures = this.getAverageOpponentPiecesCaptured(gameHistory);
         averageOwnPiecesCaptures = this.getAverageOwnPiecesCaptured(gameHistory);
         totalTimePlayed = this.getTotalTimePlayed(gamesStats);
-        averagePlayTime = this.getAveragePlayTime(gameHistory);
-        numberOfGames = this.getNumberOfGames(gamesStats);
+        averagePlayTime = this.getAveragePlayTime(gamesStats, gameHistory);
       }
       catch (e) {
         console.error(e);
       }
-
-
-      console.log(averageOpponentPiecesCaptures)
-
-      console.log(2*PI*this.state.gamesStats.numberOfWinnings / numberOfGames);
-
       return (
-          <div style={backgroundStats}>
-          <div style={{maxWidth: '1000px', margin: '0 auto'}}>
+        <div style={backgroundStats}>
+          <div style={gamesStatsStyle}>
             <Grid centered columns='equal' inverted padded  divided='vertically'>
               <Grid.Row>
                 <Grid.Column width={12}>
-                  <div style={{width:'400px', height:'300px', margin:'0 auto'} }>
+                  <div style={plotStyleOne}>
                     <XYPlot
                         xDomain={[0, 1]}
                         yDomain={[0, 1]}
@@ -175,14 +145,18 @@ class GamesStats extends React.Component {
                           radiusType={'literal'}
                           center={{x: 0.5, y: 0.5}}
                           data={[
-                            {angle0: 0, angle: 2*PI*this.state.gamesStats.numberOfWinnings / (numberOfGames + 0.00001), opacity: 1, radius: 100, radius0: 40, color: "#e5ff3a"},
+                            { angle0: 0,
+                              angle: 2*PI*this.state.gamesStats.numberOfWinnings / (numberOfGames + 0.00001),
+                              opacity: 1, radius: 100, radius0: 40, color: "#e5ff3a"},
                             {
                               angle0: 2*PI*this.state.gamesStats.numberOfWinnings / (numberOfGames + 0.001),
-                              angle: 2*PI* (this.state.gamesStats.numberOfWinnings  + this.state.gamesStats.numberOfDraws )/ (numberOfGames + 0.00001),
+                              angle: 2*PI* (this.state.gamesStats.numberOfWinnings  +
+                                  this.state.gamesStats.numberOfDraws )/ (numberOfGames + 0.00001),
                               opacity: 1, radius: 100, radius0:  40, color: "#009aff"
                             },
                             {
-                              angle0: 2*PI* (this.state.gamesStats.numberOfWinnings  + this.state.gamesStats.numberOfDraws )/ (numberOfGames + 0.00001),
+                              angle0: 2*PI* (this.state.gamesStats.numberOfWinnings  +
+                                  this.state.gamesStats.numberOfDraws )/ (numberOfGames + 0.00001),
                               angle: 2*PI,
                               opacity: 1, radius: 100, radius0:  40, color: "#ff0044"
                             }
@@ -195,7 +169,12 @@ class GamesStats extends React.Component {
                   <DiscreteColorLegend
                       orientation="horizontal"
                       style={{color:"white"}}
-                      items={[{title: "Games won", color:"#e5ff3a"},{title: "draw", color:"#009aff"},{title: "Games lost", color:"#ff0044"}]}>
+                      items={[
+                          {title: "Games won", color:"#e5ff3a"},
+                          {title: "draw", color:"#009aff"},
+                          {title: "Games lost", color:"#ff0044"}
+                          ]}
+                  >
                   </DiscreteColorLegend>
                 </Grid.Column>
               </Grid.Row>
@@ -203,20 +182,20 @@ class GamesStats extends React.Component {
                 <Grid.Column>
                   <div className="ui inverted statistic">
                     <div className="label">
-                      Number of wins:
+                      Number of games:
                     </div>
                     <div className="value">
-                      {this.state.gamesStats.numberOfWinnings}
+                      {numberOfGames}
                     </div>
                   </div>
                 </Grid.Column>
                 <Grid.Column>
                   <div className="ui inverted statistic">
                     <div className="label">
-                      Number of games:
+                      Number of wins:
                     </div>
                     <div className="value">
-                      {numberOfGames}
+                      {this.state.gamesStats.numberOfWinnings}
                     </div>
                   </div>
                 </Grid.Column>
@@ -259,12 +238,11 @@ class GamesStats extends React.Component {
                       Average game time:
                     </div>
                     <div className="value">
-                      {(gameHistory.length != 0) ?
+                      {(gameHistory.length !== 0) ?
                           averagePlayTime[0] + 'h, ' +averagePlayTime[1] + 'm, ' + averagePlayTime[2] + 's' : '-'}
                     </div>
                   </div>
                 </Grid.Column>
-
               </Grid.Row>
               <Grid.Row>
                 <Grid.Column>
@@ -275,11 +253,11 @@ class GamesStats extends React.Component {
                   </DiscreteColorLegend>
                 </Grid.Column>
                 <Grid.Column width={12}>
-                  <div style={{width:'400px', height:'300px', margin:'0 auto'} }>
+                  <div style={plotStyleTwo}>
                     <XYPlot
                         xDomain={[0, 1]}
                         yDomain={[0, 1]}
-                        width={400}
+                        width={300}
                         height={300}
                     >
                       <ArcSeries
@@ -287,9 +265,11 @@ class GamesStats extends React.Component {
                           radiusType={'literal'}
                           center={{x: 0.5, y: 0.5}}
                           data={[
-                            {angle0: 0, angle: 2*PI*totalOpponentPiecesCaptured / (totalOpponentPiecesCaptured + totalOwnPiecesCaptured + 0.001), opacity: 1, radius: 100, radius0: 40, color: "#e5ff3a"},
+                            {angle0: 0, angle: 2*PI*totalOpponentPiecesCaptured / (totalOpponentPiecesCaptured +
+                               totalOwnPiecesCaptured + 0.001), opacity: 1, radius: 100, radius0: 40, color: "#e5ff3a"},
                             {
-                              angle0: 2*PI*totalOpponentPiecesCaptured / (totalOpponentPiecesCaptured + totalOwnPiecesCaptured + 0.001),
+                              angle0: 2*PI*totalOpponentPiecesCaptured / (totalOpponentPiecesCaptured +
+                                totalOwnPiecesCaptured + 0.001),
                               angle: 2*PI,
                               opacity: 1, radius: 100, radius0:  40, color: "#ff0044"
                             },
@@ -316,7 +296,7 @@ class GamesStats extends React.Component {
                       Average opponent pieces captured:
                     </div>
                     <div className="value">
-                      {averageOpponentPiecesCaptures.toFixed(1)}
+                      {gameHistory.length !== 0 ? averageOpponentPiecesCaptures.toFixed(1) : '-'}
                     </div>
                   </div>
                 </Grid.Column>
@@ -326,7 +306,7 @@ class GamesStats extends React.Component {
                       Average own pieces captured:
                     </div>
                     <div className="value">
-                      {averageOwnPiecesCaptures.toFixed(1)}
+                      {gameHistory.length !== 0 ? averageOwnPiecesCaptures.toFixed(1) : '-'}
                     </div>
                   </div>
                 </Grid.Column>
@@ -345,16 +325,13 @@ class GamesStats extends React.Component {
               </Grid.Row>
             </Grid>
           </div>
-          </div>
+        </div>
       );
     } else {
       return (
           <div style={background}>
             <Grid centered>
-              <Grid.Row style={{
-                marginBottom: '270px',
-                marginTop: '270px'
-              }}>
+              <Grid.Row style={saddlingHorsesStyle}>
                 <Header as='h3' style={statsHeaderStyle}>
                   fetching games stats...
                 </Header>

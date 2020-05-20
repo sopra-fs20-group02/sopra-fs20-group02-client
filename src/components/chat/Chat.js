@@ -7,6 +7,7 @@ import Stomp from 'stomp-websocket';
 import Icon from "semantic-ui-react/dist/commonjs/elements/Icon";
 import { Button, Comment, Form, Header } from 'semantic-ui-react'
 import { motion } from "framer-motion"
+import { commentGroupStyle, commentStyle, commentGroupDivStyle } from "../../data/styles";
 
 class Chat extends Component {
 
@@ -62,8 +63,15 @@ class Chat extends Component {
             content.push(
                 <Comment>
                     <Comment.Content>
-                        <Comment.Author  style={{color: 'white'}} as='a'>{this.state.senders[i]}</Comment.Author>
-                        <Comment.Text  style={{color: 'white'}}>{this.state.messages[i]}</Comment.Text >
+                        <Comment.Author
+                            style={{color: 'white'}}
+                            as='a'>{this.state.senders[i]}
+                        </Comment.Author>
+                        <Comment.Text
+                            style={{color: 'white'}}
+                        >{
+                            this.state.messages[i]}
+                        </Comment.Text >
                     </Comment.Content>
                 </Comment>
             )
@@ -90,53 +98,32 @@ class Chat extends Component {
 
     render() {
         const variants = {
-            open: {  y: 0 },
-            closed: {  y: "+30px" },
+            open: { y : 0 },
+            closed: { y : "+30px" },
         }
         if (localStorage.getItem("token")) {
             return (
                 <div>
-                    <div style={{
-                        maxWidth: '300px',
-                        margin: '25px',
-                        position: 'fixed',
-                        scroll: 'fixed',
-                        bottom: '90px',
-                        right: '0',
-                        zIndex: '24',
-                        borderRadius: '3px',
-                    }}>
+                    <div style={commentStyle}>
                         <motion.div
                             animate={this.state.collapsed ? "open" : "closed"}
                             variants={variants}
                         >
-                            <Button color='orange' circular size='large' icon floated='right' onClick={this.toggleCollapse}
+                            <Button
+                                color='orange'
+                                circular size='large'
+                                icon floated='right'
+                                onClick={this.toggleCollapse}
                             >
                                 <Icon name='chat' />
                             </Button>
                         </motion.div>
-
                     </div>
-
                     {
                         !this.state.collapsed &&
-                        <Comment.Group minimal inverted style={{
-                            maxWidth: '300px',
-                            margin: '20px',
-                            position: 'fixed',
-                            scroll: 'fixed',
-                            bottom: '90px',
-                            right: '0',
-                            zIndex: '20',
-                            background: '#4b4b4b',
-                            padding: '10px',
-                            borderRadius: '3px',
-                        }}>
+                        <Comment.Group minimal inverted style={commentGroupStyle}>
                             <Header as='h3' inverted dividing>Chat</Header>
-                            <div style ={{
-                                maxHeight: '50vh',
-                                overflowY: 'scroll',
-                            }}>
+                            <div style ={commentGroupDivStyle}>
                                 {this.renderMessages()}
                             </div>
 
@@ -144,19 +131,22 @@ class Chat extends Component {
                                 <Form.TextArea id="comment" style={{
                                     height: '50px'
                                 }}/>
-                                <Button icon labelPosition='left' inverted onClick={this.sendMessage} >
+                                <Button
+                                    icon
+                                    labelPosition='left'
+                                    inverted
+                                    onClick={this.sendMessage}
+                                >
                                     <Icon name='paper plane' />
                                     Send
                                 </Button>
                             </Form>
                         </Comment.Group>
                     }
-
                 </div>
             );
-
         }
-        else{
+        else {
             return (<div></div>);
         }
     }

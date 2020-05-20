@@ -2,8 +2,8 @@ import React from "react";
 import { withRouter } from 'react-router-dom';
 import { Grid, Header} from "semantic-ui-react";
 import {
-  gamesStatsHeaderStyle,
-  statsTextStyle, statsStyle, statsHeaderStyle, backgroundStats, background
+  gamesStatsHeaderStyle, statsTextStyle, statsStyle, statsHeaderStyle,
+   backgroundStats, saddlingHorsesStyle, scoreBoardStyle
 } from "../../data/styles";
 
 class ScoreBoard extends React.Component {
@@ -21,6 +21,7 @@ class ScoreBoard extends React.Component {
     });
   }
 
+  // calculates the ranking of all registered users
   getRanking() {
     let userNames = [];
     let wins = [];
@@ -51,13 +52,7 @@ class ScoreBoard extends React.Component {
     return ranking;
   }
 
-  componentDidMount() {
-    this.setState({users: this.props.location.state.users});
-  }
-
-  componentWillUnmount() {
-  }
-
+  // returns the scoreboard table
   getTable(){
     let entries = [];
     const users = this.getRanking();
@@ -74,59 +69,54 @@ class ScoreBoard extends React.Component {
     let table = [];
 
     table.push(
-        <div style={{
-          overflowY: 'scroll'
-        }}>
-          <table className="ui celled table unstackable"
-                 style={{width: '100%', maxWidth: '600px', backgroundColor: 'rgba(43,43,43,0.8)', color: 'white'}}>
-            <thead>
-            <tr>
-              <th>
-                Username
-              </th>
-              <th>
-                Score
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            {entries}
-            </tbody>
-          </table>
-        </div>
-
+        <table className="ui celled table unstackable" style={scoreBoardStyle}>
+          <thead>
+          <tr>
+            <th>
+              Username
+            </th>
+            <th>
+              Score
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          {entries}
+          </tbody>
+        </table>
     )
-
     return table;
+  }
+
+  componentDidMount() {
+    this.setState({users: this.props.location.state.users});
+  }
+
+  componentWillUnmount() {
   }
 
   render() {
     const users = this.state.users;
     if (users) {
       return (
-          <div style={background}>
-            <div style={{height: '50vh'}}>
-              <Grid centered>
-                <Grid.Row style={gamesStatsHeaderStyle}>
-                  <Header as='h3' style={statsTextStyle}>
-                    Score Board
-                  </Header>
-                </Grid.Row>
-                <Grid.Row columns={2}>
-                  {this.getTable()}
-                </Grid.Row>
-              </Grid>
-            </div>
+          <div style={backgroundStats}>
+            <Grid centered>
+              <Grid.Row style={gamesStatsHeaderStyle}>
+                <Header as='h3' style={statsTextStyle}>
+                  Score Board
+                </Header>
+              </Grid.Row>
+              <Grid.Row columns={2}>
+                {this.getTable()}
+              </Grid.Row>
+            </Grid>
           </div>
 
       );
     } else {
       return (
           <Grid style={statsStyle} centered>
-            <Grid.Row style={{
-              marginBottom: '270px',
-              marginTop: '270px'
-            }}
+            <Grid.Row style={saddlingHorsesStyle}
             >
               <Header as='h3' style={statsHeaderStyle}>
                 fetching users...

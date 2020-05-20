@@ -43,6 +43,7 @@ class Lobby extends React.Component {
     }
   }
 
+  // allows joining a random game
   async joinRandomGame(){
     try {
       const requestBody = JSON.stringify({
@@ -56,6 +57,7 @@ class Lobby extends React.Component {
     }
   }
 
+  // allows joining a specific game
   async joinSpecificGame(game){
     console.log(game);
     try {
@@ -70,15 +72,22 @@ class Lobby extends React.Component {
     }
   }
 
+  // allows joining a game in watch mode
   async watchGame(game){
     console.log(game);
     try {
-      this.navigateToGame(game)
+      this.props.history.push({
+        pathname: '/game/play',
+        state: {
+          gameId: game.gameId
+        }
+      })
     } catch (error) {
       alert(`Something went wrong while creating the game: \n${handleError(error)}`);
     }
   }
 
+  // navigating to game page
   async navigateToGame(game){
     this.props.history.push({
       pathname: '/game/wait',
@@ -88,6 +97,7 @@ class Lobby extends React.Component {
     })
   }
 
+  // get a list of active open games
   async getGames() {
     try {
       const response = await api.get('/games');
@@ -103,21 +113,26 @@ class Lobby extends React.Component {
 
           <Grid centered>
             <Grid.Row style={lobbyHeaderStyle}>
-              <button className="ui inverted button" style={buttonStyle} onClick={() => {
-                this.createGame(false);
-              }}>
-                Create
-              </button>
-              <button className="ui inverted button" style={buttonStyle} onClick={() => {
-                this.createGame(true);
-              }}>
-                Blitz
-              </button>
-              <button className="ui inverted button" style={buttonStyle} onClick={() => {
-                this.joinRandomGame();
-              }}>
-                Random
-              </button>
+              <h1>Hi {localStorage.getItem('userName')} {localStorage.getItem('emoji')}</h1>
+            </Grid.Row>
+            <Grid.Row style={lobbyTextStyle}>
+              <div>
+                <button className="ui inverted button" style={buttonStyle} onClick={() => {
+                  this.createGame(false);
+                }}>
+                  Classic
+                </button>
+                <button className="ui inverted button" style={buttonStyle} onClick={() => {
+                  this.createGame(true);
+                }}>
+                  Blitz
+                </button>
+                <button className="ui inverted button" style={buttonStyle} onClick={() => {
+                  this.joinRandomGame();
+                }}>
+                  Join
+                </button>
+              </div>
             </Grid.Row>
             <Header as='h3' style={lobbyTextStyle}>
               play or watch game:
@@ -134,15 +149,18 @@ class Lobby extends React.Component {
                             {' vs. '}
                             {game.playerBlack ? game.playerBlack.username : '-'}
                           </div>
-                          {(game.playerWhite == null || game.playerBlack == null) &&
+                          {(game.playerWhite === null || game.playerBlack === null) &&
                           <button className="small ui inverted button"  onClick={() => {
                             this.joinSpecificGame(game);
                           }}>play</button>
 
                           }
+                          {game.gameStatus === "FULL" &&
                           <button className="small ui inverted button"  onClick={() => {
                             this.watchGame(game);
                           }}>watch</button>
+
+                          }
                         </List.Item>
                         }
                       </div>

@@ -4,8 +4,8 @@ import { withRouter } from 'react-router-dom';
 import { Grid, Header, Icon, Confirm } from "semantic-ui-react";
 import Tile from './Tile';
 import {
-    gameHeaderStyle, boardRankStyle,
-    capturedPiecesStyle, gameButtonStyle, gameFooterStyle, background, buttonStyle
+    gameHeaderStyle, boardRankStyle, saddlingHorsesStyle, buttonStyle,
+    capturedPiecesStyle, gameButtonStyle, background
 } from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
 import {Button} from "../../views/design/Button";
@@ -27,7 +27,8 @@ class GameBoard extends React.Component {
             isWatching: null,
             isPlayerWhite: null,
             open: false,
-            remainingTime: 300
+            remainingTime: 300,
+            movablePieces: []
         };
         this.tileCallback = this.tileCallback.bind(this);
         this.offerDraw = this.offerDraw.bind(this);
@@ -49,9 +50,10 @@ class GameBoard extends React.Component {
                 this.setState({
                     isPlayerWhite: Number(localStorage.getItem('userId')) === gameStatusObject.data.playerWhite.userId
                 });
-                if (this.state.game.gameMode == 'BLITZ' && this.isMyTurn()) {
+                if (this.state.game.gameMode === 'BLITZ' && this.isMyTurn()) {
                     this.setState({ remainingTime : this.state.remainingTime - 1})
                 }
+                if (this.isMyTurn()) { this.getMovablePieces()};
                 if (this.state.remainingTime < 1) {
                     this.resign(true);
                 }
@@ -68,10 +70,41 @@ class GameBoard extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.interval);
-        this.resign(false);
+        if(!this.state.isWatching && this.state.game.gameStatus === 'FULL') {
+            this.resign(false);
+        }
     }
 
-    // gets all possible moves for the selected piece
+    // fetches all movable pieces
+    async getMovablePieces() {
+        try {
+            const params = JSON.stringify({
+                userId: this.state.userId
+            });
+            const mapping = '/games/' + this.state.game.gameId.toString() + '/movable';
+            const response = await api.put(mapping, params);
+            this.setState({ movablePieces : response.data});
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    // checks if this piece is movable
+    isMovable(x, y) {
+        let isMovable = false;
+        if (this.isMyTurn()) {
+            const movablePieces = this.state.movablePieces;
+            movablePieces.forEach(function (piece) {
+                if (piece.xcord === x && piece.ycord === y) {
+                    isMovable = true;
+                }
+            });
+        }
+        return isMovable;
+    }
+
+    // gets all possible moves for selected piece
     async getPossibleMoves(pieceId, pieceIsWhite) {
         if (!this.state.isWatching){
 
@@ -101,7 +134,7 @@ class GameBoard extends React.Component {
         }
     }
 
-    // moves the piece
+    // moves the selected piece
     async moveSelectedPiece(x, y) {
         if (!this.state.isWatching){
             try {
@@ -117,6 +150,7 @@ class GameBoard extends React.Component {
                     game: response.data,
                     selectedPiece: null,
                     blueDots: false,
+                    movablePieces: []
                 });
             } catch (error) {
                 console.error(error)
@@ -140,6 +174,7 @@ class GameBoard extends React.Component {
         }
     }
 
+    // ends the game
     async endGame(ranOutOfTime) {
         this.props.history.push({
             pathname: '/game/end',
@@ -167,13 +202,11 @@ class GameBoard extends React.Component {
     }
 
     // returns true if the opponent is offering draw and the offer is not denied
-    opponentIsOfferingDraw(game) {
-
+    opponentIsOfferingDraw() {
         if ((this.state.game.playerWhite.userId === Number(this.state.userId) && this.state.game.blackOffersDraw) ||
             (this.state.game.playerBlack.userId === Number(this.state.userId) && this.state.game.whiteOffersDraw)) {
             this.setState({open: true})
         }
-
     }
 
     // returns opponent name
@@ -189,6 +222,7 @@ class GameBoard extends React.Component {
         }
     }
 
+    // allows canceling game
     async cancel(){
         this.setState({
             open: false
@@ -206,6 +240,7 @@ class GameBoard extends React.Component {
         }
     }
 
+    // boolean indicator for whose turn
     isMyTurn(){
         return ((this.state.game.isWhiteTurn && this.state.game.playerWhite.userId === Number(this.state.userId)) ||
             (!this.state.game.isWhiteTurn && this.state.game.playerBlack.userId === Number(this.state.userId)));
@@ -233,8 +268,9 @@ class GameBoard extends React.Component {
         );
     }
 
+    // remaining time for blitz mode
     getBlitzInfo() {
-        if (this.state.game.gameMode == 'BLITZ') {
+        if (this.state.game.gameMode === 'BLITZ') {
             const minutes = '0' + String(Math.floor(this.state.remainingTime / 60));
             let seconds = this.state.remainingTime - minutes * 60;
             seconds = seconds < 10 ? '0' + String(seconds) : String(seconds);
@@ -249,6 +285,7 @@ class GameBoard extends React.Component {
         }
     }
 
+    // a list of the captured pieces
     getCapturedPieces(player) {
         let pieceColors;
         if (player === 'opponent') {
@@ -264,7 +301,6 @@ class GameBoard extends React.Component {
                 pieceColors = 'WHITE';
             }
         }
-
         let capturedPieces = [];
         this.state.game.pieces.forEach(function (piece) {
             if (piece.captured) {
@@ -292,15 +328,18 @@ class GameBoard extends React.Component {
         )
     }
 
+    // tile handling
     async tileCallback(id, x, y, isWhiteTile){
         if (!this.state.displayMoves){
             await this.getPossibleMoves(id,isWhiteTile);
         }
         else {
             this.setState(
-                {displayMoves: false,
+                {
+                    displayMoves: false,
                     possibleMoves: null
-            });
+                }
+            );
             if (this.state.possibleMoves) {
                 for (let i = 0; i < this.state.possibleMoves.length; i++){
                     if (
@@ -314,6 +353,7 @@ class GameBoard extends React.Component {
         }
     }
 
+    // board handling
     renderBoard(){
         let board = [];
         for (let y = 1; y <= 8; y++){
@@ -327,6 +367,7 @@ class GameBoard extends React.Component {
                         isPlayerWhite={this.state.isPlayerWhite}
                         click={this.tileCallback}
                         moves={this.state.possibleMoves}
+                        isMovable={this.isMovable(x, y)}
                     />
                 )
             }
@@ -336,7 +377,7 @@ class GameBoard extends React.Component {
                 </Grid.Row>
             );
         }
-        // flip board
+        // flips board
         if (Number(this.state.game.playerWhite.userId) === Number(this.state.userId)){
             board = board.reverse();
         }
@@ -347,7 +388,9 @@ class GameBoard extends React.Component {
                 height: '340px',
                 margin: '0px',
                 background: '#ffffff',
-                boxShadow: this.isMyTurn() ? '0px 40px 70px -50px #ff5e00, 0px 90px 100px -50px #A50200' : '0px -40px 70px -50px #ff5e00, 0px -90px 100px -50px #A50200',
+                boxShadow: this.isMyTurn() ?
+                    '0px 40px 70px -50px #ff5e00, 0px 90px 100px -50px #A50200' :
+                    '0px -40px 70px -50px #ff5e00, 0px -90px 100px -50px #A50200',
                 padding: '10px',
                 borderRadius: '3px',
             }} >
@@ -376,7 +419,7 @@ class GameBoard extends React.Component {
                             onConfirm={this.offerDraw}
                         />
                         {!this.state.isWatching &&
-                        <Grid.Row columns={2} style={gameFooterStyle}>
+                        <Grid.Row columns={1}>
                             <Grid.Column textAlign='center'>
                                 <button className="ui inverted button" style={buttonStyle} onClick={() => {
                                     this.resign(false);
@@ -392,12 +435,14 @@ class GameBoard extends React.Component {
                         </Grid.Row>
                         }
                         {this.state.isWatching &&
-                        <Grid.Row columns={2} style={gameFooterStyle}>
+                        <Grid.Row columns={2}>
                             <Grid.Column textAlign='center'>
                                 <Button
                                     style={gameButtonStyle}
                                     onClick={() => {
-                                        this.endGame(false);
+                                        this.props.history.push({
+                                            pathname: '/lobby/main',
+                                        })
                                     }}
                                 >
                                     Lobby
@@ -413,10 +458,7 @@ class GameBoard extends React.Component {
             return (
                 <div style={background}>
                     <Grid centered>
-                        <Grid.Row style={{
-                            marginBottom: '270px',
-                            marginTop: '270px'
-                        }}>
+                        <Grid.Row style={saddlingHorsesStyle}>
                             <Header as='h3' style={gameHeaderStyle}>
                                 saddling horses...
                             </Header>
