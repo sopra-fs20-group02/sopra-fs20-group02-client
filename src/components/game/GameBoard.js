@@ -312,7 +312,7 @@ class GameBoard extends React.Component {
 
         return (
             <Grid.Row style={capturedPiecesStyle}>
-                <div style={{height: '100%',width: '340px', borderRadius: '3px', backgroundColor: 'white'}}>
+                <div style={{height: '100%',width: '340px', borderRadius: '3px', backgroundColor: 'white', opacity: '0.8'}}>
                 {capturedPieces[0] && capturedPieces.map(piece => {
                     return (<Icon
                         style={{
