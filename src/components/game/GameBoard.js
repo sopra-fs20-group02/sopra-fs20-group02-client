@@ -54,7 +54,7 @@ class GameBoard extends React.Component {
                     localStorage.setItem('remainingTime', (time-1).toString());
                 }
                 if (this.isMyTurn()) { this.getMovablePieces()};
-                if (this.state.remainingTime < 1) {
+                if (localStorage.getItem('remainingTime') < 1) {
                     this.resign(true);
                 }
                 if (this.state.game.gameStatus !== 'FULL'){
