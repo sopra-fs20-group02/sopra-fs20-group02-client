@@ -2,7 +2,7 @@ import React from "react";
 import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, Header } from "semantic-ui-react";
-import { quoteStyle, background, buttonStyle } from "../../data/styles";
+import {quoteStyle, background, buttonStyle, backgroundStats} from "../../data/styles";
 import {fetchGameStatus} from "../requests/fetchGameStatus";
 
 class Waiting extends React.Component {
@@ -85,7 +85,7 @@ class Waiting extends React.Component {
 
     render() {
         return (
-            <div style={background}>
+            <div style={backgroundStats}>
                 <Grid centered>
                     <Grid.Row>
                         <Header as='h4' style={quoteStyle}>

@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { Grid, Header} from "semantic-ui-react";
 import {
   gamesStatsHeaderStyle, statsTextStyle, statsStyle, statsHeaderStyle,
-   backgroundStats, saddlingHorsesStyle, scoreBoardStyle
+   backgroundStats, saddlingHorsesStyle, scoreBoardStyle, background
 } from "../../data/styles";
 
 class ScoreBoard extends React.Component {
@@ -99,7 +99,7 @@ class ScoreBoard extends React.Component {
     const users = this.state.users;
     if (users) {
       return (
-          <div style={backgroundStats}>
+          <div style={background}>
             <Grid centered>
               <Grid.Row style={gamesStatsHeaderStyle}>
                 <Header as='h3' style={statsTextStyle}>

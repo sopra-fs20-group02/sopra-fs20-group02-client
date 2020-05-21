@@ -96,8 +96,9 @@ export const boardRankStyle = {
 }
 
 export const capturedPiecesStyle = {
-    margin: '0px',
-    padding: '10px'
+    margin: '5px 5px',
+    padding: '5px',
+    height: '32px',
 }
 
 // styles for waiting and game over pages
@@ -171,7 +172,7 @@ export const plotStyleTwo = {
 }
 
 export const scoreBoardStyle = {
-    width: '100%',
+    //width: '100%',
     maxWidth: '300px',
     backgroundColor: 'rgba(43, 43, 43, 0.8)',
     color: 'white'
