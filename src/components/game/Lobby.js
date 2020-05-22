@@ -19,6 +19,7 @@ class Lobby extends React.Component {
   }
 
   componentDidMount() {
+    localStorage.setItem('remainingTime', '300');
     this.interval = setInterval(async () => {
       this.getGames()
     }, 1000);
