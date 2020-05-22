@@ -3,7 +3,7 @@ import { api, handleError } from '../../helpers/api';
 import { withRouter } from 'react-router-dom';
 import { Grid, Header } from "semantic-ui-react";
 import {
-    background,
+    background, backgroundStats,
     buttonStyle,
     quoteStyle,
 } from "../../data/styles";
@@ -73,7 +73,7 @@ class GameEnded extends React.Component {
     render() {
         console.log(this.state.game);
         return (
-            <div style={background}>
+            <div style={backgroundStats}>
                 <Grid centered>
                     <Grid.Row>
                         <Header as='h4' style={quoteStyle}>

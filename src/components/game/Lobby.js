@@ -37,7 +37,7 @@ class Lobby extends React.Component {
       });
       const response = await api.post('/games', requestBody);
       const game = response.data;
-      this.navigateToGame(game)
+      this.navigateToWaitingPage(game)
     } catch (error) {
       alert(`Something went wrong while creating the game: \n${handleError(error)}`);
     }
@@ -76,12 +76,7 @@ class Lobby extends React.Component {
   async watchGame(game){
     console.log(game);
     try {
-      this.props.history.push({
-        pathname: '/game/play',
-        state: {
-          gameId: game.gameId
-        }
-      })
+      this.navigateToWaitingPage(game);
     } catch (error) {
       alert(`Something went wrong while creating the game: \n${handleError(error)}`);
     }
@@ -89,6 +84,15 @@ class Lobby extends React.Component {
 
   // navigating to game page
   async navigateToGame(game){
+    this.props.history.push({
+      pathname: '/game/play',
+      state: {
+        gameId: game.gameId
+      }
+    })
+  }
+
+  async navigateToWaitingPage(game){
     this.props.history.push({
       pathname: '/game/wait',
       state: {

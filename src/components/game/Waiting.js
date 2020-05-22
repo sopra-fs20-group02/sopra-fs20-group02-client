@@ -11,6 +11,7 @@ class Waiting extends React.Component {
         this.state = {
             quote: null,
             gameId: null,
+            game: null,
             gameDeleted: false
         };
     }
@@ -25,6 +26,11 @@ class Waiting extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.interval);
+        if(this.state.game !== null) {
+            if (this.state.game.gameStatus === 'WAITING') {
+                this.deleteGame();
+            }
+        }
     }
 
     // fetching random quote from external API
@@ -67,6 +73,7 @@ class Waiting extends React.Component {
         this.interval = setInterval(async () => {
             if (!this.state.gameDeleted) {
                 const gameStatusObject = await fetchGameStatus(localStorage.getItem('userId'), this.state.gameId);
+                this.state.game = gameStatusObject.data;
                 if (gameStatusObject.data){
                     status = gameStatusObject.data.gameStatus
                 }
