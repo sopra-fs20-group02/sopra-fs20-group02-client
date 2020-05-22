@@ -102,7 +102,7 @@ class ScoreBoard extends React.Component {
           <div style={background}>
             <Grid centered>
               <Grid.Row style={gamesStatsHeaderStyle}>
-                <Header as='h3' style={statsTextStyle}>
+                <Header as='h1' style={statsTextStyle}>
                   Score Board
                 </Header>
               </Grid.Row>

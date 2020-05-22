@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { Grid, Header} from "semantic-ui-react";
 import {
   statsHeaderStyle, background, backgroundStats,
-  gamesStatsStyle, plotStyleOne, plotStyleTwo, saddlingHorsesStyle
+  gamesStatsStyle, plotStyleOne, plotStyleTwo, saddlingHorsesStyle, gamesStatsHeaderStyle, statsTextStyle
 } from "../../data/styles";
 import {XYPlot, ArcSeries} from 'react-vis';
 import DiscreteColorLegend from "react-vis/es/legends/discrete-color-legend";
@@ -128,7 +128,16 @@ class GamesStats extends React.Component {
         console.error(e);
       }
       return (
-        <div style={backgroundStats}>
+        <div style={background}>
+          <Grid centered>
+            <Grid.Row style={gamesStatsHeaderStyle}>
+              <div style={{marginBottom:'30px'}}>
+                <Header as='h1' style={statsTextStyle}>
+                  Statistics
+                </Header>
+              </div>
+            </Grid.Row>
+          </Grid>
           <div style={gamesStatsStyle}>
             <Grid centered columns='equal' inverted padded  divided='vertically'>
               <Grid.Row>
@@ -137,7 +146,7 @@ class GamesStats extends React.Component {
                     <XYPlot
                         xDomain={[0, 1]}
                         yDomain={[0, 1]}
-                        width={400}
+                        width={300}
                         height={300}
                     >
                       <ArcSeries

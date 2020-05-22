@@ -47,9 +47,8 @@ class Chat extends Component {
                     const doc = document.getElementById("comment");
 
                     if (doc){
-                        window.scrollTo(
-                            -1000, doc.scrollHeight
-                        )
+                        let messages = document.getElementById("messages");
+                        messages.scrollTop = messages.scrollHeight;
                     }
                 });
             });
@@ -85,7 +84,7 @@ class Chat extends Component {
         console.log(this.state.collapsed)
         this.setState({
             collapsed : !this.state.collapsed
-        })
+        });
     }
 
     sendMessage(){
@@ -125,13 +124,15 @@ class Chat extends Component {
                         !this.state.collapsed &&
                         <Comment.Group minimal inverted style={commentGroupStyle}>
                             <Header as='h3' inverted dividing>Chat</Header>
-                            <div style ={commentGroupDivStyle}>
+                            <div id="messages" style ={commentGroupDivStyle}>
                                 {this.renderMessages()}
                             </div>
 
                             <Form reply inverted>
-                                <Form.TextArea id="comment" style={{
-                                    height: '50px'
+                                <Form.TextArea id="comment"
+                                               onKeyPress = {e => {if (e.key === 'Enter') {this.sendMessage();}}}
+                                               style={{height: '50px'
+
                                 }}/>
                                 <Button
                                     icon
