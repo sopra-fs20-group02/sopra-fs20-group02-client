@@ -6,6 +6,16 @@ export const gridStyle = {
     margin: '0'
 };
 
+export const title = {
+    textTransform: 'uppercase',
+    fontWeight: '900',
+    letterSpacing: '5px',
+    fontSize: '45px',
+    fontFamily: 'Spectral, serif',
+    fontStyle: 'italic',
+    color: '#ff5e00'
+};
+
 export const background = {
     position: 'static',
     margin: '0',
@@ -25,10 +35,18 @@ export const buttonStyle = {
     marginTop: '5px'
 }
 
+export const LoginButtonStyle = {
+    maxHeight: '50px',
+    zIndex: 5,
+    position: 'relative',
+    marginTop: '5px',
+    width: '150px'
+}
+
 export const headerStyle = {
     color: 'white',
     marginTop: '70px',
-    marginBottom: '50px'
+    marginBottom: '20px'
 }
 
 export const lobbyHeaderStyle = {
@@ -54,6 +72,19 @@ export const FooterStyle = {
     bottom: '0',
     borderTopLeftRadius: '5px',
     borderTopRightRadius: '5px',
+}
+
+export const LoginFooterStyle = {
+    margin: '0',
+    lineHeight:'25px',
+    width: '100vw',
+    textAlign: 'center',
+    verticalAlign: 'center',
+    backgroundColor: 'white',
+    position: 'fixed',
+    bottom: '0',
+    fontFamily: 'Spectral, serif',
+    fontStyle: 'italic'
 }
 
 export const playersListStyle = {

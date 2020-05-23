@@ -2,9 +2,9 @@ import React from 'react';
 import { api, handleError } from '../../helpers/api';
 import User from '../shared/models/User';
 import { withRouter } from 'react-router-dom';
-import { Grid, Header, Form, Button } from 'semantic-ui-react';
+import {Grid, Header, Form, Button, Popup} from 'semantic-ui-react';
 import {
-  headerStyle, buttonStyle, background, hideUnhideStyle
+  headerStyle, buttonStyle, background, hideUnhideStyle, title, statsTextStyle, LoginButtonStyle, LoginFooterStyle
 } from "../../data/styles";
 import Icon from "semantic-ui-react/dist/commonjs/elements/Icon";
 
@@ -16,7 +16,7 @@ class Login extends React.Component {
       password: null,
       emoji: null,
       fields: ['username', 'password'],
-      passwordField: 'show'
+      passwordField: 'password'
     };
     this.showHide = this.showHide.bind(this);
   }
@@ -75,7 +75,7 @@ class Login extends React.Component {
       e.preventDefault();
       e.stopPropagation();
       this.setState({
-        passwordField: this.state.passwordField === 'show' ? 'password' : 'show'
+        passwordField: this.state.passwordField === 'password' ? 'show' : 'password'
       })
   }
 
@@ -87,12 +87,13 @@ class Login extends React.Component {
           <Grid centered>
             <Grid.Row>
               <Header style={headerStyle}>
-                Login
+                <h1 style={title}>Jess</h1>
+                <h3>Login</h3>
               </Header>
             </Grid.Row>
             {this.state.fields.map((field) => (
                     <Grid.Row>
-                      <Grid.Column width={8}>
+                      <Grid.Column style={{width:'300px', margin:'auto'}}>
                         <Form inverted
                             onChange={
                                 e => {this.handleInputChange(field, e.target.value)}
@@ -117,7 +118,7 @@ class Login extends React.Component {
                               >
                                 <Icon
                                     style={hideUnhideStyle}
-                                    name={this.state.passwordField === 'show'  ? 'hide' : 'unhide'}
+                                    name={this.state.passwordField === 'password'  ? 'hide' : 'unhide'}
                                 />
                               </span> : <span><Icon/></span>
                             }
@@ -131,7 +132,7 @@ class Login extends React.Component {
               {(this.state.username && this.state.password) && (
                   <Button inverted onClick={() => {
                     this.login();
-                  }} style={buttonStyle}>
+                  }} style={LoginButtonStyle}>
                     Login
                   </Button>
 
@@ -139,18 +140,23 @@ class Login extends React.Component {
               {(!this.state.username || !this.state.password) && (
                   <Button inverted disabled onClick={() => {
                     this.login();
-                  }} style={buttonStyle}>
+                  }} style={LoginButtonStyle}>
                     Login
                   </Button>
 
               )}
-              <Button inverted onClick={() => {
+            </Grid.Row>
+            <Grid.Row>
+              <h4 style={statsTextStyle}>
+                Not registered yet? <a style={{color:'#ff5e00', fontStyle:'italic'}} onClick={() => {
                 this.props.history.push('/registration');
-              }} style={buttonStyle}>
-                Register
-              </Button>
+              }}>Register</a>
+              </h4>
             </Grid.Row>
           </Grid>
+            <div as='h3' style={LoginFooterStyle}>
+              Made by SoPra-FS20-Group02
+            </div>
         </div>
     );
   }

@@ -4,7 +4,7 @@ import User from '../shared/models/User';
 import { withRouter } from 'react-router-dom';
 import { Grid, Header, Form, Button } from 'semantic-ui-react';
 import {
-    headerStyle, buttonStyle, background, hideUnhideStyle
+    headerStyle, buttonStyle, background, hideUnhideStyle, title, statsTextStyle, LoginButtonStyle, LoginFooterStyle
 } from "../../data/styles";
 import Icon from "semantic-ui-react/dist/commonjs/elements/Icon";
 
@@ -17,7 +17,7 @@ class Registration extends React.Component {
             name: null,
             password: null,
             fields: ['username', 'password'],
-            passwordField: 'show'
+            passwordField: 'password'
         };
         this.showHide = this.showHide.bind(this);
     }
@@ -53,7 +53,7 @@ class Registration extends React.Component {
         e.preventDefault();
         e.stopPropagation();
         this.setState({
-            passwordField: this.state.passwordField === 'show' ? 'password' : 'show'
+            passwordField: this.state.passwordField === 'password' ? 'show' : 'password'
         })
     }
 
@@ -65,12 +65,13 @@ class Registration extends React.Component {
                 <Grid centered>
                     <Grid.Row>
                         <Header style={headerStyle}>
-                            Register
+                            <h1 style={title}>Jess</h1>
+                            <h3>Register</h3>
                         </Header>
                     </Grid.Row>
                     {this.state.fields.map((field) => (
                             <Grid.Row>
-                                <Grid.Column width={8} height={0}>
+                                <Grid.Column style={{width:'300px', margin:'auto'}}>
                                     <Form inverted
                                           onChange={e => {this.handleInputChange(field, e.target.value);}}
                                     >
@@ -78,6 +79,7 @@ class Registration extends React.Component {
                                             <input
                                                 type={field === 'password' ? this.state.passwordField : ''}
                                                 className="password__show"
+                                                style={{maxWidth:'300px'}}
                                                 onKeyPress = {e => {
                                                     if (e.key === 'Enter' && field === 'password' &&
                                                         this.state.username && this.state.password) {
@@ -93,7 +95,7 @@ class Registration extends React.Component {
                                                 >
                                                     <Icon
                                                         style={hideUnhideStyle}
-                                                        name={this.state.passwordField === 'show'  ? 'hide' : 'unhide'}
+                                                        name={this.state.passwordField === 'password'  ? 'hide' : 'unhide'}
                                                     />
                                                 </span> : <span><Icon/></span>
                                             }
@@ -107,24 +109,29 @@ class Registration extends React.Component {
                         {(this.state.username && this.state.password) && (
                             <Button inverted onClick={() => {
                                 this.registration();
-                            }} style={buttonStyle}>
+                            }} style={LoginButtonStyle}>
                                 Register
                             </Button>
                         )}
                         {(!this.state.username || !this.state.password) && (
                             <Button inverted disabled onClick={() => {
                                 this.registration();
-                            }} style={buttonStyle}>
+                            }} style={LoginButtonStyle}>
                                 Register
                             </Button>
                         )}
-                        <Button inverted onClick={() => {
+                    </Grid.Row>
+                    <Grid.Row>
+                        <h4 style={statsTextStyle}>
+                            Back to <a style={{color:'#ff5e00', fontStyle:'italic'}} onClick={() => {
                             this.props.history.push('/login');
-                        }} style={buttonStyle}>
-                            Login
-                        </Button>
+                        }}>Login</a>
+                        </h4>
                     </Grid.Row>
                 </Grid>
+                <div as='h3' style={LoginFooterStyle}>
+                    Made by SoPra-FS20-Group02
+                </div>
             </div>
         );
     }
