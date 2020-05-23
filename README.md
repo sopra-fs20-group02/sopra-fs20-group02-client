@@ -5,7 +5,26 @@ During a game, if it's the user's turn, he or she sees the movable pieces marked
 
 From the game lobby, the user can also go to the game stats page to view simple statistics, such as the number of wins, losses, draws and the total and average time played, the number of opponent and own pieces captured, etc. A logged in user also has the possibility to chat with other logged in users or to join a game in the view mode, which allows users to watch others play a game.
 
+# Technologies
+Github
+Heroku
+SonarQube
+Postman
+React JS
+Java
+Websockets
+REST
 
+
+# Launch & Deployment
+For development, first open a terminal, go to the directory sopra-fs20-group02-server, then run the commands:
+### `./gradlew build`
+### `./gradlew bootRun`
+
+The, open a terminal, go to the directory sopra-fs20-group02-client and run the commands:
+### `npm run dev`
+
+For production, do the same, except run ### `./gradlew build -xtest` instead of ### `./gradlew build` and run ### `npm run build` instead of ### `npm run dev`.
 
 
 
