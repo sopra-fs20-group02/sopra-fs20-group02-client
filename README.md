@@ -34,8 +34,12 @@ From the game lobby, the user can also go to the game stats page to view simple 
 - Last Moves Feed: Display the last n moves.
 - Replay Game History: Feature that allows replaying a game (as an animation).
 
-
-
+# Authors & Acknowledgement
+Authors:
+- Andrin Rehmann: https://github.com/andrinr
+- Dominic Schmidli: https://github.com/dschmidli
+- Michael Hodel: https://github.com/michaelhodel
+- Philippe Schmidli: https://github.com/pschmidli
 
 
 # SoPra FS20 - Client Template
