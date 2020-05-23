@@ -128,7 +128,7 @@ class GamesStats extends React.Component {
         console.error(e);
       }
       return (
-        <div style={background}>
+        <div style={backgroundStats}>
           <Grid centered>
             <Grid.Row style={gamesStatsHeaderStyle}>
               <div style={{marginBottom:'30px'}}>

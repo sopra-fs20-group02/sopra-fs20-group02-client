@@ -15,7 +15,7 @@ export const background = {
 export const backgroundStats = {
     position: 'static',
     margin: '0 10px 0 10px',
-    padding: '20px 0 80px 0'
+    padding: '0 0 80px 0'
 };
 
 export const buttonStyle = {
@@ -73,7 +73,7 @@ export const gamesStatsHeaderStyle = {
 }
 
 export const statsTextStyle = {
-    marginTop: '20px',
+    marginTop: '0px',
     marginBottom: '0px',
     color: 'white'
 }
@@ -160,7 +160,7 @@ export const gamesStatsStyle = {
 }
 
 export const plotStyleOne = {
-    width:'400px',
+    width:'300px',
     height:'300px',
     margin:'0 auto'
 }

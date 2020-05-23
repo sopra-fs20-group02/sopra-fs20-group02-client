@@ -7,7 +7,7 @@ import {
   playersListStyle,
   userItemStyle,
   lobbyTextStyle,
-  buttonStyle, backgroundStats, footerIconStyle
+  buttonStyle, backgroundStats, footerIconStyle, statsTextStyle
 } from "../../data/styles";
 
 class Lobby extends React.Component {
@@ -118,7 +118,9 @@ class Lobby extends React.Component {
 
           <Grid centered>
             <Grid.Row style={lobbyHeaderStyle}>
-              <h1>Hi {localStorage.getItem('userName')} {localStorage.getItem('emoji')}</h1>
+              <Header as='h1' style={statsTextStyle}>
+                Hi {localStorage.getItem('userName')} {localStorage.getItem('emoji')}
+              </Header>
             </Grid.Row>
             <Grid.Row style={lobbyTextStyle}>
               <div>

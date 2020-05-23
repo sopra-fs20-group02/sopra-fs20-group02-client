@@ -44,12 +44,8 @@ class Chat extends Component {
                         senders: tmpSenders,
                     });
 
-                    const doc = document.getElementById("comment");
-
-                    if (doc){
-                        let messages = document.getElementById("messages");
-                        messages.scrollTop = messages.scrollHeight;
-                    }
+                    let messages = document.getElementById("messages");
+                    messages.scrollTop = messages.scrollHeight;
                 });
             });
         }
@@ -66,12 +62,11 @@ class Chat extends Component {
                     <Comment.Content>
                         <Comment.Author
                             style={{color: 'white'}}
-                            as='a'>{this.state.senders[i]}
+                            >{this.state.senders[i]}:
                         </Comment.Author>
                         <Comment.Text
                             style={{color: 'white'}}
-                        >{
-                            this.state.messages[i]}
+                        >{this.state.messages[i]}
                         </Comment.Text >
                     </Comment.Content>
                 </Comment>
