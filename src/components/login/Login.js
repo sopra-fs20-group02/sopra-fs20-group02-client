@@ -98,6 +98,7 @@ class Login extends React.Component {
                             onChange={
                                 e => {this.handleInputChange(field, e.target.value)}
                             }
+                              style={{right:'-10px'}}
                         >
                           <Form.Input>
                             <input

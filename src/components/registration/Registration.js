@@ -74,6 +74,7 @@ class Registration extends React.Component {
                                 <Grid.Column style={{width:'300px', margin:'auto'}}>
                                     <Form inverted
                                           onChange={e => {this.handleInputChange(field, e.target.value);}}
+                                          style={{right:'-10px'}}
                                     >
                                         <Form.Input>
                                             <input

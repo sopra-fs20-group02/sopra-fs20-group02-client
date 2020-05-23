@@ -84,7 +84,8 @@ export const LoginFooterStyle = {
     position: 'fixed',
     bottom: '0',
     fontFamily: 'Spectral, serif',
-    fontStyle: 'italic'
+    fontStyle: 'italic',
+    zIndex: 5,
 }
 
 export const playersListStyle = {
