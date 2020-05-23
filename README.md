@@ -1,9 +1,5 @@
 # Introduction
-Our project 'Jess' consists of the classical chess game as an online multiplayer-game with a bunch of additional features. One can register to be a user by choosing a unique username and a password. After users have logged in, they are forwarded to a game lobby. There, they can either create a new game, which then can be joined by another user afterwards, join a random game to face off against an unknown opponent or choose a desired user as the opponent from a list of already existing games. The user also has the option to play in Blitz mode. While waiting for another player to join the game or while lingering on the game end page, random quotes fetched from an external API are displayed to the user for entertainment.  
-
-During a game, if it's the user's turn, he or she sees the movable pieces marked and can see the possible moves of one of his or her pieces by selecting it. The captured pieces are displayed above and below the board. There are also the options to resign from a game, in which case the resigning user loses, or to offer a draw to the opponent, in which case the game either results in a draw if the opponent accepts the offer or continues if the opponent rejects the offer.  
-
-From the game lobby, the user can also go to the game stats page to view simple statistics, such as the number of wins, losses, draws and the total and average time played, the number of opponent and own pieces captured, etc. A logged in user also has the possibility to chat with other logged in users or to join a game in the view mode, which allows users to watch others play a game.
+Our project 'Jess' consists of the classical chess game as an online multiplayer-game with a bunch of additional features.
 
 # Technologies
 - Github 
@@ -26,7 +22,12 @@ The, open a terminal, go to the directory sopra-fs20-group02-client and run the 
 
 For production, do the same, except run `./gradlew build -xtest` instead of `./gradlew build` and run `npm run build` instead of `npm run dev`.
 
+# Illustrations
+One can register to be a user by choosing a unique username and a password. After users have logged in, they are forwarded to a game lobby. There, they can either create a new game, which then can be joined by another user afterwards, join a random game to face off against an unknown opponent or choose a desired user as the opponent from a list of already existing games. The user also has the option to play in Blitz mode. While waiting for another player to join the game or while lingering on the game end page, random quotes fetched from an external API are displayed to the user for entertainment.  
 
+During a game, if it's the user's turn, he or she sees the movable pieces marked and can see the possible moves of one of his or her pieces by selecting it. The captured pieces are displayed above and below the board. There are also the options to resign from a game, in which case the resigning user loses, or to offer a draw to the opponent, in which case the game either results in a draw if the opponent accepts the offer or continues if the opponent rejects the offer.  
+
+From the game lobby, the user can also go to the game stats page to view simple statistics, such as the number of wins, losses, draws and the total and average time played, the number of opponent and own pieces captured, etc. A logged in user also has the possibility to chat with other logged in users or to join a game in the view mode, which allows users to watch others play a game.
 
 
 # SoPra FS20 - Client Template
