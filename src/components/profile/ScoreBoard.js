@@ -57,13 +57,24 @@ class ScoreBoard extends React.Component {
     let entries = [];
     const users = this.getRanking();
     for (let i = 0; i< users.length; i++){
-      entries.push(
+      if(users[i][0] === localStorage.getItem('userName')) {
+        entries.push(
+          <tr style={{backgroundColor:'rgba(255, 94, 0, 0.5)'}}>
+            <td data-label="Username">{users[i][0]}</td>
+            <td data-label="Username">{users[i][1]}</td>
+          </tr>
+        )
+        console.log(users[i]);
+      }
+      else {
+        entries.push(
           <tr>
             <td data-label="Username">{users[i][0]}</td>
             <td data-label="Username">{users[i][1]}</td>
           </tr>
-      )
-      console.log(users[i]);
+        )
+        console.log(users[i]);
+      }
     }
 
     let table = [];
