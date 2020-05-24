@@ -94,8 +94,14 @@ export const playersListStyle = {
 }
 
 export const userItemStyle = {
-    margin: '10px',
-    color: 'white'
+    margin: 'auto',
+    marginBottom:'5px',
+    padding: '5px 0 10px 0',
+    color: 'white',
+    border: '1px solid #ff5e00',
+    width: '240px',
+    backgroundColor: 'rgba(255, 94, 0, 0.5)',
+    borderRadius:'3px'
 }
 
 

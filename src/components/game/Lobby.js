@@ -113,13 +113,14 @@ class Lobby extends React.Component {
   }
 
   render() {
+    let i = 1;
     return (
         <div style={backgroundStats}>
 
           <Grid centered>
             <Grid.Row style={lobbyHeaderStyle}>
               <Header as='h1' style={statsTextStyle}>
-                Hi {localStorage.getItem('userName')}!
+                Hi <span style={{color:'#ff5e00'}}>{localStorage.getItem('userName')}</span>!
               </Header>
             </Grid.Row>
             <Grid.Row style={lobbyTextStyle}>
@@ -170,6 +171,7 @@ class Lobby extends React.Component {
                       <div>
                         { (game.gameStatus === "WAITING" || game.gameStatus === "FULL") &&
                         <List.Item style={userItemStyle}>
+                          <h3>Game {i++}</h3>
                           <div style={{margin: '5px'}}>
                             {game.playerWhite ? game.playerWhite.username : '-'}
                             {' vs. '}
