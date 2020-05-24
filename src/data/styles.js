@@ -187,7 +187,7 @@ export const pieceStyleTwo = {
 }
 
 export const gamesStatsStyle = {
-    maxWidth: '1000px',
+    maxWidth: '600px',
     margin: '0 auto'
 }
 

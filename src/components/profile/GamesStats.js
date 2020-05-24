@@ -141,6 +141,18 @@ class GamesStats extends React.Component {
           <div style={gamesStatsStyle}>
             <Grid centered columns='equal' inverted padded  divided='vertically'>
               <Grid.Row style={{margin:'auto', textAlign:'left'}}>
+                <div style={{width:'100px', marginTop:'15px'}}>
+                  <DiscreteColorLegend
+                    orientation="horizontal"
+                    style={{color:"white"}}
+                    items={[
+                      {title: "Games won", color:"#e5ff3a"},
+                      {title: "draw", color:"#009aff"},
+                      {title: "Games lost", color:"#ff0044"}
+                    ]}
+                  >
+                  </DiscreteColorLegend>
+                </div>
                 <div style={{width:'230px'}}>
                   <XYPlot
                     xDomain={[0, 1]}
@@ -171,18 +183,6 @@ class GamesStats extends React.Component {
                       ]}
                       colorType={'literal'}/>
                   </XYPlot>
-                </div>
-                <div style={{width:'150px', marginTop:'15px'}}>
-                  <DiscreteColorLegend
-                    orientation="horizontal"
-                    style={{color:"white"}}
-                    items={[
-                      {title: "Games won", color:"#e5ff3a"},
-                      {title: "draw", color:"#009aff"},
-                      {title: "Games lost", color:"#ff0044"}
-                    ]}
-                  >
-                  </DiscreteColorLegend>
                 </div>
               </Grid.Row>
               <Grid.Row>
@@ -305,6 +305,8 @@ class GamesStats extends React.Component {
                     </div>
                   </div>
                 </Grid.Column>
+              </Grid.Row>
+              <Grid.Row>
                 <Grid.Column style={{textAlign:'center'}}>
                   <div className="ui inverted statistic">
                     <div className="label">
@@ -318,7 +320,7 @@ class GamesStats extends React.Component {
                 <Grid.Column style={{textAlign:'center'}}>
                   <div className="ui inverted statistic">
                     <div className="label">
-                      Total own pieces <br></br>captured:
+                      Total own pieces captured:
                     </div>
                     <div className="value">
                       {totalOwnPiecesCaptured}

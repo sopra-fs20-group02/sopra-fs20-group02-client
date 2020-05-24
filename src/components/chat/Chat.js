@@ -43,9 +43,11 @@ class Chat extends Component {
                         messages: tmpMessages,
                         senders: tmpSenders,
                     });
-
-                    let messages = document.getElementById("messages");
-                    messages.scrollTop = messages.scrollHeight;
+                    let doc = document.getElementById("comment");
+                    if(doc) {
+                        let messages = document.getElementById("messages");
+                        messages.scrollTop = messages.scrollHeight;
+                    }
                 });
             });
         }
