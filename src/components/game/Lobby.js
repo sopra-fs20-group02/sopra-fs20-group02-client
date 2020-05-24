@@ -119,7 +119,7 @@ class Lobby extends React.Component {
           <Grid centered>
             <Grid.Row style={lobbyHeaderStyle}>
               <Header as='h1' style={statsTextStyle}>
-                Hi {localStorage.getItem('userName')} {localStorage.getItem('emoji')}
+                Hi {localStorage.getItem('userName')}!
               </Header>
             </Grid.Row>
             <Grid.Row style={lobbyTextStyle}>

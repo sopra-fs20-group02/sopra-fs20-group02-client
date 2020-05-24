@@ -21,12 +21,6 @@ class Login extends React.Component {
     this.showHide = this.showHide.bind(this);
   }
 
-  getRandomEmoji() {
-    let emoji = [
-      '🐶','🐺','🐱','🐭','🐹','🐰','🐸','🐯','🐨','🐻','🐷','🐽','🐮','🐗','🐵','🐒','🐴','🐑','🐘','🐼','🐧','🐦','🐤','🐥','🐣','🐔','🐍','🐢','🐛','🐝','🐜','🐞','🐌','🐙','🐚','🐠','🐟','🐬','🐳','🐋','🐄','🐏','🐀','🐃','🐅','🐇','🐉','🐎','🐐','🐓','🐕','🐖','🐁','🐂','🐲','🐡','🐊','🐫','🐪','🐆','🐈','🐩',    ];
-    return emoji[Math.floor(Math.random() * emoji.length)];
-  }
-
   // logs in user
   async login() {
     let user;
@@ -46,7 +40,6 @@ class Login extends React.Component {
       localStorage.setItem('token', user.token);
       localStorage.setItem('userId', user.userId);
       localStorage.setItem('userName', user.username);
-      localStorage.setItem('emoji', this.getRandomEmoji());
 
       // Login successfully worked --> navigate to the route /lobby in the GameRouter
       this.props.history.push({
