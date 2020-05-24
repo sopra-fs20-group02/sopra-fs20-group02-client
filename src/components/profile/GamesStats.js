@@ -30,7 +30,7 @@ class GamesStats extends React.Component {
     const userId = localStorage.getItem('userId');
     let totalOpponentPiecesCaptured = 0;
     for (let i = 0; i < gameHistory.length; i++) {
-      const opponentColor = gameHistory[i].playerWhite.userId === userId ? 'BLACK' : 'WHITE';
+      const opponentColor = gameHistory[i].playerWhite.userId.toString() === userId ? 'BLACK' : 'WHITE';
       for (let j = 0; j < gameHistory[i].pieces.length; j++) {
         if (gameHistory[i].pieces[j].captured &&
           gameHistory[i].pieces[j].color === opponentColor) {
@@ -46,7 +46,7 @@ class GamesStats extends React.Component {
     const userId = localStorage.getItem('userId');
     let totalOwnPiecesCaptured = 0;
     for (let i = 0; i < gameHistory.length; i++) {
-      const color = gameHistory[i].playerWhite.userId === userId ? 'WHITE' : 'BLACK';
+      const color = gameHistory[i].playerWhite.userId.toString() === userId ? 'WHITE' : 'BLACK';
       for (let j = 0; j < gameHistory[i].pieces.length; j++) {
         if (gameHistory[i].pieces[j].captured &&
           gameHistory[i].pieces[j].color === color) {
