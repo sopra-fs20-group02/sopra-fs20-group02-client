@@ -187,8 +187,9 @@ export const pieceStyleTwo = {
 }
 
 export const gamesStatsStyle = {
-    maxWidth: '600px',
-    margin: '0 auto'
+    maxWidth: '700px',
+    margin: '0 auto',
+    padding: '0'
 }
 
 export const plotStyleOne = {
@@ -204,7 +205,6 @@ export const plotStyleTwo = {
 }
 
 export const scoreBoardStyle = {
-    //width: '100%',
     maxWidth: '300px',
     backgroundColor: 'rgba(43, 43, 43, 0.8)',
     color: 'white'
