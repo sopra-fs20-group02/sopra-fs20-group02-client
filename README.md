@@ -10,7 +10,7 @@
 # Jess
 
 ## Introduction
-We aimed to create a state of the art online mutliplayer chess game, called Jess, where users can easily create
+We aimed to create a state of the art online multiplayer chess game, called Jess, where users can easily create
 and join games with different rules. Besides, there is an extensive user statistics page and a chat 
 functionality. The main focus was implementing our own chess engine where all possible moves can 
 be fetched from the [backend](https://github.com/sopra-fs20-group02/sopra-fs20-group02-server) and displayed to the user. This enables users with less knowledge about
